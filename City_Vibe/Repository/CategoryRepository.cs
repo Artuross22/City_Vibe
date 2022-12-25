@@ -45,7 +45,7 @@ namespace City_Vibe.Repository
             return await context.Categories.ToListAsync();
         }
 
-        public Category GetById(int id)
+        public Category GetById(int? id)
         {
             return context.Categories.FirstOrDefault(x => x.Id == id);
         }
