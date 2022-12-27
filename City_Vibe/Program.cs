@@ -26,8 +26,22 @@ builder.Services.AddTransient<ISendGridEmail, SendGridEmail>();
 builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration.GetSection("SendGrid"));  // common pattern
 
 
+// builder pattern 
+builder.Services.AddAuthentication()
 
-builder.Services.AddAuthentication();
+.AddFacebook(options =>     
+ {
+                      
+     options.AppId = "1153555458865780";
+     options.AppSecret = "780def90e529535402b302fdcf9aaa1d";
+ })
+.AddGoogle(options =>
+{
+    options.ClientId = "584621299652-geanup19loi4anoj4udsfq09dijhs5tu.apps.googleusercontent.com";
+    options.ClientSecret = "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";
+});
+
+
 
 
 
