@@ -17,6 +17,7 @@ namespace City_Vibe.Repository
 
         public bool Add(Category category)
         {
+          
             context.Add(category);
             return Save();
                
