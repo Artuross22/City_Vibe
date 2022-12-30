@@ -2,6 +2,7 @@
 using City_Vibe.Models;
 using City_Vibe.Repository;
 using City_Vibe.ViewModels.Categories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -76,7 +77,7 @@ namespace City_Vibe.Controllers
         }
 
 
-        [HttpPost]
+       [HttpPost]
        [ValidateAntiForgeryToken]
         public IActionResult DeleteCategory(int? id)
         {
@@ -93,10 +94,7 @@ namespace City_Vibe.Controllers
             var deleteCategory = categoryRepository.Delete(categoryDelete);
             return RedirectToAction(nameof(ListOfCategories));
            
-
         }
     }
-
-
 }
 

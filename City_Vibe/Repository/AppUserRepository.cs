@@ -3,13 +3,13 @@ using City_Vibe.Data;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 
-namespace RunGroopWebAppMyProject.Repository
+namespace City_Vibe.Repository
 {
-    public class UserRepository : IAppUserRepository
+    public class AppUserRepository : IAppUserRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public UserRepository(ApplicationDbContext context)
+        public AppUserRepository(ApplicationDbContext context)
         {
             _context = context;
         }

@@ -1,0 +1,38 @@
+﻿@using City_Vibe.ViewModels.AppUserController
+@model EditProfileViewModel
+
+
+
+<form method="post" asp-action="EditProfile" enctype="multipart/form-data">
+
+    <input type="hidden" id="Id" name="Id" asp-for="Id" />
+
+
+
+
+    <div class="form-group">
+        <label asp-for="City">City:</label>
+        <input asp-for="City" type="text" class="form-control form-control-lg" />
+        <span asp-validation-for="City" class="text-danger"></span>
+    </div>
+
+    <div class="col-6">
+        <div class="form-group">
+            <label asp-for="Region">Region:</label>
+            <input asp-for="Region" type="text" class="form-control form-control-lg" />
+            <span asp-validation-for="Region" class="text-danger"></span>
+        </div>
+    </div>
+
+
+    <div class="col-6">
+        <div class="form-group">
+            <label asp-for="Image"> Profile Image:</label>
+            <input asp-for="Image" type="file" class="form-control form-control-lg" placeholder="Image" />
+            <span asp-validation-for="Image" class="text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>

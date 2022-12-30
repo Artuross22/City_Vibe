@@ -3,47 +3,40 @@ using City_Vibe.Helpers;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using City_Vibe.Repository;
-using IdentityAppCourse2022.Services;
+using City_Vibe.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-
-
-
-var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container
-builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-
-builder.Services.AddDbContext<ApplicationDbContext>(e =>
-    e.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<ApplicationDbContext>(e => e.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<ISendGridEmail, SendGridEmail>();
-builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration.GetSection("SendGrid"));  // common pattern
 
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.AddScoped<IAppUserRepository, AppUserRepository>();
+builder.Services.AddTransient<ISendGridEmail, SendGridEmail>();
+
+builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration.GetSection("SendGrid"));  // common pattern
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
 // builder pattern 
 builder.Services.AddAuthentication()
 
-.AddFacebook(options =>     
- {
-                      
-     options.AppId = "1153555458865780";
-     options.AppSecret = "780def90e529535402b302fdcf9aaa1d";
- })
+.AddFacebook(options =>
+{
+
+    options.AppId = "1153555458865780";
+    options.AppSecret = "780def90e529535402b302fdcf9aaa1d";
+})
 .AddGoogle(options =>
 {
     options.ClientId = "584621299652-geanup19loi4anoj4udsfq09dijhs5tu.apps.googleusercontent.com";
     options.ClientSecret = "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";
 });
-
-
-
-
 
 
 builder.Services.Configure<IdentityOptions>(opt =>
@@ -69,9 +62,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
+
+
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

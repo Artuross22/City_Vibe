@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+<!DOCTYPE html>
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -34,6 +37,13 @@
                                   asp-action="LogOff">
                                     <button type="submit" class="btn nav-link">Logout</button>
                                 </form>
+                            </li>
+                        }
+
+                          @if(SignInManager.IsSignedIn(User))
+                        {
+                           <li class="nav-item">
+                                <a class="nav-link" href="#">Hello @UserManager.GetUserName(User)</a>
                             </li>
                         }
 

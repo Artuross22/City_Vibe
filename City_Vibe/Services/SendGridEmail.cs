@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
-namespace IdentityAppCourse2022.Services
+namespace City_Vibe.Services
 {
     public class SendGridEmail : ISendGridEmail
     {
