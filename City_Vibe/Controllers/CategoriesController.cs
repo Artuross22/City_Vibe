@@ -60,6 +60,7 @@ namespace City_Vibe.Controllers
         [HttpGet]
         public IActionResult AddCategories()
         {
+          
             return View();
         }
 

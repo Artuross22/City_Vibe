@@ -6,11 +6,12 @@ namespace City_Vibe.Interfaces
     {
         Task<IEnumerable<Event>> GetAll();
         Task<Event> GetByIdAsync(int id);
-        Task<Event> GetByIdAsyncNoTracking(int id); 
+        Task<Event> GetByIdAsyncNoTracking(int id);
 
-        bool Add(Event club);
-        bool Update(Event club);
-        bool Delete(Event club);
+
+        bool Add(Event eventAdd);
+        bool Update(Event eventUp);
+        bool Delete(Event eventDelete);
         bool Save();
     }
 }

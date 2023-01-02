@@ -41,6 +41,12 @@ namespace City_Vibe.Repository
             return saved > 0 ? true : false;
         }
 
+        public IEnumerable<Category> SelectList()
+        {
+            return context.Categories.ToList();
+        }
+
+
         public async Task<IEnumerable<Category>> GetAll()
         {
             return await context.Categories.ToListAsync();

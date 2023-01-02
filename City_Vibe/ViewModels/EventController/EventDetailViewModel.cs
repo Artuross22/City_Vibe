@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Xml.Linq;
+﻿using City_Vibe.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace City_Vibe.Models
+namespace City_Vibe.ViewModels.EventController
 {
-    public class Event
+    public class EventDetailViewModel
     {
-        public int Id { get; set; }
         public string? Name { get; set; }
 
         public string? Desciption { get; set; }
@@ -33,7 +32,7 @@ namespace City_Vibe.Models
 
         public ICollection<Comment>? Comments { get; set; }
 
-        public Event()
+        public EventDetailViewModel()
         {
             Comments = new List<Comment>();
         }

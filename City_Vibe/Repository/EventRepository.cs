@@ -1,7 +1,10 @@
 ﻿using City_Vibe.Data;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SendGrid.Helpers.Mail;
+using System.Collections;
 
 namespace City_Vibe.Repository
 {
@@ -14,21 +17,21 @@ namespace City_Vibe.Repository
             context = _context;
         }
 
-        public bool Add(Event club)
+        public bool Add(Event eventAdd)
         {
-            context.Add(club);
+            context.Add(eventAdd);
             return Save();
         }
 
-        public bool Delete(Event club)
+        public bool Delete(Event eventDe)
         {
-            context.Remove(club);
+            context.Remove(eventDe);
             return Save();
         }
 
-        public bool Update(Event club)
+        public bool Update(Event eventUp)
         {
-            context.Update(club);
+            context.Update(eventUp);
             return Save();
         }
 
@@ -38,6 +41,8 @@ namespace City_Vibe.Repository
             return saved > 0 ? true : false;
         }
 
+
+
         public async Task<IEnumerable<Event>> GetAll()
         {
             return await context.Events.ToListAsync();
@@ -45,13 +50,17 @@ namespace City_Vibe.Repository
 
         public async Task<Event> GetByIdAsync(int id)
         {
-            return await context.Events.Include(i => i.Category).FirstOrDefaultAsync(i => i.Id == id);
+          //  return await context.Events.Include(i => i.Category).FirstOrDefaultAsync(i => i.Id == id);
+            return await context.Events.Include(i => i.Category).Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
+
         }
 
         public async Task<Event> GetByIdAsyncNoTracking(int id)
         {
          return await context.Events.Include(i => i.Category).AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
-        }    
+        }
+
        
+
     }
 }
