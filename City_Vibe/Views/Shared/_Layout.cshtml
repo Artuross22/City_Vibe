@@ -32,10 +32,15 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="Index">Event</a>
                         </li>
-                 
-                        
 
-                         @if (User.Identity.IsAuthenticated)
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Club" asp-action="Index">Club</a>
+                        </li>
+
+
+
+
+                        @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
                                 <form id="logoutForm" method="post" class="form-inline" asp-controller="Account"

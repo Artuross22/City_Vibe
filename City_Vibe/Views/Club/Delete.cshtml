@@ -1,4 +1,4 @@
-﻿@model Event
+﻿@model Club
 
 @{
     var category = ViewBag.Categories as SelectList;
@@ -22,25 +22,20 @@
                 @Html.DisplayFor(model => model.Id)
             </dd>
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Title)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Name)
+                @Html.DisplayFor(model => model.Title)
             </dd>
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Desciption)
+                @Html.DisplayNameFor(model => model.Description)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Desciption)
+                @Html.DisplayFor(model => model.Description)
             </dd>
+         
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Data)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Data)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.City)
+                @Html.DisplayNameFor(model => model.Address.City)
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.Address.City)
@@ -86,7 +81,7 @@
         </dt>
         <dt class="col-sm-8">
             <li class="btn btn-success  float-right mt-3">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="Index">Back</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Index" asp-action="Index">Back</a>
             </li>
         </dt>
     </dl>
