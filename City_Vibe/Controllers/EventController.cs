@@ -4,6 +4,7 @@ using City_Vibe.Models;
 using City_Vibe.Repository;
 using City_Vibe.Services;
 using City_Vibe.ViewModels.EventController;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -33,9 +34,13 @@ namespace City_Vibe.Controllers
         public async Task<IActionResult> Detail(int id)
         {
 
-            Event eventDetail = await eventRepository.GetByIdAsync(id);
+            Event eventDetail = await eventRepository.GetByIdIncludeCommentsAsync(id);
             return View(eventDetail);
         }
+
+
+
+
 
         [HttpGet]
         public IActionResult CreateEvent()

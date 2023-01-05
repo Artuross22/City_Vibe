@@ -1,4 +1,5 @@
-﻿@model Event
+﻿@*@model City_Vibe.ViewModels.EventController.EventDetailViewModel*@
+@model Event
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -33,38 +34,116 @@
         </div>
 
     </div>
-    <!-- /.row -->
-    <!-- Related Projects Row -->
-    <h3 class="my-4">Related Projects</h3>
 
-    <div class="row">
 
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
 
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
+         @if (User.Identity.IsAuthenticated)
+        {
 
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
 
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
+            @using (Html.BeginForm("PostComment", "Comment", FormMethod.Post))
+            {
+              
+                <p>
+                    <input type="text" name="CommentText" placeholder="Type new comment..."
+                   style="width:700px; height:60px; font-size:20px; margin-top:10px" />
+                </p>
+                <p>
+                    <input name="EventId" type="hidden" value="@Model.Id"
+                   style="width:700px; height:60px; font-size:20px; margin-top:10px" />
+                </p>
+                <br />
+                <input type="submit" value="Post Comment" class="btn btn-success "
+               style="margin-top: 10px;margin-bottom: 10px " />
+            }
+        }
+        else
+        {
+            <div>                 
+                     <a class=""> To comment. Log in to the account  </a>                 
+                     <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Login">Click Here</a>             
+            </div>
+             
+        }
+       @* "You must @Html.ActionLink("register", "Account","Login" ,"Identity") to post comments" </p2>*@
+  
 
-    </div>
-    <!-- /.row -->
+    </dl>
+    
+
+ 
+    <table class="table text-center">
+
+
+    <tbody>
+        @foreach (var comment in Model.Comments)
+        {
+             <tr style="border:1px solid black;">
+                 <td>
+                                        <span style="margin-right:15px;font-size:16px;color:green">
+                        @Html.DisplayFor(modelItem => comment.AppUser.NickName)
+                                        </span>
+
+
+                                        <span style="font-size:20px">
+                        @Html.DisplayFor(modelItem => comment.Body)
+                                        </span>
+                                        <span style="margin-left:10px">
+                        @Html.DisplayFor(modelItem => comment.DateTime)
+                                        </span>
+
+                    @foreach (var reply in comment.ReplyComment)
+                    {
+                                                                <br />
+                                                                <span style="margin-right:15px;font-size:16px;color:blue">
+                            @Html.DisplayFor(modelItem => reply.AppUser.NickName)
+                                                                </span>
+                                                                <span style="font-size:19px">
+                            @reply.Text
+                                                                </span>
+                                                                <span style="margin-left:10px">
+                            @reply.CreatedDate
+                                                                </span>
+
+                    }
+                       
+                    
+                    <br />
+
+                      
+                      @if (User.Identity.IsAuthenticated)
+                      {
+
+
+
+                     @using (Html.BeginForm("PostReply", "Comment", FormMethod.Post))
+                    {
+                            <input type="text" name="ReplyText" placeholder="Type  reply..."
+                            style="width:100%; height:60px; font-size:20px; margin-top:10px" />
+                        <br />
+                        <input type="hidden" name="IDComment" value="@comment.Id" />
+                        <input type="submit" value="Post Reply" class="btn btn-success" style="margin-top :10px" />
+                    }
+
+
+                      }
+        
+
+
+           
+
+                  </td>
+
+
+             </tr>
+        }
+    </tbody>
+</table
+
+
 
 </div>
-<!-- /.container -->
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>

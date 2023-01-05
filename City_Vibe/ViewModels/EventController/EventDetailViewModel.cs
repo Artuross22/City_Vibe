@@ -5,15 +5,17 @@ namespace City_Vibe.ViewModels.EventController
 {
     public class EventDetailViewModel
     {
+        public int id { get; set; }
         public string? Name { get; set; }
 
         public string? Desciption { get; set; }
 
         public DateTime? Data { get; set; }
 
-        public string Image { get; set; }
 
-        public string? City { get; set; }
+        public string? ProfileImageUrl { get; set; }
+
+        public string City { get; set; }
 
         public Category? Category { get; set; }
 
@@ -28,6 +30,8 @@ namespace City_Vibe.ViewModels.EventController
         [ForeignKey("Address")]
         public int? AddressId { get; set; }
         public Address? Address { get; set; }
+
+        public IFormFile? Image { get; set; }
 
 
         public ICollection<Comment>? Comments { get; set; }

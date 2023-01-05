@@ -8,6 +8,7 @@ namespace City_Vibe.Interfaces
         Task<Event> GetByIdAsync(int id);
         Task<Event> GetByIdAsyncNoTracking(int id);
 
+        Task<Event> GetByIdIncludeCommentsAsync(int id);
 
         bool Add(Event eventAdd);
         bool Update(Event eventUp);

@@ -13,7 +13,7 @@ namespace City_Vibe.Models
 
         [ForeignKey("User")]
         public Guid? InternalUserId { get; set; }
-        public virtual AppUser AppUser { get; set; }
+        public  AppUser? AppUser { get; set; }
 
 
         public int CommentId { get; set; }

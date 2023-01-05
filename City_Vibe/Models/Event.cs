@@ -31,6 +31,12 @@ namespace City_Vibe.Models
         public Address? Address { get; set; }
 
 
+        [ForeignKey("Replies")]
+        public int? RepliesId { get; set; }
+        public ReplyComment? Replies { get; set; }
+
+
+
         public ICollection<Comment>? Comments { get; set; }
 
         public Event()

@@ -50,9 +50,13 @@ namespace City_Vibe.Repository
 
         public async Task<Event> GetByIdAsync(int id)
         {
-          //  return await context.Events.Include(i => i.Category).FirstOrDefaultAsync(i => i.Id == id);
-            return await context.Events.Include(i => i.Category).Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
+            //  return await context.Events.Include(i => i.Category).FirstOrDefaultAsync(i => i.Id == id);
+            return await context.Events.Include(i => i.Category).Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);       
+        }
 
+        public async Task<Event> GetByIdIncludeCommentsAsync(int id)
+        {
+            return await context.Events.Include(i => i.Category).Include(x => x.Address).Include(c => c.Comments).ThenInclude(x =>x.ReplyComment).OrderByDescending(x => x.Data).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Event> GetByIdAsyncNoTracking(int id)
