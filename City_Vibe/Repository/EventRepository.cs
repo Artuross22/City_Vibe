@@ -63,8 +63,5 @@ namespace City_Vibe.Repository
         {
          return await context.Events.Include(i => i.Category).AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
         }
-
-       
-
     }
 }
