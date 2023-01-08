@@ -50,7 +50,6 @@ namespace City_Vibe.Repository
 
         public async Task<Event> GetByIdAsync(int id)
         {
-            //  return await context.Events.Include(i => i.Category).FirstOrDefaultAsync(i => i.Id == id);
             return await context.Events.Include(i => i.Category).Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);       
         }
 
@@ -63,5 +62,8 @@ namespace City_Vibe.Repository
         {
          return await context.Events.Include(i => i.Category).AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
         }
+
+       
+
     }
 }

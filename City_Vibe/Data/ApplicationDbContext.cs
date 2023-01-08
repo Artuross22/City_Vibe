@@ -36,6 +36,6 @@ namespace City_Vibe.Data
 
             builder.Entity<AppUser>()
                 .Ignore(p => p.RoleList);
-        }
+         }
     }
 }

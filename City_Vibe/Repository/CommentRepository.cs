@@ -38,6 +38,15 @@ namespace City_Vibe.Repository
             return Save();
         }
 
+     
+
+
+        public  ICollection<Comment> GetAllCommentByEventId(int id)
+        {
+            var commentsModel = contextDb.Comments.Where(x => x.EventId == id).Include(x => x.ReplyComment).ThenInclude(x => x.AppUser).OrderByDescending(x => x.DateTime).ToList();
+            return  commentsModel;
+        }
+
         public IEnumerable<Comment> GetAll()
         {
             return  contextDb.Comments.ToList();

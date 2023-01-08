@@ -1,4 +1,5 @@
-﻿using City_Vibe.ExtensionMethod;
+﻿using City_Vibe.Data;
+using City_Vibe.ExtensionMethod;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using City_Vibe.Repository;
@@ -7,6 +8,7 @@ using City_Vibe.ViewModels.EventController;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace City_Vibe.Controllers
 {
@@ -16,13 +18,20 @@ namespace City_Vibe.Controllers
         private readonly ICategoryRepository categoryRepository;
         private readonly IPhotoService photoService;
         public readonly IHttpContextAccessor сontextAccessor;
+        public readonly ICommentRepository commentRepository;
+        public readonly ApplicationDbContext dbContext;
 
-        public EventController(IEventRepository eventRepo, IPhotoService photoSe, IHttpContextAccessor сontextAccsess , ICategoryRepository categoryRepo)
+
+
+        public EventController(IEventRepository eventRepo, IPhotoService photoSe, IHttpContextAccessor сontextAccsess , ICategoryRepository categoryRepo , ICommentRepository commentRepo
+            , ApplicationDbContext DbContexts )
         {
             eventRepository = eventRepo;
             photoService = photoSe;
             сontextAccessor = сontextAccsess;
             categoryRepository =  categoryRepo;
+            commentRepository = commentRepo;
+            dbContext = DbContexts;
         }
 
         public async Task<IActionResult> Index()
@@ -35,12 +44,39 @@ namespace City_Vibe.Controllers
         {
 
             Event eventDetail = await eventRepository.GetByIdIncludeCommentsAsync(id);
+
             return View(eventDetail);
         }
 
+        public async Task<IActionResult> DetailEvent(int id)
+        {
+            Event eventDetail = await eventRepository.GetByIdAsync(id);
 
+            var viewModel = new EventDetailViewModel
+            {
+                Id = eventDetail.Id,
+                Title = eventDetail.Name,
+                Desciption = eventDetail.Desciption,
+                AppUser = eventDetail.AppUser,
+                Data = eventDetail.Data,
+                Image = eventDetail.Image,
 
+                    Address = new Address
+                    {
+                        Street = eventDetail.Address.Street,
+                        City = eventDetail.Address.City,
+                        Region = eventDetail.Address.Region,
+                    },      
+            };
+            var listofComment = commentRepository.GetAllCommentByEventId(id);            
+            viewModel.Comments = listofComment;
 
+            var categoryEvent = categoryRepository.GetById(eventDetail.CategoryId);
+            viewModel.Category = categoryEvent;
+
+            return View(viewModel);
+
+        }
 
         [HttpGet]
         public IActionResult CreateEvent()
@@ -195,8 +231,5 @@ namespace City_Vibe.Controllers
             eventRepository.Delete(eventDetails);
             return RedirectToAction("Index");
         }
-
-
-
     }
 }
