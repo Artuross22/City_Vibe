@@ -84,8 +84,6 @@ namespace City_Vibe.Controllers
             return View(editMV);
         }
 
-   
-
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> EditProfile(EditProfileViewModel editVM)
@@ -121,11 +119,19 @@ namespace City_Vibe.Controllers
                 user.ProfileImageUrl = photoResult.Url.ToString();
                 editVM.ProfileImageUrl = user.ProfileImageUrl;
 
+
                 await _userManager.UpdateAsync(user);
             }
 
-            user.City = editVM.City;
-            user.Region = editVM.Region;
+            Address adress = new Address
+            {
+                City = user.Address.City,
+                Region = user.Address.Region,
+                ZipCode = editVM.Address.ZipCode,
+                Street = editVM.Address.Street,             
+            };
+
+            user.Address = adress;
 
             await _userManager.UpdateAsync(user);
 

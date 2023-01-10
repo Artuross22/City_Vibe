@@ -9,11 +9,11 @@ namespace City_Vibe.Controllers
     public class RoleController : Controller
     {
         private readonly ApplicationDbContext _db;
-        private readonly UserManager<AppUserController> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
 
-        public RoleController(ApplicationDbContext db, UserManager<AppUserController> userManager, RoleManager<IdentityRole> roleManager)
+        public RoleController(ApplicationDbContext db, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _db = db;
             _roleManager = roleManager;

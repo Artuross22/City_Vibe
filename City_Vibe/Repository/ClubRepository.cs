@@ -41,10 +41,12 @@ namespace City_Vibe.Repository
             return await _context.Club.Include(i => i.Address).AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
         }
 
+     
         public async Task<IEnumerable<Club>> GetClubByCity(string city)
         {
             return await _context.Club.Where(c => c.Address.City.Contains(city)).ToListAsync();
         }
+
 
         public bool Save()
         {

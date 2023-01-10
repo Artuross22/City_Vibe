@@ -15,6 +15,9 @@ namespace City_Vibe.Data
 
         public DbSet<Club> Club { get; set; }
 
+
+       // public DbSet<Address> Addresses { get; set; } = null!;
+
         public DbSet<AppUser> AppUser { get; set; }
         public DbSet<Event> Events { get; set; } = null!;
 
