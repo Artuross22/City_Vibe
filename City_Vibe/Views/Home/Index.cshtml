@@ -8,9 +8,10 @@
 
 @if (isAuthenticated && User.IsInRole("ActiveUser"))
 {
-    <form asp-controller="Categories" asp-action="CategoryDelete">
+    <form asp-controller="Dashboard" asp-action="ActiveUsersIndex" method="get">
         <button type="submit" class="btn btn-lg btn-success btn-block">Sign up for City Vibe</button>
     </form>
+
 }
 
 <section class="bg-dark space-lg" data-jarallax data-speed="0.2">
@@ -18,7 +19,7 @@
     <div class="container">
         <div class="row align-items-center justify-content-between">
             <div class="col-12 col-md-6 col-lg-5 section-intro">
-                <h1 class="display-3">Find a running community</h1>
+                <h1 class="display-3"> Find community</h1>
                 <span class="lead">
                     A community for people who love an active life and are looking for partners and teams to have fun and improve their skills with like-minded people
                 </span>

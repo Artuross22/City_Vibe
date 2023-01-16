@@ -11,6 +11,8 @@ namespace City_Vibe.ViewModels.EventController
         public Address Address { get; set; }
         public IFormFile Image { get; set; }
 
+        public DateTime CreatedDate { get; set; }
+
         public int CategoryId { get; set; }
         public Category? EventCategory { get; set; }
 

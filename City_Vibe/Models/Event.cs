@@ -39,9 +39,9 @@ namespace City_Vibe.Models
 
         public ICollection<Comment>? Comments { get; set; }
 
-        public Event()
-        {
-            Comments = new List<Comment>();
-        }
+        //public Event()
+        //{
+        //    Comments = new List<Comment>();
+        //}
     }
 }

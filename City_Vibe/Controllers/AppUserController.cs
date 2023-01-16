@@ -7,7 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using City_Vibe.Repository;
 using System.Security.Claims;
-
+using City_Vibe.Data;
+using System.Linq;
+using CloudinaryDotNet.Actions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Data;
 
 namespace City_Vibe.Controllers
 {
@@ -16,12 +21,17 @@ namespace City_Vibe.Controllers
         private readonly IAppUserRepository _userRepository;
         private readonly UserManager<AppUser> _userManager;
         private readonly IPhotoService _photoService;
+        private readonly ApplicationDbContext _dbContext;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AppUserController(IAppUserRepository userRepository, UserManager<AppUser> userManager, IPhotoService photoService)
+        public AppUserController(IAppUserRepository userRepository, UserManager<AppUser> userManager, IPhotoService photoService,
+            ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager)
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _photoService = photoService;
+            _dbContext = dbContext;
+            _roleManager = roleManager;
         }
 
         [HttpGet("users")]
@@ -128,7 +138,7 @@ namespace City_Vibe.Controllers
                 City = user.Address.City,
                 Region = user.Address.Region,
                 ZipCode = editVM.Address.ZipCode,
-                Street = editVM.Address.Street,             
+                Street = editVM.Address.Street,
             };
 
             user.Address = adress;
@@ -205,7 +215,8 @@ namespace City_Vibe.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-    }
 
+
+    }
 }
 

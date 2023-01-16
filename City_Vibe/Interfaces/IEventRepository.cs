@@ -9,6 +9,9 @@ namespace City_Vibe.Interfaces
         Task<Event> GetByIdAsyncNoTracking(int id);
 
         Task<Event> GetByIdIncludeCommentsAsync(int id);
+        Task<List<Event>> ActiveEventBytime();
+
+        IQueryable<Event> ActiveEventBytimeIQueryable();
 
         bool Add(Event eventAdd);
         bool Update(Event eventUp);

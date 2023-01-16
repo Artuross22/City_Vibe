@@ -60,7 +60,7 @@ namespace City_Vibe.Controllers
                 AppUser = eventDetail.AppUser,
                 Data = eventDetail.Data,
                 Image = eventDetail.Image,
-
+               
                     Address = new Address
                     {
                         Street = eventDetail.Address.Street,
@@ -95,12 +95,12 @@ namespace City_Vibe.Controllers
             if (ModelState.IsValid)
             {
                 var result = await photoService.AddPhotoAsync(eventVM.Image);
-
                 var eventAdd = new Event
                 {
                     Name = eventVM.Name,
                     Desciption = eventVM.Description,
                     Image = result.Url.ToString(),
+                    Data = eventVM.CreatedDate,
                     CategoryId = eventVM.CategoryId,
                     AppUserId = eventVM.AppUserId,
                     Address = new Address
@@ -132,7 +132,8 @@ namespace City_Vibe.Controllers
             {
                 Name = editEvent.Name,
                 Description = editEvent.Desciption,
-                AddressId = editEvent.AddressId,            
+                AddressId = editEvent.AddressId,
+                CreatedDate = editEvent.Data,
                 URL = editEvent.Image,
                 CategoryId = editEvent.CategoryId,
                 Category = editEvent.Category,
@@ -182,6 +183,7 @@ namespace City_Vibe.Controllers
                     Desciption = eventVM.Description,
                     Image = photoResult.Url.ToString(),
                     AddressId = eventVM.AddressId,
+                    Data = eventVM.CreatedDate,
                     CategoryId = eventVM.CategoryId,
                     Address = new Address
                     {
