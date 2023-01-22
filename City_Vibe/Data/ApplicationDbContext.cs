@@ -1,4 +1,5 @@
 ﻿using City_Vibe.Models;
+using CityVibe.Migrations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -15,8 +16,7 @@ namespace City_Vibe.Data
 
         public DbSet<Club> Club { get; set; }
 
-
-       // public DbSet<Address> Addresses { get; set; } = null!;
+       public DbSet<SaveClub> SaveClubs { get; set; }
 
         public DbSet<AppUser> AppUser { get; set; }
         public DbSet<Event> Events { get; set; } = null!;
@@ -39,6 +39,9 @@ namespace City_Vibe.Data
 
             builder.Entity<AppUser>()
                 .Ignore(p => p.RoleList);
+
+
+            //builder.Entity<Club>().HasKey(x => new )
          }
     }
 }

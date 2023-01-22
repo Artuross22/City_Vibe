@@ -4,6 +4,7 @@ using City_Vibe.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityVibe.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230121141335_addIColectionClubInSaveClub")]
+    partial class addIColectionClubInSaveClub
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,9 +184,6 @@ namespace CityVibe.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SaveClubId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -196,8 +196,6 @@ namespace CityVibe.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("EventId");
-
-                    b.HasIndex("SaveClubId");
 
                     b.ToTable("Club");
                 });
@@ -512,10 +510,6 @@ namespace CityVibe.Migrations
                         .WithMany()
                         .HasForeignKey("EventId");
 
-                    b.HasOne("City_Vibe.Models.SaveClub", null)
-                        .WithMany("Clubs")
-                        .HasForeignKey("SaveClubId");
-
                     b.Navigation("Address");
 
                     b.Navigation("AppUser");
@@ -682,11 +676,6 @@ namespace CityVibe.Migrations
             modelBuilder.Entity("City_Vibe.Models.Event", b =>
                 {
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.SaveClub", b =>
-                {
-                    b.Navigation("Clubs");
                 });
 #pragma warning restore 612, 618
         }

@@ -4,6 +4,7 @@ using City_Vibe.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityVibe.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230118151243_addListEventsInClub")]
+    partial class addListEventsInClub
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,9 +184,6 @@ namespace CityVibe.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SaveClubId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -196,8 +196,6 @@ namespace CityVibe.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("EventId");
-
-                    b.HasIndex("SaveClubId");
 
                     b.ToTable("Club");
                 });
@@ -322,32 +320,6 @@ namespace CityVibe.Migrations
                     b.HasIndex("CommentId");
 
                     b.ToTable("Replies");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.SaveClub", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ClubId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("ClubId");
-
-                    b.ToTable("SaveClubs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -512,10 +484,6 @@ namespace CityVibe.Migrations
                         .WithMany()
                         .HasForeignKey("EventId");
 
-                    b.HasOne("City_Vibe.Models.SaveClub", null)
-                        .WithMany("Clubs")
-                        .HasForeignKey("SaveClubId");
-
                     b.Navigation("Address");
 
                     b.Navigation("AppUser");
@@ -592,23 +560,6 @@ namespace CityVibe.Migrations
                     b.Navigation("Comment");
                 });
 
-            modelBuilder.Entity("City_Vibe.Models.SaveClub", b =>
-                {
-                    b.HasOne("City_Vibe.Models.AppUser", "AppUser")
-                        .WithMany("SaveClubs")
-                        .HasForeignKey("AppUserId");
-
-                    b.HasOne("City_Vibe.Models.Club", "Club")
-                        .WithMany()
-                        .HasForeignKey("ClubId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("Club");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -665,8 +616,6 @@ namespace CityVibe.Migrations
                     b.Navigation("Clubs");
 
                     b.Navigation("Event");
-
-                    b.Navigation("SaveClubs");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.Category", b =>
@@ -682,11 +631,6 @@ namespace CityVibe.Migrations
             modelBuilder.Entity("City_Vibe.Models.Event", b =>
                 {
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.SaveClub", b =>
-                {
-                    b.Navigation("Clubs");
                 });
 #pragma warning restore 612, 618
         }

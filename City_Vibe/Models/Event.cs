@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Xml.Linq;
 
 namespace City_Vibe.Models
 {
@@ -31,17 +30,17 @@ namespace City_Vibe.Models
         public Address? Address { get; set; }
 
 
+
         [ForeignKey("Replies")]
         public int? RepliesId { get; set; }
         public ReplyComment? Replies { get; set; }
-
-
-
         public ICollection<Comment>? Comments { get; set; }
 
-        //public Event()
-        //{
-        //    Comments = new List<Comment>();
-        //}
+
+
+
+        [ForeignKey("Club")]
+        public int? ClubId { get; set; }
+        public Club? Club { get; set; }
     }
 }
