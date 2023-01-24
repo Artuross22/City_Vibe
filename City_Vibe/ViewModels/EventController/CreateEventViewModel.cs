@@ -18,5 +18,7 @@ namespace City_Vibe.ViewModels.EventController
 
         public IEnumerable<SelectListItem>? EventList { get; set; }
         public string AppUserId { get; set; }
+
+        public int? ClubId { get; set; }
     }
 }

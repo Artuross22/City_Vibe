@@ -9,6 +9,7 @@ using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace City_Vibe.Controllers
 {
@@ -79,13 +80,19 @@ namespace City_Vibe.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateEvent()
+        public IActionResult CreateEvent(int clubId)
         {
             var EventList = categoryRepository.SelectList();
             ViewBag.Categories = new SelectList(EventList, "Id", "Name");
-        
+
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
-            var createEventViewModel = new CreateEventViewModel { AppUserId = curUserId };    
+            var createEventViewModel = new CreateEventViewModel { AppUserId = curUserId };
+
+            if (clubId != null)
+            {
+                createEventViewModel.ClubId = clubId;
+            }
+
             return View(createEventViewModel);
         }
 
@@ -103,6 +110,7 @@ namespace City_Vibe.Controllers
                     Data = eventVM.CreatedDate,
                     CategoryId = eventVM.CategoryId,
                     AppUserId = eventVM.AppUserId,
+                    ClubId = eventVM.ClubId,
                     Address = new Address
                     {
                         Street = eventVM.Address.Street,
@@ -233,5 +241,20 @@ namespace City_Vibe.Controllers
             eventRepository.Delete(eventDetails);
             return RedirectToAction("Index");
         }
+
+        //  [HttpPost]
+        //public async Task<ActionResult> AddInInterested(int idEvent)
+        //{
+
+        //    var curUserId = сontextAccessor.HttpContext.User.GetUserId();
+        //var saveInterestingEvent = new SaveAnInterestingEvent();
+        //    //saveInterestingEvent.UserId = curUserId;
+        //    //saveInterestingEvent.EventId = idEvent;
+
+        //    //dbContext.Add(saveInterestingEvent);
+        //    dbContext.SaveChanges();
+
+        //    return RedirectToAction("Index");
+        //}
     }
 }

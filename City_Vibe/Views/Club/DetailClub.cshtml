@@ -1,9 +1,20 @@
-﻿@model Club
+﻿@model City_Vibe.ViewModels.ClubController.DetailClubViewModel
+
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
+
+
+
+<a type="btn btn-success" asp-controller="Club" asp-action="AddInInterested" asp-route-eventlist="@Model.SaveClubId" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">
+    Add to Interesting
+</a>
+
+
+
+
 
 <!-- Page Content -->
 <div class="container">
@@ -41,19 +52,19 @@
 
         <div class="col-md-3 col-sm-6 mb-4">
             <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
+                <img class="img-fluid" src="@Model.Image" alt="">
             </a>
         </div>
 
         <div class="col-md-3 col-sm-6 mb-4">
             <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
+                <img class="img-fluid" src="@Model.Image" alt="">
             </a>
         </div>
 
         <div class="col-md-3 col-sm-6 mb-4">
             <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
+                <img class="img-fluid" src="@Model.Image" alt="">
             </a>
         </div>
 
@@ -65,6 +76,30 @@
 
     </div>
     <!-- /.row -->
+    @foreach (var item in Model.Events)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+                <img class="card-img-top" src="@item.Image" width="100%" height="225" alt="Card image cap">
+                <div class="card-body">
+                    <p class="card-text">@item.Name</p>
+                    <p class="card-text">@item.Desciption</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                            <a type="btn btn-success" asp-controller="Event" asp-action="DetailEvent" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-outline-secondary">View</a>
+                           @* @if (SignInManager.IsSignedIn(User))
+                            {*@
+                                <a asp-controller="Event" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a asp-controller="Event" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
+                           @* }*@
+                        </div>
+                        <small class="text-muted">@item.Category</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
 </div>
 <!-- /.container -->

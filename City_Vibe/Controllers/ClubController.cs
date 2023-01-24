@@ -7,6 +7,12 @@ using City_Vibe.ViewModels.ClubController;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using SendGrid.Helpers.Mail;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace City_Vibe.Controllers
 {
@@ -15,13 +21,20 @@ namespace City_Vibe.Controllers
         private readonly ICategoryRepository categoryRepository;
         private readonly IClubRepository clubRepository;
         private readonly IPhotoService photoService;
-        public readonly IHttpContextAccessor сontextAccessor;
-        public ClubController(IClubRepository clubRepo, IPhotoService photoServ, IHttpContextAccessor сontextAccess, ICategoryRepository categoryRepo)
+        private readonly IHttpContextAccessor сontextAccessor;
+        private readonly ISaveClubRepository saveClubRepository;
+        public readonly ApplicationDbContext dbContext;
+
+        public ClubController(IClubRepository clubRepo, IPhotoService photoServ, IHttpContextAccessor сontextAccess, ICategoryRepository categoryRepo,
+            ApplicationDbContext applicationDbContex , ISaveClubRepository saveClubRepo)
         {
             categoryRepository = categoryRepo;
             clubRepository = clubRepo;
             photoService = photoServ;
             сontextAccessor = сontextAccess;
+            dbContext = applicationDbContex;
+            saveClubRepository = saveClubRepo;
+
         }
 
 
@@ -31,11 +44,7 @@ namespace City_Vibe.Controllers
             return View(clubs);
         }
 
-        public async Task<IActionResult> DetailClub(int id)
-        {
-            Club club = await clubRepository.GetByIdAsync(id);
-            return View(club);
-        }
+
 
         [HttpGet]
         public IActionResult CreateClub()
@@ -101,6 +110,34 @@ namespace City_Vibe.Controllers
             ViewBag.Categories = new SelectList(CategoryList, "Id", "Name");
 
             return View(clubVM);
+        }
+
+        public async Task<IActionResult> DetailClub(int id)
+        {
+            Club club = await clubRepository.GetByIdAsync(id);
+            var events = await clubRepository.GetClubsByEventId(id);
+            var curSaveClub = await saveClubRepository.FindClubsByIdAsync(id);
+            var detailClubViewModel = new DetailClubViewModel
+            {
+                Id = id,
+                Title = club.Title,
+                Description = club.Description,
+                Image = club.Image,
+                AppUserId = club.AppUserId,
+                CategoryId = club.CategoryId,
+                Address = new Address
+                {
+                    Street = club.Address.Street,
+                    City = club.Address.City,
+                    Region = club.Address.Region,
+                },
+                Events = events.ToList(),
+                SaveClubs = curSaveClub.ToList(),
+
+
+            };
+
+            return View(detailClubViewModel);
         }
 
 
@@ -177,6 +214,44 @@ namespace City_Vibe.Controllers
 
             clubRepository.Delete(clubDetails);
             return RedirectToAction("Index");
+        }
+
+
+        public async Task<ActionResult> AddInInterested(int id , SaveClub eventList)
+        {
+            var curUserId = сontextAccessor.HttpContext.User.GetUserId();
+
+            var deleteInterestingClub = saveClubRepository.findSafeClubusingUserAndClub(id);
+            if (deleteInterestingClub.Count != 0)
+            {
+                var deletelos = await saveClubRepository.FindClubById(id);
+
+               // var deletelos = dbContext.SaveClubs.FirstOrDefault(x => x.ClubId == id);
+                var dele =  dbContext.SaveClubs.Remove(deletelos);
+                dbContext.SaveChanges();
+
+            }
+            else
+            {
+                var saveClub = new SaveClub
+                {
+                    AppUserId = curUserId,
+                    ClubId = id
+                };
+                dbContext.Add(saveClub);
+                dbContext.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
+        public async Task<ActionResult> InterestingСlubsForTheUser(int id)
+        {
+            var curUserId = сontextAccessor.HttpContext.User.GetUserId();
+            ICollection<SaveClub> result = saveClubRepository.FindUserById(curUserId);
+
+            return View(result);
         }
     }
 }

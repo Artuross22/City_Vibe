@@ -23,6 +23,7 @@ builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IAppUserRepository, AppUserRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<ISaveClubRepository, SaveClubRepository>();
 
 
 builder.Services.AddTransient<ISendGridEmail, SendGridEmail>();

@@ -1,10 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace City_Vibe.Models
 {
     public class Club
     {
+
+        //public Club()
+        //{
+        //    SaveClubs = new HashSet<SaveClub>();
+        //}
+
         [Key]
         public int Id { get; set; }
         public string? Title { get; set; }
@@ -24,9 +31,13 @@ namespace City_Vibe.Models
         public int? EventId { get; set; }
         public Event? Event { get; set; }
 
+        [NotMapped]
+        public ICollection<Event>? Events { get; set; }
+
 
         [ForeignKey("AppUser")]
         public string? AppUserId { get; set; }
         public AppUser? AppUser { get; set; }
+
     }
 }
