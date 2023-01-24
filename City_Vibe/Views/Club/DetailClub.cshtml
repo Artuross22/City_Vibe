@@ -7,10 +7,21 @@
 }
 
 
+@if (@Model.SaveClubs.Count != 0)
+{  
+      <a type="btn btn-success" asp-controller="Club" asp-action="AddInInterested" asp-route-eventlist="@Model.SaveClubId" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">
+        Remove from interesting
+    </a>
+}
+else
+{
+    <a type="btn btn-success" asp-controller="Club" asp-action="AddInInterested" asp-route-eventlist="@Model.SaveClubId" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">
+        Add to Interesting
+    </a>
+  
+}
 
-<a type="btn btn-success" asp-controller="Club" asp-action="AddInInterested" asp-route-eventlist="@Model.SaveClubId" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">
-    Add to Interesting
-</a>
+
 
 
 
@@ -88,11 +99,11 @@
                         <div class="btn-group">
                             <a type="btn btn-success" asp-controller="Event" asp-action="DetailEvent" asp-route-id="@item.Id"
                            class="btn btn-sm btn-outline-secondary">View</a>
-                           @* @if (SignInManager.IsSignedIn(User))
-                            {*@
-                                <a asp-controller="Event" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
-                                <a asp-controller="Event" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
-                           @* }*@
+                            @* @if (SignInManager.IsSignedIn(User))
+                        {*@
+                            <a asp-controller="Event" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <a asp-controller="Event" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
+                            @* }*@
                         </div>
                         <small class="text-muted">@item.Category</small>
                     </div>

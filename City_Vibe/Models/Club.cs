@@ -7,11 +7,6 @@ namespace City_Vibe.Models
     public class Club
     {
 
-        //public Club()
-        //{
-        //    SaveClubs = new HashSet<SaveClub>();
-        //}
-
         [Key]
         public int Id { get; set; }
         public string? Title { get; set; }

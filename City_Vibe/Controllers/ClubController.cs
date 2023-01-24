@@ -225,11 +225,7 @@ namespace City_Vibe.Controllers
             if (deleteInterestingClub.Count != 0)
             {
                 var deletelos = await saveClubRepository.FindClubById(id);
-
-               // var deletelos = dbContext.SaveClubs.FirstOrDefault(x => x.ClubId == id);
-                var dele =  dbContext.SaveClubs.Remove(deletelos);
-                dbContext.SaveChanges();
-
+                saveClubRepository.Delete(deletelos);           
             }
             else
             {
@@ -238,16 +234,16 @@ namespace City_Vibe.Controllers
                     AppUserId = curUserId,
                     ClubId = id
                 };
-                dbContext.Add(saveClub);
-                dbContext.SaveChanges();
+                saveClubRepository.Add(saveClub);
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("DetailClub", new { id = id });
         }
 
 
         public async Task<ActionResult> InterestingСlubsForTheUser(int id)
         {
+
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
             ICollection<SaveClub> result = saveClubRepository.FindUserById(curUserId);
 

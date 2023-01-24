@@ -1,10 +1,11 @@
+
 ﻿using Microsoft.Build.Framework;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace City_Vibe.Models
 {
-    public class SaveEvent 
+    public class SaveEvent
     {
         public int Id { get; set; }
 

@@ -14,6 +14,8 @@ namespace City_Vibe.Data
 
         }
 
+        public DbSet<SaveEvent> SaveEvents { get; set; }
+
         public DbSet<Club> Club { get; set; }
 
        public DbSet<SaveClub> SaveClubs { get; set; }
