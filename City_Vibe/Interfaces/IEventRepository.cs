@@ -5,6 +5,7 @@ namespace City_Vibe.Interfaces
     public interface IEventRepository
     {
         Task<IEnumerable<Event>> GetAll();
+
         Task<Event> GetByIdAsync(int id);
         Task<Event> GetByIdAsyncNoTracking(int id);
 

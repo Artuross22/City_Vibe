@@ -4,6 +4,7 @@ using City_Vibe.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityVibe.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230124175903_AddSaveEventInTableSaveEvent")]
+    partial class AddSaveEventInTableSaveEvent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,9 +81,6 @@ namespace CityVibe.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("LikeClubId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -130,8 +130,6 @@ namespace CityVibe.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
-
-                    b.HasIndex("LikeClubId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -294,33 +292,6 @@ namespace CityVibe.Migrations
                     b.HasIndex("RepliesId");
 
                     b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.LikeClub", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ClubId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Like")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("ClubId");
-
-                    b.ToTable("LikeClubs");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.ReplyComment", b =>
@@ -545,10 +516,6 @@ namespace CityVibe.Migrations
                         .WithMany()
                         .HasForeignKey("AddressId");
 
-                    b.HasOne("City_Vibe.Models.LikeClub", null)
-                        .WithMany("AppUsers")
-                        .HasForeignKey("LikeClubId");
-
                     b.Navigation("Address");
                 });
 
@@ -633,25 +600,6 @@ namespace CityVibe.Migrations
                     b.Navigation("Club");
 
                     b.Navigation("Replies");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.LikeClub", b =>
-                {
-                    b.HasOne("City_Vibe.Models.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("City_Vibe.Models.Club", "Club")
-                        .WithMany("LikeClubs")
-                        .HasForeignKey("ClubId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("Club");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.ReplyComment", b =>
@@ -772,11 +720,6 @@ namespace CityVibe.Migrations
                     b.Navigation("Events");
                 });
 
-            modelBuilder.Entity("City_Vibe.Models.Club", b =>
-                {
-                    b.Navigation("LikeClubs");
-                });
-
             modelBuilder.Entity("City_Vibe.Models.Comment", b =>
                 {
                     b.Navigation("ReplyComment");
@@ -785,11 +728,6 @@ namespace CityVibe.Migrations
             modelBuilder.Entity("City_Vibe.Models.Event", b =>
                 {
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.LikeClub", b =>
-                {
-                    b.Navigation("AppUsers");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.SaveClub", b =>

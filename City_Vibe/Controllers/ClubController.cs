@@ -117,6 +117,7 @@ namespace City_Vibe.Controllers
             Club club = await clubRepository.GetByIdAsync(id);
             var events = await clubRepository.GetClubsByEventId(id);
             var curSaveClub = await saveClubRepository.FindClubsByIdAsync(id);
+
             var detailClubViewModel = new DetailClubViewModel
             {
                 Id = id,
@@ -224,8 +225,8 @@ namespace City_Vibe.Controllers
             var deleteInterestingClub = saveClubRepository.findSafeClubusingUserAndClub(id);
             if (deleteInterestingClub.Count != 0)
             {
-                var deletelos = await saveClubRepository.FindClubById(id);
-                saveClubRepository.Delete(deletelos);           
+                var deleteClub = await saveClubRepository.FindClubById(id);
+                saveClubRepository.Delete(deleteClub);           
             }
             else
             {
@@ -241,12 +242,10 @@ namespace City_Vibe.Controllers
         }
 
 
-        public async Task<ActionResult> InterestingСlubsForTheUser(int id)
+        public async Task<ActionResult> InterestingСlubsForTheUser()
         {
-
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
             ICollection<SaveClub> result = saveClubRepository.FindUserById(curUserId);
-
             return View(result);
         }
     }

@@ -28,5 +28,8 @@ namespace City_Vibe.Models
         public ICollection<Club> Clubs { get; set; }
         public ICollection<Event> Event { get; set; }
         public ICollection<SaveClub> SaveClubs { get; set; }
+
+        [NotMapped]
+        public ICollection<LikeClub>? LikeClubs { get; set; }
     }
 }

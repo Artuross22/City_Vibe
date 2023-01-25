@@ -36,9 +36,6 @@ namespace City_Vibe.Models
         public ReplyComment? Replies { get; set; }
         public ICollection<Comment>? Comments { get; set; }
 
-        public int? SaveEventId { get; set; }
-        public SaveEvent? SaveEvent { get; set; }
-
 
         [ForeignKey("Club")]
         public int? ClubId { get; set; }

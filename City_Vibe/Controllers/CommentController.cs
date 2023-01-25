@@ -58,8 +58,5 @@ namespace City_Vibe.Controllers
             commentRepository.AddReplyComment(r);
             return RedirectToAction("Index");
         }
-
-
-
     }
 }

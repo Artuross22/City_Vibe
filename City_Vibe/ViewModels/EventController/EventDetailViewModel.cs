@@ -33,6 +33,10 @@ namespace City_Vibe.ViewModels.EventController
 
         public ICollection<Comment>? Comments { get; set; }
 
+
+        public int? SaveEventId { get; set; }
+        public ICollection<SaveEvent>? SaveEvents { get; set; }
+
         public EventDetailViewModel()
         {
             Comments = new List<Comment>();

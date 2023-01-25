@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace City_Vibe.Controllers
 {
@@ -20,19 +21,21 @@ namespace City_Vibe.Controllers
         private readonly IPhotoService photoService;
         public readonly IHttpContextAccessor сontextAccessor;
         public readonly ICommentRepository commentRepository;
+        private readonly ISaveEventRepository saveEventRepository;
         public readonly ApplicationDbContext dbContext;
 
 
 
-        public EventController(IEventRepository eventRepo, IPhotoService photoSe, IHttpContextAccessor сontextAccsess , ICategoryRepository categoryRepo , ICommentRepository commentRepo
-            , ApplicationDbContext DbContexts )
+        public EventController(IEventRepository eventRepo, IPhotoService photoSe, IHttpContextAccessor сontextAccsess, ICategoryRepository categoryRepo, ICommentRepository commentRepo
+            , ISaveEventRepository saveEventRepo, ApplicationDbContext DbContexts)
         {
             eventRepository = eventRepo;
             photoService = photoSe;
             сontextAccessor = сontextAccsess;
-            categoryRepository =  categoryRepo;
+            categoryRepository = categoryRepo;
             commentRepository = commentRepo;
             dbContext = DbContexts;
+            saveEventRepository = saveEventRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -53,6 +56,8 @@ namespace City_Vibe.Controllers
         {
             Event eventDetail = await eventRepository.GetByIdAsync(id);
 
+            var curSaveEvent = await saveEventRepository.FindEventByIdAsync(id);
+
             var viewModel = new EventDetailViewModel
             {
                 Id = eventDetail.Id,
@@ -61,15 +66,15 @@ namespace City_Vibe.Controllers
                 AppUser = eventDetail.AppUser,
                 Data = eventDetail.Data,
                 Image = eventDetail.Image,
-               
-                    Address = new Address
-                    {
-                        Street = eventDetail.Address.Street,
-                        City = eventDetail.Address.City,
-                        Region = eventDetail.Address.Region,
-                    },      
+                Address = new Address
+                {
+                    Street = eventDetail.Address.Street,
+                    City = eventDetail.Address.City,
+                    Region = eventDetail.Address.Region,
+                },
+                SaveEvents = curSaveEvent.ToList(),
             };
-            var listofComment = commentRepository.GetAllCommentByEventId(id);            
+            var listofComment = commentRepository.GetAllCommentByEventId(id);
             viewModel.Comments = listofComment;
 
             var categoryEvent = categoryRepository.GetById(eventDetail.CategoryId);
@@ -132,7 +137,7 @@ namespace City_Vibe.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
-        {        
+        {
             var editEvent = await eventRepository.GetByIdAsync(id);
             if (editEvent == null) return View("Error");
 
@@ -235,26 +240,46 @@ namespace City_Vibe.Controllers
 
             if (!string.IsNullOrEmpty(eventDetails.Image))
             {
-               _ = photoService.DeletePhotoAsync(eventDetails.Image);
+                _ = photoService.DeletePhotoAsync(eventDetails.Image);
             }
 
             eventRepository.Delete(eventDetails);
             return RedirectToAction("Index");
         }
 
-        //  [HttpPost]
-        //public async Task<ActionResult> AddInInterested(int idEvent)
-        //{
+        public async Task<ActionResult> AddInterestingEvent(int eventId, SaveEvent saveEventModel)
+        {
+            var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
-        //    var curUserId = сontextAccessor.HttpContext.User.GetUserId();
-        //var saveInterestingEvent = new SaveAnInterestingEvent();
-        //    //saveInterestingEvent.UserId = curUserId;
-        //    //saveInterestingEvent.EventId = idEvent;
 
-        //    //dbContext.Add(saveInterestingEvent);
-        //    dbContext.SaveChanges();
+            var selectEvent = saveEventRepository.FindSafeEventsinUserAndEvent(eventId);
+            if (selectEvent.Count != 0)
+            {
+                var deleteEvent = await saveEventRepository.FindEventById(eventId);
+                saveEventRepository.Delete(deleteEvent);
+            }
+            else
+            {
+                var saveEvent = new SaveEvent
+                {
+                    AppUserId = curUserId,
+                    EventId = eventId,
+                };
+                saveEventRepository.Add(saveEvent);
+            }
+            return RedirectToAction("DetailEvent", new { id = eventId });
+        }
 
-        //    return RedirectToAction("Index");
-        //}
+        public async Task<ActionResult> EventsSelectByTheUser()
+        {
+            var curUserId = сontextAccessor.HttpContext.User.GetUserId();
+
+            var selectEvent = saveEventRepository.FindEventById(curUserId);
+            var viewEvents = new TopUserEventsViewModel
+            {
+                SaveEvents = selectEvent.ToList()
+            };
+            return View(viewEvents);
+        }
     }
 }

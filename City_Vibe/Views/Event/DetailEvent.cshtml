@@ -5,7 +5,18 @@
 
 }
 
-<a type="btn btn-success" method="post" asp-controller="Event" asp-action="AddInInterested" asp-route-idEvent="@Model.Id"  class="btn btn-sm btn-outline-secondary">Create Event</a>
+@if (@Model.SaveEvents.Count != 0)
+{  
+      <a type="btn btn-success" asp-controller="Event" asp-action="AddInterestingEvent" asp-route-saveEventModel="@Model.SaveEventId" asp-route-eventId="@Model.Id" class="btn btn-sm btn-outline-secondary">
+        Remove from interesting
+    </a>
+}
+else
+{
+    <a type="btn btn-success" asp-controller="Event" asp-action="AddInterestingEvent" asp-route-saveEventModel="@Model.SaveEventId" asp-route-eventId="@Model.Id" class="btn btn-sm btn-outline-secondary">
+        Add to Interesting
+    </a>
+}
 
 <h1>DetailEvent</h1>
 

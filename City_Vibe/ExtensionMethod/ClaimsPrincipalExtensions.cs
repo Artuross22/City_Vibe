@@ -7,7 +7,6 @@ namespace City_Vibe.ExtensionMethod
         public static string GetUserId(this ClaimsPrincipal user)
         {
             return user.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //  return string.Empty;
         }
     }
 }

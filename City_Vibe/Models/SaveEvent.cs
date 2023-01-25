@@ -18,5 +18,7 @@ namespace City_Vibe.Models
         public int EventId { get; set; }
         public Event? Event { get; set; }
 
+        [NotMapped]
+        public ICollection<Event> Events { get; set; }
     }
 }
