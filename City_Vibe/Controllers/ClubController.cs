@@ -26,7 +26,7 @@ namespace City_Vibe.Controllers
         public readonly ApplicationDbContext dbContext;
 
         public ClubController(IClubRepository clubRepo, IPhotoService photoServ, IHttpContextAccessor сontextAccess, ICategoryRepository categoryRepo,
-            ApplicationDbContext applicationDbContex , ISaveClubRepository saveClubRepo)
+            ApplicationDbContext applicationDbContex, ISaveClubRepository saveClubRepo)
         {
             categoryRepository = categoryRepo;
             clubRepository = clubRepo;
@@ -218,7 +218,7 @@ namespace City_Vibe.Controllers
         }
 
 
-        public async Task<ActionResult> AddInInterested(int id , SaveClub eventList)
+        public async Task<ActionResult> AddInInterested(int id, SaveClub eventList)
         {
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
@@ -226,7 +226,7 @@ namespace City_Vibe.Controllers
             if (deleteInterestingClub.Count != 0)
             {
                 var deleteClub = await saveClubRepository.FindClubById(id);
-                saveClubRepository.Delete(deleteClub);           
+                saveClubRepository.Delete(deleteClub);
             }
             else
             {
@@ -247,6 +247,32 @@ namespace City_Vibe.Controllers
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
             ICollection<SaveClub> result = saveClubRepository.FindUserById(curUserId);
             return View(result);
+        }
+
+        public async Task<ActionResult> AddLikeToTheClub(int clubId)
+        {
+            var curUserId = сontextAccessor.HttpContext.User.GetUserId();
+
+            //  var checkLikes = dbContext.LikeClubs.Where(l => l.ClubId == clubId).Include(u => u.AppUserId == curUserId).ToList();
+            var checkLikes = dbContext.LikeClubs.Where(l => l.ClubId == clubId).ToList();
+            if (checkLikes.Count < 0)
+            {
+                int countLike = 0;
+                countLike++;
+
+                var addLike = new LikeClub
+                {
+                    ClubId = clubId,
+                    AppUserId = curUserId,
+                    Like = countLike,
+                };
+
+                dbContext.LikeClubs.Add(addLike);
+                dbContext.SaveChanges();
+            }
+
+
+            return View();
         }
     }
 }
