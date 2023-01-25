@@ -25,6 +25,7 @@ builder.Services.AddScoped<IAppUserRepository, AppUserRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<ISaveClubRepository, SaveClubRepository>();
 builder.Services.AddScoped<ISaveEventRepository, SaveEventRepository>();
+builder.Services.AddScoped<IlikeClubRepository, likeClubRepository>();
 
 builder.Services.AddTransient<ISendGridEmail, SendGridEmail>();
 

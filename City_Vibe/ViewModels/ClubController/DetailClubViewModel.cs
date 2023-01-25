@@ -28,10 +28,10 @@ namespace City_Vibe.ViewModels.ClubController
         public SaveClub? SaveClub { get; set; }
         public ICollection<SaveClub>? SaveClubs { get; set; }
 
-
-
         public string? AppUserId { get; set; }
         public AppUser? AppUser { get; set; }
+
+        public int CountLikes { get; set; }
     }
 }
 

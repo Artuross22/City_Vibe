@@ -30,14 +30,12 @@ else
 
 
 
-
 <!-- Page Content -->
 <div class="container">
 
     <!-- Portfolio Item Heading -->
     <h1 class="my-4">
         Page Heading
-        <small>Secondary Text</small>
     </h1>
 
     <!-- Portfolio Item Row -->
@@ -56,9 +54,27 @@ else
                 <li>@Model.Address.Region</li>
                 <li>@Model.Category</li>
             </ul>
+
+              <tr>
+            <td>
+                @Html.DisplayFor(Modelitem => Model.CountLikes) likes </br>
+                <a type="btn btn-success" asp-controller="Club" asp-action="AddLikeToTheClub" asp-route-clubId="@Model.Id" class="btn btn-sm btn-outline-secondary text-danger">
+                    Reputation
+                </a>
+            </td>
+        </tr>
+
         </div>
 
+    
     </div>
+
+
+
+
+
+
+
     <!-- /.row -->
     <!-- Related Projects Row -->
     <h3 class="my-4">Related Projects</h3>
@@ -90,6 +106,8 @@ else
         </div>
 
     </div>
+
+
     <!-- /.row -->
     @foreach (var item in Model.Events)
     {

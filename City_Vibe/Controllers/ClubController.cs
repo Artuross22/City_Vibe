@@ -23,10 +23,12 @@ namespace City_Vibe.Controllers
         private readonly IPhotoService photoService;
         private readonly IHttpContextAccessor сontextAccessor;
         private readonly ISaveClubRepository saveClubRepository;
-        public readonly ApplicationDbContext dbContext;
+        private readonly IlikeClubRepository likeClubRepository;
+
+         public readonly ApplicationDbContext dbContext;
 
         public ClubController(IClubRepository clubRepo, IPhotoService photoServ, IHttpContextAccessor сontextAccess, ICategoryRepository categoryRepo,
-            ApplicationDbContext applicationDbContex, ISaveClubRepository saveClubRepo)
+            ApplicationDbContext applicationDbContex, ISaveClubRepository saveClubRepo, IlikeClubRepository ilikeClubRepo)
         {
             categoryRepository = categoryRepo;
             clubRepository = clubRepo;
@@ -34,7 +36,7 @@ namespace City_Vibe.Controllers
             сontextAccessor = сontextAccess;
             dbContext = applicationDbContex;
             saveClubRepository = saveClubRepo;
-
+            likeClubRepository = ilikeClubRepo;
         }
 
 
@@ -118,6 +120,9 @@ namespace City_Vibe.Controllers
             var events = await clubRepository.GetClubsByEventId(id);
             var curSaveClub = await saveClubRepository.FindClubsByIdAsync(id);
 
+            var countlikes = likeClubRepository.GetLikeClubsByClubId(id);
+      
+
             var detailClubViewModel = new DetailClubViewModel
             {
                 Id = id,
@@ -134,8 +139,7 @@ namespace City_Vibe.Controllers
                 },
                 Events = events.ToList(),
                 SaveClubs = curSaveClub.ToList(),
-
-
+                CountLikes = countlikes
             };
 
             return View(detailClubViewModel);
@@ -253,9 +257,9 @@ namespace City_Vibe.Controllers
         {
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
-            //  var checkLikes = dbContext.LikeClubs.Where(l => l.ClubId == clubId).Include(u => u.AppUserId == curUserId).ToList();
-            var checkLikes = dbContext.LikeClubs.Where(l => l.ClubId == clubId).ToList();
-            if (checkLikes.Count < 0)
+            var checkLikes = await likeClubRepository.FindLikeByUserIdAndClubId(curUserId, clubId);
+
+            if (checkLikes.Count <= 0)
             {
                 int countLike = 0;
                 countLike++;
@@ -267,12 +271,14 @@ namespace City_Vibe.Controllers
                     Like = countLike,
                 };
 
-                dbContext.LikeClubs.Add(addLike);
-                dbContext.SaveChanges();
+                likeClubRepository.Add(addLike);
             }
-
-
-            return View();
+            else
+            {
+                var delete = await likeClubRepository.FindLikeClubByUserId(curUserId);  // dbContext.LikeClubs.FirstOrDefault(x => x.AppUserId == curUserId);
+                likeClubRepository.Delete(delete);
+            }
+            return RedirectToAction("DetailClub", new { id = clubId });
         }
     }
 }
