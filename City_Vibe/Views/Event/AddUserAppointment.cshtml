@@ -1,0 +1,33 @@
+﻿
+@using City_Vibe.ViewModels.AppointmentController
+@model AppointmentViewModel
+
+
+@{
+    var category = ViewBag.Categories as SelectList;
+}
+
+
+<form method="post" asp-action="AddUserAppointment" enctype="multipart/form-data">
+    <input type="hidden" asp-for="EventId" class="form-control" placeholder="Title">
+    <input type="hidden" asp-for="AppUserId" class="form-control" placeholder="Title">
+
+    <div class="form-group">
+        <label asp-for="Title">Title</label>
+        <input asp-for="Title" class="form-control" placeholder="Title">
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description">Description</label>
+        <input asp-for="Description" class="form-control" placeholder="how would you like to be contacted and at what time?">
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+     <div class="form-group">
+        <label asp-for="Phone">Phone</label>
+        <input asp-for="Phone" class="form-control" placeholder="Add your phone number">
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+       
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

@@ -4,6 +4,7 @@ using City_Vibe.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityVibe.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230129170615_AppointmentModell")]
+    partial class AppointmentModell
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,9 +170,6 @@ namespace CityVibe.Migrations
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Statement")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -360,41 +360,6 @@ namespace CityVibe.Migrations
                     b.HasIndex("ClubId");
 
                     b.ToTable("LikeClubs");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.ReplyAppointment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("AppointmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("AppointmentId");
-
-                    b.HasIndex("EventId");
-
-                    b.ToTable("ReplyAppointment");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.ReplyComment", b =>
@@ -743,27 +708,6 @@ namespace CityVibe.Migrations
                     b.Navigation("Club");
                 });
 
-            modelBuilder.Entity("City_Vibe.Models.ReplyAppointment", b =>
-                {
-                    b.HasOne("City_Vibe.Models.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId");
-
-                    b.HasOne("City_Vibe.Models.Appointment", "Appointment")
-                        .WithMany("ReplyAppointments")
-                        .HasForeignKey("AppointmentId");
-
-                    b.HasOne("City_Vibe.Models.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId");
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("Appointment");
-
-                    b.Navigation("Event");
-                });
-
             modelBuilder.Entity("City_Vibe.Models.ReplyComment", b =>
                 {
                     b.HasOne("City_Vibe.Models.AppUser", "AppUser")
@@ -877,11 +821,6 @@ namespace CityVibe.Migrations
                     b.Navigation("Event");
 
                     b.Navigation("SaveClubs");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.Appointment", b =>
-                {
-                    b.Navigation("ReplyAppointments");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.Category", b =>

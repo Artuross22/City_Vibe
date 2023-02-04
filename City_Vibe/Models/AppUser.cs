@@ -22,6 +22,8 @@ namespace City_Vibe.Models
         public string? City { get; set; }
         public string? Region { get; set; }
 
+        
+
         [ForeignKey("Address")]
         public int? AddressId { get; set; }
         public Address? Address { get; set; }
@@ -31,5 +33,7 @@ namespace City_Vibe.Models
 
         [NotMapped]
         public ICollection<LikeClub>? LikeClubs { get; set; }
+
+        public ICollection<Appointment>? Appointments { get; set; }
     }
 }

@@ -32,10 +32,14 @@ namespace City_Vibe.ViewModels.EventController
         public string? Image { get; set; }
 
         public ICollection<Comment>? Comments { get; set; }
-
-
         public int? SaveEventId { get; set; }
         public ICollection<SaveEvent>? SaveEvents { get; set; }
+
+        public ICollection<ReplyAppointment>? ReplyAppointments { get; set; }
+
+        public bool Statement { get; set; }
+
+        public int CheckAppointment { get; set; }
 
         public EventDetailViewModel()
         {

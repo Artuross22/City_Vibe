@@ -4,6 +4,7 @@ using City_Vibe.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityVibe.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230202201331_AddAppUserInReplyUser")]
+    partial class AddAppUserInReplyUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -379,9 +382,6 @@ namespace CityVibe.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EventId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -391,8 +391,6 @@ namespace CityVibe.Migrations
                     b.HasIndex("AppUserId");
 
                     b.HasIndex("AppointmentId");
-
-                    b.HasIndex("EventId");
 
                     b.ToTable("ReplyAppointment");
                 });
@@ -753,15 +751,9 @@ namespace CityVibe.Migrations
                         .WithMany("ReplyAppointments")
                         .HasForeignKey("AppointmentId");
 
-                    b.HasOne("City_Vibe.Models.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId");
-
                     b.Navigation("AppUser");
 
                     b.Navigation("Appointment");
-
-                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.ReplyComment", b =>

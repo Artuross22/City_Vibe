@@ -4,6 +4,7 @@ using City_Vibe.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityVibe.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230129155724_addPhoneToTheAppointment")]
+    partial class addPhoneToTheAppointment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,21 @@ namespace CityVibe.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("AppUserAppointment", b =>
+                {
+                    b.Property<string>("AppUsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AppointmentsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppUsersId", "AppointmentsId");
+
+                    b.HasIndex("AppointmentsId");
+
+                    b.ToTable("AppUserAppointment");
+                });
 
             modelBuilder.Entity("City_Vibe.Models.Address", b =>
                 {
@@ -153,7 +171,7 @@ namespace CityVibe.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -162,21 +180,13 @@ namespace CityVibe.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Statement")
-                        .HasColumnType("bit");
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
 
                     b.HasIndex("EventId");
 
@@ -360,41 +370,6 @@ namespace CityVibe.Migrations
                     b.HasIndex("ClubId");
 
                     b.ToTable("LikeClubs");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.ReplyAppointment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("AppointmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("AppointmentId");
-
-                    b.HasIndex("EventId");
-
-                    b.ToTable("ReplyAppointment");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.ReplyComment", b =>
@@ -613,6 +588,21 @@ namespace CityVibe.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AppUserAppointment", b =>
+                {
+                    b.HasOne("City_Vibe.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("AppUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("City_Vibe.Models.Appointment", null)
+                        .WithMany()
+                        .HasForeignKey("AppointmentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("City_Vibe.Models.AppUser", b =>
                 {
                     b.HasOne("City_Vibe.Models.Address", "Address")
@@ -628,15 +618,11 @@ namespace CityVibe.Migrations
 
             modelBuilder.Entity("City_Vibe.Models.Appointment", b =>
                 {
-                    b.HasOne("City_Vibe.Models.AppUser", "AppUser")
-                        .WithMany("Appointments")
-                        .HasForeignKey("AppUserId");
-
                     b.HasOne("City_Vibe.Models.Event", "Event")
                         .WithMany("Appointments")
-                        .HasForeignKey("EventId");
-
-                    b.Navigation("AppUser");
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Event");
                 });
@@ -741,27 +727,6 @@ namespace CityVibe.Migrations
                     b.Navigation("AppUser");
 
                     b.Navigation("Club");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.ReplyAppointment", b =>
-                {
-                    b.HasOne("City_Vibe.Models.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId");
-
-                    b.HasOne("City_Vibe.Models.Appointment", "Appointment")
-                        .WithMany("ReplyAppointments")
-                        .HasForeignKey("AppointmentId");
-
-                    b.HasOne("City_Vibe.Models.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId");
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("Appointment");
-
-                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.ReplyComment", b =>
@@ -870,18 +835,11 @@ namespace CityVibe.Migrations
 
             modelBuilder.Entity("City_Vibe.Models.AppUser", b =>
                 {
-                    b.Navigation("Appointments");
-
                     b.Navigation("Clubs");
 
                     b.Navigation("Event");
 
                     b.Navigation("SaveClubs");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.Appointment", b =>
-                {
-                    b.Navigation("ReplyAppointments");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.Category", b =>

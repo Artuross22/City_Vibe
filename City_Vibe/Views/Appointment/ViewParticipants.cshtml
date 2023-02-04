@@ -1,6 +1,10 @@
-﻿@using City_Vibe.ViewModels.AppUserController
+﻿@using City_Vibe.ViewModels.AppointmentController
+@model IEnumerable<ApplicationUserViewModel>
 
-
+@{
+    ViewData["Title"] = "AdmissionRequests";
+}
+<h1>AdmissionRequests</h1>
 <section class="flush-with-above">
     <div class="container">
         <div class="row">
@@ -15,16 +19,17 @@
                                         <img alt="Image profile avatar" src="@user.ProfileImageUrl" class="avatar">
                                         <div class="media-body">
                                             <span class="h6 mb-0">@user.UserName</span>
+                                            <span class="h6 mb-0">@user.Email</span>
+                                            <span class="h6 mb-0">@user.Title</span>
                                         </div>
                                     </div>
                                 </th>
-
-
                                 <td>
-                                    <form asp-controller="AppUser" asp-action="Detail" method="post" asp-route-id="@user.Id">
+                                    <form asp-controller="AppUser" asp-action="Detail" method="post" asp-route-id="@user.AppUserId">
                                         <input type="submit" value="View Profile" />
-                                    </form>                       
+                                    </form>                            
                                 </td>
+
                             </tr>
                             <tr class="table-divider">
                                 <th></th>
@@ -40,3 +45,5 @@
     </div>
     <!--end of container-->
 </section>
+
+

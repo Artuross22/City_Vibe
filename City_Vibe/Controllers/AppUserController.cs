@@ -54,7 +54,8 @@ namespace City_Vibe.Controllers
             return View(result);
         }
 
-        [HttpGet]
+
+    
         public async Task<IActionResult> Detail(string id)
         {
             var user = await _userRepository.GetUserById(id);
@@ -62,7 +63,6 @@ namespace City_Vibe.Controllers
             {
                 return RedirectToAction("Index", "Users");
             }
-
             var userDetailViewModel = new AppUserDetailViewModel()
             {
                 Id = user.Id,
@@ -135,8 +135,8 @@ namespace City_Vibe.Controllers
 
             Address adress = new Address
             {
-                City = user.Address.City,
-                Region = user.Address.Region,
+                City = editVM.Address.City,
+                Region = editVM.Address.Region,
                 ZipCode = editVM.Address.ZipCode,
                 Street = editVM.Address.Street,
             };
@@ -205,8 +205,7 @@ namespace City_Vibe.Controllers
             }
 
             result = await _userManager.AddClaimsAsync(user,
-                userClaimsViewModel.Claims.Where(c => c.IsSelected).Select(c => new Claim(c.ClaimType, c.IsSelected.ToString()))
-                );
+                userClaimsViewModel.Claims.Where(c => c.IsSelected).Select(c => new Claim(c.ClaimType, c.IsSelected.ToString())));
 
             if (!result.Succeeded)
             {
@@ -215,8 +214,6 @@ namespace City_Vibe.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-
     }
 }
 

@@ -1,0 +1,87 @@
+﻿@using City_Vibe.ViewModels.EventController
+@model IEnumerable<PersonalApplicationViewModel>
+
+@{
+    ViewData["Title"] = "AdmissionRequests";
+}
+
+<h1>AdmissionRequests</h1>
+<section class="flush-with-above">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <table class="table table-hover align-items-center table-borderless">
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr class="bg-white">
+                                <th scope="row">
+                                    <div class="media align-items-center">
+                                        <img alt="Image profile avatar" src="@user.ProfileImageUrl" class="avatar">
+                                        <div class="media-body">                    
+                                            <dl class="row">
+
+                                                <dt class="col-sm-2">
+                                                    @Html.DisplayNameFor(model => user.EventName)
+                                                </dt>
+                                                <dd class="col-sm-10">
+                                                    @Html.DisplayFor(model => user.EventName)
+                                                </dd>                               
+                                                <dt class="col-sm-2">
+                                                    @Html.DisplayNameFor(model => user.StartEvent)
+                                                </dt>
+
+                                                  <dd class="col-sm-10">
+                                                    @Html.DisplayFor(model => user.StartEvent)
+                                                </dd>
+                                                                               
+                                                <dt class="col-sm-2">
+                                                    @Html.DisplayNameFor(model => user.Category)
+                                                </dt>
+                                                  <dd class="col-sm-10">
+                                                    @Html.DisplayFor(model => user.Category)
+                                                </dd>
+
+                                                <dt class="col-sm-2">
+                                                    @Html.DisplayNameFor(model => user.Title)
+                                                </dt>
+                                                <dd class="col-sm-10">
+                                                    @Html.DisplayFor(model => user.Title)
+                                                </dd>
+                                              
+                                                <dd class="col-sm-2">
+                                                    @Html.DisplayNameFor(model => user.CreateStatement)
+                                                </dd>
+
+                                                <dd class="col-sm-10">
+                                                    @Html.DisplayFor(model => user.CreateStatement)
+                                                </dd>
+                                              
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </th>
+                                <td>
+                                    <form asp-controller="Event" asp-action="DetailEvent" method="post" asp-route-id="@user.EventId">
+                                        <input type="submit" value="View Event" />
+                                    </form>
+                                </td>
+
+                               
+                            </tr>
+                            <tr class="table-divider">
+                                <th></th>
+                                <td></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!--end of col-->
+        </div>
+        <!--end of row-->
+    </div>
+    <!--end of container-->
+</section>
+
+

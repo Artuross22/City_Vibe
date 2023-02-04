@@ -22,8 +22,10 @@
                             <p class="card-text">@item.Desciption</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a type="btn btn-success" asp-controller="Event" asp-action="DetailEvent" asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-secondary">View</a>
+                                     <a>  <form asp-controller="Event" asp-action="DetailEvent" method="post" asp-route-id="@item.AppUserId">
+                                                <input type="submit" value="View Profile" />
+                                            </form>
+                                        </a>
                                     @if (SignInManager.IsSignedIn(User))
                                     {
                                         <a asp-controller="Event" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>

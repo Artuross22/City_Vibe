@@ -40,5 +40,8 @@ namespace City_Vibe.Models
         [ForeignKey("Club")]
         public int? ClubId { get; set; }
         public Club? Club { get; set; }
+
+
+        public ICollection<Appointment>? Appointments { get; set; }
     }
 }

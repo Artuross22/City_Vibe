@@ -1,16 +1,21 @@
-﻿using City_Vibe.Data;
+﻿using Azure.Core;
+using City_Vibe.Data;
 using City_Vibe.ExtensionMethod;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using City_Vibe.Repository;
 using City_Vibe.Services;
+using City_Vibe.ViewModels.AppUserController;
 using City_Vibe.ViewModels.EventController;
 using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+
 
 namespace City_Vibe.Controllers
 {
@@ -44,19 +49,18 @@ namespace City_Vibe.Controllers
             return View(eventsList);
         }
 
-        public async Task<IActionResult> Detail(int id)
-        {
 
-            Event eventDetail = await eventRepository.GetByIdIncludeCommentsAsync(id);
-
-            return View(eventDetail);
-        }
 
         public async Task<IActionResult> DetailEvent(int id)
         {
             Event eventDetail = await eventRepository.GetByIdAsync(id);
-
+            var curUserId = сontextAccessor.HttpContext.User.GetUserId();
             var curSaveEvent = await saveEventRepository.FindEventByIdAsync(id);
+            var сheckAppointment = dbContext.Appointments.Where(x => x.AppUserId == curUserId).Where(e => e.EventId == id).ToList().Count();
+
+
+            var replyAppointment = dbContext.Appointments.Include(x => x.ReplyAppointments).FirstOrDefault(x => x.AppUserId == curUserId && x.EventId == id);
+
 
             var viewModel = new EventDetailViewModel
             {
@@ -73,6 +77,7 @@ namespace City_Vibe.Controllers
                     Region = eventDetail.Address.Region,
                 },
                 SaveEvents = curSaveEvent.ToList(),
+                CheckAppointment = сheckAppointment,
             };
             var listofComment = commentRepository.GetAllCommentByEventId(id);
             viewModel.Comments = listofComment;
@@ -80,8 +85,17 @@ namespace City_Vibe.Controllers
             var categoryEvent = categoryRepository.GetById(eventDetail.CategoryId);
             viewModel.Category = categoryEvent;
 
-            return View(viewModel);
 
+            if (replyAppointment != null)
+            {
+                viewModel.Statement = replyAppointment.Statement;
+                if (replyAppointment.ReplyAppointments != null)
+                {
+                    viewModel.ReplyAppointments = replyAppointment.ReplyAppointments.ToList();
+                }
+            }
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -115,7 +129,6 @@ namespace City_Vibe.Controllers
                     Data = eventVM.CreatedDate,
                     CategoryId = eventVM.CategoryId,
                     AppUserId = eventVM.AppUserId,
-                    ClubId = eventVM.ClubId,
                     Address = new Address
                     {
                         Street = eventVM.Address.Street,
@@ -123,6 +136,12 @@ namespace City_Vibe.Controllers
                         Region = eventVM.Address.Region,
                     }
                 };
+
+                if (eventAdd.ClubId != null)
+                {
+                    eventAdd.ClubId = eventVM.ClubId;
+                }
+
                 eventRepository.Add(eventAdd);
                 return RedirectToAction("Index");
             }
@@ -175,6 +194,8 @@ namespace City_Vibe.Controllers
             }
 
             var userEvent = await eventRepository.GetByIdAsyncNoTracking(id);
+
+
 
             if (userEvent != null)
             {

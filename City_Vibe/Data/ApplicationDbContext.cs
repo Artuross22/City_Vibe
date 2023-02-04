@@ -13,8 +13,11 @@ namespace City_Vibe.Data
         {
 
         }
-        
-         public DbSet<LikeClub> LikeClubs { get; set; }
+
+        public DbSet<ReplyAppointment> ReplyAppointments { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<ReplyAppointment> ReplyAppointment { get; set; }
+        public DbSet<LikeClub> LikeClubs { get; set; }
         public DbSet<SaveEvent> SaveEvents { get; set; }
 
         public DbSet<Club> Club { get; set; }
