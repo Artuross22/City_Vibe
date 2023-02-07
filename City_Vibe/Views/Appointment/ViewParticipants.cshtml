@@ -1,6 +1,12 @@
 ﻿@using City_Vibe.ViewModels.AppointmentController
 @model IEnumerable<ApplicationUserViewModel>
 
+<td>
+    <form asp-controller="Event" asp-action="Index">
+        <input type="submit" value="Back" />
+    </form>
+</td>
+
 @{
     ViewData["Title"] = "AdmissionRequests";
 }

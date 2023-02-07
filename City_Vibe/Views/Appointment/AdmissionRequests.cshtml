@@ -2,14 +2,12 @@
 @model IEnumerable<ApplicationUserViewModel>
 
 
-@foreach (var item in Model)
-{
-      <td>
-        <form asp-controller="Event" asp-action="DetailEvent" method="post" asp-route-id="@item.EventId">
+     <td>
+    <form asp-controller="Event" asp-action="Index" >
           <input type="submit" value="Back" />
         </form>
       </td>       
-}
+
 
 @{
     ViewData["Title"] = "AdmissionRequests";

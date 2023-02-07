@@ -21,6 +21,5 @@ namespace City_Vibe.ViewModels.AppointmentController
 
         public bool Statement { get; set; }
         public ICollection<ReplyAppointment>? ReplyAppointments { get; set; }
-
     }
 }

@@ -45,6 +45,7 @@ else
       User Applications  
  </a>
 
+
      
 
       <h1>  </h1>
@@ -52,12 +53,14 @@ else
 
 @if (Model.Statement == true)
 {
+       <p class="text-green"> Your application has been accepted </p>
 
-       
+
+       <p> Message :</p>
         @foreach (var item in Model.ReplyAppointments)
         {
          <td>
-                <span style="margin-right:15px;font-size:16px;color:green">
+                <span style="margin-right:15px;font-size:16px;color:blue">
                             @Html.DisplayFor(modelItem => item.Reason)
                         </span>
          </td>                               

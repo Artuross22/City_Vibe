@@ -1,7 +1,11 @@
 ﻿@using City_Vibe.ViewModels.EventController
 @model TopUserEventsViewModel
 
-
+@*<td>
+    <form asp-controller="Event" asp-action="DetailEvent"  asp-route-id="@Model.Id">
+        <input type="submit" value="Back" />
+    </form>
+</td>*@
 
 <div class="album py-5 bg-light">
     <div class="container">
@@ -19,13 +23,13 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
 
-                                <a type="btn btn-success" asp-controller="Club" asp-action="DetailClub" asp-route-id="@item.Id"
+                                <a type="btn btn-success" asp-controller="Event" asp-action="DetailEvent" asp-route-id="@item.EventId"
                                class="btn btn-sm btn-outline-secondary">Detail</a>
 
 
 
-                                <a type="btn btn-success" asp-controller="Club" asp-action="EditClub" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
-                                <a type="btn btn-success" asp-controller="Club" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
+                                <a type="btn btn-success" asp-controller="Event" asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a type="btn btn-success" asp-controller="Event" asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-sm btn-outline-secondary">Delete</a>
 
                             </div>
                             <small class="text-muted">@item.Event.Category</small>

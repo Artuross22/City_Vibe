@@ -8,6 +8,7 @@ using City_Vibe.ViewModels.EventController;
 using CityVibe.Migrations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace City_Vibe.Controllers
 {
@@ -42,6 +43,19 @@ namespace City_Vibe.Controllers
         {
             if (ModelState.IsValid)
             {
+                string addPhone = "";
+                Regex regex = new Regex(@"\+[0-9]{2}[0-9]{3}[0-9]{3}[0-9]{4}$");
+                MatchCollection matches = regex.Matches(appointmentModel.Phone);
+                if (matches.Count > 0)
+                {
+                   addPhone = matches[0].Value;
+                }
+                else
+                {
+                    ModelState.AddModelError("Phone", "This is not a valid phone number");
+                    return View(appointmentModel);
+                }
+
                 var addAppointmentModel = new Appointment
                 {
                     AppUserId = appointmentModel.AppUserId,
@@ -126,7 +140,7 @@ namespace City_Vibe.Controllers
             return RedirectToAction("", "Event");
         }
 
-
+        
 
         public async Task<IActionResult> UserApplications()
         {

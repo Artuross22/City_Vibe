@@ -138,9 +138,13 @@ namespace City_Vibe.Controllers
                     Region = club.Address.Region,
                 },
                 Events = events.ToList(),
-                SaveClubs = curSaveClub.ToList(),
                 CountLikes = countlikes
             };
+
+            if(curSaveClub != null)
+            {
+                detailClubViewModel.SaveClubs = curSaveClub.ToList();
+            }
 
             return View(detailClubViewModel);
         }

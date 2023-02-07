@@ -1,8 +1,10 @@
 ﻿using City_Vibe.Data;
+using City_Vibe.ExtensionMethod;
 using City_Vibe.Helpers;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using City_Vibe.Repository;
+using City_Vibe.ViewModels.AccountController;
 using City_Vibe.ViewModels.HomeViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +24,15 @@ namespace City_Vibe.Controllers
         private readonly UserManager<AppUser> userManager;
         private readonly SignInManager<AppUser> signInManager;
         private readonly ILocationService _locationService;
+        private readonly IHttpContextAccessor сontextAccsess;
 
-        public HomeController(IClubRepository clubRepositoryAccess, SignInManager<AppUser> signInManagerAccess, UserManager<AppUser> userManagerAccess, ILogger<HomeController> _logger)
+        public HomeController(IClubRepository clubRepositoryAccess, SignInManager<AppUser> signInManagerAccess, UserManager<AppUser> userManagerAccess, ILogger<HomeController> _logger, IHttpContextAccessor сontextAccs)
         {
             signInManager = signInManagerAccess;
             userManager = userManagerAccess;
             clubRepository = clubRepositoryAccess;
             logger = _logger;
+            сontextAccsess = сontextAccs;
         }
 
         public async Task<IActionResult> Index()
@@ -62,6 +66,8 @@ namespace City_Vibe.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(HomeViewModel homeVM)
         {
+            var curUserId = сontextAccsess.HttpContext.User.GetUserId();
+
             if (!ModelState.IsValid) return View(homeVM);
 
             var createVM = homeVM.Register;
@@ -72,9 +78,16 @@ namespace City_Vibe.Controllers
                 return View(homeVM);
             }
 
-            await userManager.AddToRoleAsync(user, UserRoles.ActiveUser);
-
-
+            if(user.Id == curUserId)
+            {
+                await userManager.AddToRoleAsync(user, UserRoles.ActiveUser);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                ModelState.AddModelError("Register.Email", "Invalid email");
+              
+            }
             return View(homeVM);
         }
 

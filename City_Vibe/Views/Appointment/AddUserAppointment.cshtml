@@ -1,6 +1,11 @@
 ﻿@using City_Vibe.ViewModels.AppointmentController
 @model AppointmentViewModel
 
+<td>
+    <form asp-controller="Event" asp-action="DetailEvent" method="post" asp-route-id="@Model.EventId">
+        <input type="submit" value="Back" />
+    </form>
+</td>
 
 @{
     var category = ViewBag.Categories as SelectList;
@@ -24,7 +29,7 @@
 
     <div class="form-group">
         <label asp-for="Phone">Phone</label>
-        <input asp-for="Phone" class="form-control" placeholder="Add your phone number">
+        <input asp-for="Phone" class="form-control" placeholder="Add your phone number with (+) and country code">
         <span asp-validation-for="Phone" class="text-danger"></span>
     </div>
 

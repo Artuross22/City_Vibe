@@ -21,7 +21,9 @@
             <div class="col-12 col-md-6 col-lg-5 section-intro">
                 <h1 class="display-3"> Find community</h1>
                 <span class="lead">
-                    A community for people who love an active life and are looking for partners and teams to have fun and improve their skills with like-minded people
+                    A community for people who love an active life and are looking for partners and teams to have fun and improve their skills with like-minded people . 
+
+                 
                 </span>
             </div>
             <!--end of col-->
@@ -31,23 +33,14 @@
                     <div class="card">
                         <div class="card-body">
                             <form asp-action="Index">
-                                <div class="form-group">
-                                    <label asp-for="Register.UserName">Username</label>
-                                    <input asp-for="Register.UserName" type="text" class="form-control form-control-lg" placeholder="Pick a username">
-                                    <span asp-validation-for="Register.UserName" class="text-danger"></span>
-                                </div>
+                             
                                 <div class="form-group">
                                     <label asp-for="Register.Email">Email address</label>
                                     <input asp-for="Register.Email" type="email" class="form-control form-control-lg" placeholder="Enter email">
                                     <span asp-validation-for="Register.Email" class="text-danger"></span>
                                     <small id="emailHelp" class="form-text">We'll never share your email with anyone else.</small>
                                 </div>
-                                <div class="form-group">
-                                    <label asp-for="Register.Password">Password</label>
-                                    <input asp-for="Register.Password" type="password" class="form-control form-control-lg" placeholder="Password">
-                                    <span asp-validation-for="Register.Password" class="text-danger"></span>
-                                </div>
-
+                          
                                 <div class="mb-3">
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" class="custom-control-input" value="agree" name="agree-terms" id="check-agree">
@@ -56,7 +49,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-lg btn-success btn-block">Sign up for City Vibe</button>
+                                <button type="submit" class="btn btn-lg btn-success btn-block"> Join the active users!</button>
                             </form>
                         </div>
                     </div>

@@ -291,14 +291,15 @@ namespace City_Vibe.Controllers
             return RedirectToAction("DetailEvent", new { id = eventId });
         }
 
-        public async Task<ActionResult> EventsSelectByTheUser()
+        public async Task<ActionResult> EventsSelectByTheUser(int eventId)
         {
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
             var selectEvent = saveEventRepository.FindEventById(curUserId);
+
             var viewEvents = new TopUserEventsViewModel
             {
-                SaveEvents = selectEvent.ToList()
+                SaveEvents = selectEvent.ToList(),
             };
             return View(viewEvents);
         }

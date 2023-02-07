@@ -104,9 +104,10 @@
                                         <a class="dropdown-item" asp-area="" asp-controller="Dashboard" asp-action="Index">
                                             <span class="h6 mb-0">Dashboard</span>
                                         </a>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">
-                                            <span su class="h6 mb-0">Logout</span>
-                                        </a>
+                                        <form id="logoutForm" method="post" class="form-inline" asp-controller="Account"
+                                          asp-action="Logout">
+                                            <button type="submit" class="btn nav-link">Logout</button>
+                                        </form>
                                     </div>
                                 </li>
                             </ul>
