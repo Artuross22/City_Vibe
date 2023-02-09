@@ -1,0 +1,29 @@
+﻿@using City_Vibe.ViewModels.ClubController
+@model PostInformationClubViewModel
+
+@{
+    var category = ViewBag.Categories as SelectList;
+}
+
+
+
+<form method="post" asp-action="AddInformationInClub" enctype="multipart/form-data">
+
+    <input type="hidden" id="AppUserId" name="AppUserId" asp-for="AppUserId" />
+    <input type="hidden" id="ClubId" name="ClubId" asp-for="ClubId" />
+    <input type="hidden" asp-for="UserName" class="form-control">
+
+    <textarea class="form-control" id="Description" name="PostInformation" rows="2" cols="20" placeholder="Input"></textarea>
+
+    <div class="form-group">
+        <label asp-for="Image">Image</label>
+        <input asp-for="Image" type="file" class="form-control" placeholder="Image">
+        <span asp-validation-for="Image" class="text-danger"></span>
+    </div>
+
+   
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+

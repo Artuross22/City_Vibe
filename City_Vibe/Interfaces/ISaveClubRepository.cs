@@ -11,7 +11,7 @@ namespace City_Vibe.Interfaces
 
         Task<IEnumerable<SaveClub>> FindClubsByIdAsync(int Id);
         Task<SaveClub> FindClubById(int Id);
-        List<SaveClub> findSafeClubusingUserAndClub(int Id);
+        List<SaveClub> FindSafeClubusingUserAndClub(int Id);
         bool Add(SaveClub saveclubAdd);
         bool Update(SaveClub saveclubtUp);
         bool Delete(SaveClub saveclubDelete);

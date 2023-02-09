@@ -14,7 +14,12 @@ namespace City_Vibe.Data
 
         }
 
+        public DbSet<CommentClub> CommentClubs { get; set; }
+        public DbSet<ReplyCommentClub> ReplyCommentClubs { get; set; }
+
         public DbSet<ReplyAppointment> ReplyAppointments { get; set; }
+        public DbSet<PostInfoInClub> PostInfoInClub { get; set; }
+
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<ReplyAppointment> ReplyAppointment { get; set; }
         public DbSet<LikeClub> LikeClubs { get; set; }

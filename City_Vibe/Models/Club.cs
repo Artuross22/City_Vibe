@@ -28,8 +28,9 @@ namespace City_Vibe.Models
 
         [NotMapped]
         public ICollection<Event>? Events { get; set; }
-
         public ICollection<LikeClub>? LikeClubs { get; set; }
+
+        public ICollection<PostInfoInClub>? PostInfoInClub{ get; set; }
 
         [ForeignKey("AppUser")]
         public string? AppUserId { get; set; }

@@ -1,0 +1,156 @@
+﻿
+
+@using Microsoft.AspNetCore.Identity
+@model City_Vibe.ViewModels.ClubController.PostInformationDetailViewModel
+
+@{
+    ViewData["Title"] = "DetailEvent";
+
+}
+
+@inject SignInManager<AppUser> SignInManager
+
+
+<div>
+    <h4>Wellcome</h4>
+    <hr />
+
+    <div class="col-md-8">
+            <img class="img-fluid" src="@Model.Image" alt="">
+        </div>
+    <dl 
+      
+
+        class="row">
+         
+  
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PostInformation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PostInformation)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateAndTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateAndTime)
+        </dd>
+
+        <h2 class="text-success text-center"> someone's post or some other things</h2>
+
+         
+
+  
+     @if (User.Identity.IsAuthenticated)
+        {
+
+
+            @using (Html.BeginForm("PostComment", "ClubComment", FormMethod.Post))
+            {
+              
+                <p>
+                    <input type="text" name="CommentText" placeholder="Type new comment..."
+                   style="width:700px; height:60px; font-size:20px; margin-top:10px" />
+                </p>
+                <p>
+                    <input name="PostInfoInClubId" type="hidden" value="@Model.Id"
+                   style="width:700px; height:60px; font-size:20px; margin-top:10px" />
+                </p>
+                <br />
+                <input type="submit" value="Post Comment" class="btn btn-success "
+               style="margin-top: 10px;margin-bottom: 10px " />
+            }
+        }
+        else
+        {
+            <div>                 
+                     <a class=""> To comment. Log in to the account  </a>                 
+                     <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Login">Click Here</a>             
+            </div>
+             
+        }
+       @* "You must @Html.ActionLink("register", "Account","Login" ,"Identity") to post comments" </p2>*@
+  
+
+    </dl>
+    
+
+ 
+    <table class="table text-center">
+
+
+    <tbody>
+        @foreach (var comment in Model.CommentClub)
+        {
+             <tr style="border:1px solid black;">
+                 <td>
+                                        <span style="margin-right:15px;font-size:16px;color:green">
+                        @Html.DisplayFor(modelItem => comment.UserName)
+                                        </span>
+
+
+                                        <span style="font-size:20px">
+                        @Html.DisplayFor(modelItem => comment.Body)
+                                        </span>
+                                        <span style="margin-left:10px">
+                        @Html.DisplayFor(modelItem => comment.DateTime)
+                                        </span>
+
+                    @foreach (var reply in comment.ReplyCommentClubs)
+                    {
+                                                                <br />
+                                                                <span style="margin-right:15px;font-size:16px;color:blue">
+                            @Html.DisplayFor(modelItem => reply.UserName)
+                                                                </span>
+                                                                <span style="font-size:19px">
+                            @reply.Text
+                                                                </span>
+                                                                <span style="margin-left:10px">
+                            @reply.CreatedDate
+                                                                </span>
+
+                    }
+                       
+                    
+                    <br />
+
+                      
+                      @if (User.Identity.IsAuthenticated)
+                      {
+
+
+
+                     @using (Html.BeginForm("PostReply", "ClubComment", FormMethod.Post))
+                    {
+                            <input type="text" name="ReplyText" placeholder="Type  reply..."
+                            style="width:100%; height:60px; font-size:20px; margin-top:10px" />
+                        <br />
+                        <input name="PostInfoInClubId" type="hidden" value="@Model.Id"/>
+                        <input type="hidden" name="IdComment" value="@comment.Id" />
+                        <input type="submit" value="Post Reply" class="btn btn-success" style="margin-top :10px" />
+                    }
+
+
+                      }   
+                  </td>
+
+
+             </tr>
+        }
+    </tbody>
+</table
+
+
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>
+

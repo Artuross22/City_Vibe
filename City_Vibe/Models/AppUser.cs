@@ -20,9 +20,7 @@ namespace City_Vibe.Models
         public DateTime? Birthday { get; set; }
         public string? ProfileImageUrl { get; set; }
         public string? City { get; set; }
-        public string? Region { get; set; }
-
-        
+        public string? Region { get; set; }       
 
         [ForeignKey("Address")]
         public int? AddressId { get; set; }
@@ -33,7 +31,7 @@ namespace City_Vibe.Models
 
         [NotMapped]
         public ICollection<LikeClub>? LikeClubs { get; set; }
-
+        public ICollection<PostInfoInClub>? PostInfoInClub { get; set; }
         public ICollection<Appointment>? Appointments { get; set; }
     }
 }

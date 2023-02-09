@@ -9,9 +9,10 @@ namespace City_Vibe.Interfaces
         Task<Club> GetByIdAsync(int id);
         Task<Club> GetByIdAsyncNoTracking(int id);
         Task<IEnumerable<Club>> GetClubByCity(string city);
-
         Task<IEnumerable<Event>> GetClubsByEventId(int id);
 
+        Task <IEnumerable<PostInfoInClub>> GetPostInfoInClubByClubId(int id);
+        bool AddPostInfoInClub(PostInfoInClub postInfoInClub);
         bool Add(Club club);
         bool Update(Club club);
         bool Delete(Club club);

@@ -4,6 +4,8 @@ using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using City_Vibe.Repository;
 using City_Vibe.ViewModels.ClubController;
+using City_Vibe.ViewModels.CommentController;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SendGrid.Helpers.Mail;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -24,11 +27,12 @@ namespace City_Vibe.Controllers
         private readonly IHttpContextAccessor сontextAccessor;
         private readonly ISaveClubRepository saveClubRepository;
         private readonly IlikeClubRepository likeClubRepository;
+        private readonly IClubCommentRepository clubCommentRepository;
 
-         public readonly ApplicationDbContext dbContext;
+        public readonly ApplicationDbContext dbContext;
 
         public ClubController(IClubRepository clubRepo, IPhotoService photoServ, IHttpContextAccessor сontextAccess, ICategoryRepository categoryRepo,
-            ApplicationDbContext applicationDbContex, ISaveClubRepository saveClubRepo, IlikeClubRepository ilikeClubRepo)
+            ApplicationDbContext applicationDbContex, ISaveClubRepository saveClubRepo, IlikeClubRepository ilikeClubRepo, IClubCommentRepository clubCommentRepo)
         {
             categoryRepository = categoryRepo;
             clubRepository = clubRepo;
@@ -37,6 +41,7 @@ namespace City_Vibe.Controllers
             dbContext = applicationDbContex;
             saveClubRepository = saveClubRepo;
             likeClubRepository = ilikeClubRepo;
+            clubCommentRepository = clubCommentRepo;
         }
 
 
@@ -84,7 +89,6 @@ namespace City_Vibe.Controllers
                 clubRepository.Add(club);
                 return RedirectToAction("Index");
             }
-
             else
             {
                 ModelState.AddModelError("", "Photo upload failed");
@@ -119,9 +123,8 @@ namespace City_Vibe.Controllers
             Club club = await clubRepository.GetByIdAsync(id);
             var events = await clubRepository.GetClubsByEventId(id);
             var curSaveClub = await saveClubRepository.FindClubsByIdAsync(id);
-
             var countlikes = likeClubRepository.GetLikeClubsByClubId(id);
-      
+            var getClubInformation = await clubRepository.GetPostInfoInClubByClubId(id);
 
             var detailClubViewModel = new DetailClubViewModel
             {
@@ -141,7 +144,12 @@ namespace City_Vibe.Controllers
                 CountLikes = countlikes
             };
 
-            if(curSaveClub != null)
+            if (getClubInformation != null)
+            {
+                detailClubViewModel.PostInfoInClubs = getClubInformation.ToList();
+            }
+
+            if (curSaveClub != null)
             {
                 detailClubViewModel.SaveClubs = curSaveClub.ToList();
             }
@@ -230,7 +238,7 @@ namespace City_Vibe.Controllers
         {
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
-            var deleteInterestingClub = saveClubRepository.findSafeClubusingUserAndClub(id);
+            var deleteInterestingClub = saveClubRepository.FindSafeClubusingUserAndClub(id);
             if (deleteInterestingClub.Count != 0)
             {
                 var deleteClub = await saveClubRepository.FindClubById(id);
@@ -279,10 +287,72 @@ namespace City_Vibe.Controllers
             }
             else
             {
-                var delete = await likeClubRepository.FindLikeClubByUserId(curUserId);  // dbContext.LikeClubs.FirstOrDefault(x => x.AppUserId == curUserId);
+                var delete = await likeClubRepository.FindLikeClubByUserId(curUserId);
                 likeClubRepository.Delete(delete);
             }
             return RedirectToAction("DetailClub", new { id = clubId });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> AddInformationInClub(int clubId)
+        {
+            var curUserId = сontextAccessor.HttpContext.User.GetUserId();
+
+            PostInformationClubViewModel postInfoVM = new PostInformationClubViewModel
+            {
+                ClubId = clubId,
+                AppUserId = curUserId,
+            };
+            return View(postInfoVM);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddInformationInClub(PostInformationClubViewModel postInfo)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(postInfo);
+            }
+
+            var curUserName = сontextAccessor.HttpContext.User.Identity.Name;
+
+            var addPostInfo = new PostInfoInClub
+            {
+                ClubId = postInfo.ClubId,
+                AppUserId = postInfo.AppUserId,
+                PostInformation = postInfo.PostInformation,
+                DateAndTime = DateTime.Now,
+                UserName = curUserName,
+            };
+
+            if (postInfo.Image != null)
+            {
+                var result = await photoService.AddPhotoAsync(postInfo.Image);
+                addPostInfo.Image = result.Url.ToString();
+            }
+            clubRepository.AddPostInfoInClub(addPostInfo);
+            return View();
+        }
+
+
+        public async Task<ActionResult> PostInformationDetail(int postInfoId)
+        {
+            var clubInfo = dbContext.PostInfoInClub.Find(postInfoId);
+            var listofComment = clubCommentRepository.GetAllCommentClubInfoById(postInfoId);
+
+            var viewClubInfo = new PostInformationDetailViewModel
+            {
+                Id = postInfoId,
+                UserName = clubInfo.UserName,
+                DateAndTime = clubInfo.DateAndTime,
+                PostInformation = clubInfo.PostInformation,
+                CommentClub = listofComment,
+                Image = clubInfo.Image,
+
+            };
+
+
+            return View(viewClubInfo);
         }
     }
 }

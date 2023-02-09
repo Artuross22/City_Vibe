@@ -32,7 +32,7 @@ namespace City_Vibe.Repository
             return result;
         }
 
-        public List<SaveClub> findSafeClubusingUserAndClub(int Id)
+        public List<SaveClub> FindSafeClubusingUserAndClub(int Id)
         {
             var curUserId = httpContextAccessor.HttpContext.User.GetUserId();
             var result = dbcontext.SaveClubs.Where(c => c.AppUserId == curUserId).Where(x => x.ClubId == Id).ToList();

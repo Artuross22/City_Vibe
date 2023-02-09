@@ -4,6 +4,7 @@ using City_Vibe.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityVibe.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230207180857_AddImageinInfoClub")]
+    partial class AddImageinInfoClub
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -281,41 +284,6 @@ namespace CityVibe.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("City_Vibe.Models.CommentClub", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Body")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ForeignUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("PostInfoInClubId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("PostInfoInClubId");
-
-                    b.ToTable("CommentClubs");
-                });
-
             modelBuilder.Entity("City_Vibe.Models.Event", b =>
                 {
                     b.Property<int>("Id")
@@ -423,6 +391,7 @@ namespace CityVibe.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -500,42 +469,6 @@ namespace CityVibe.Migrations
                     b.HasIndex("CommentId");
 
                     b.ToTable("Replies");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.ReplyCommentClub", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("CommentClubId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("InternalUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("CommentClubId");
-
-                    b.ToTable("ReplyCommentClubs");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.SaveClub", b =>
@@ -797,21 +730,6 @@ namespace CityVibe.Migrations
                     b.Navigation("Event");
                 });
 
-            modelBuilder.Entity("City_Vibe.Models.CommentClub", b =>
-                {
-                    b.HasOne("City_Vibe.Models.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId");
-
-                    b.HasOne("City_Vibe.Models.PostInfoInClub", "PostInfoInClub")
-                        .WithMany()
-                        .HasForeignKey("PostInfoInClubId");
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("PostInfoInClub");
-                });
-
             modelBuilder.Entity("City_Vibe.Models.Event", b =>
                 {
                     b.HasOne("City_Vibe.Models.Address", "Address")
@@ -921,21 +839,6 @@ namespace CityVibe.Migrations
                     b.Navigation("AppUser");
 
                     b.Navigation("Comment");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.ReplyCommentClub", b =>
-                {
-                    b.HasOne("City_Vibe.Models.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId");
-
-                    b.HasOne("City_Vibe.Models.CommentClub", "CommentClub")
-                        .WithMany("ReplyCommentClubs")
-                        .HasForeignKey("CommentClubId");
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("CommentClub");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.SaveClub", b =>
@@ -1058,11 +961,6 @@ namespace CityVibe.Migrations
             modelBuilder.Entity("City_Vibe.Models.Comment", b =>
                 {
                     b.Navigation("ReplyComment");
-                });
-
-            modelBuilder.Entity("City_Vibe.Models.CommentClub", b =>
-                {
-                    b.Navigation("ReplyCommentClubs");
                 });
 
             modelBuilder.Entity("City_Vibe.Models.Event", b =>

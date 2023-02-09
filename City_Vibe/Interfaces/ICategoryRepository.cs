@@ -6,8 +6,6 @@ namespace City_Vibe.Interfaces
     {
         Task<IEnumerable<Category>> GetAll();
         Category GetById(int? id);
-
-
         public IEnumerable<Category> SelectList();
         bool Add(Category category);
         bool Update(Category category);
