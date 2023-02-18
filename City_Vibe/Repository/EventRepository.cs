@@ -78,9 +78,11 @@ namespace City_Vibe.Repository
         {
             DateTime dateTime = DateTime.Now;
             return context.Events.Where(x => x.Data >= dateTime).Include(x => x.Category).OrderByDescending(x => x.Data);
-
         }
-
+        public  IQueryable<Event> ActiveEventAllIQueryable()
+        {
+            return  context.Events.Include(x => x.Category).OrderByDescending(x => x.Data);
+        }
     }
 }
 

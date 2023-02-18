@@ -65,14 +65,14 @@ namespace City_Vibe.Controllers
                 activeUsers = activeUsers.Where(p => p.NickName.Contains(name) || p.UserDescription!.Contains(name));
             }
 
-            List<Category> companies = dbContext.Categories.ToList();
-            companies.Insert(0, new Category { Name = "All", Id = 0 });
+            List<Category> categories = dbContext.Categories.ToList();
+            categories.Insert(0, new Category { Name = "All", Id = 0 });
 
             UserListViewModel viewModel = new UserListViewModel
             {
                 Users = activeUsers.ToList(),
                 Events = events.ToList(),
-                Category = new SelectList(companies, "Id", "Name", category),              
+                Category = new SelectList(categories, "Id", "Name", category),              
                 Name = name
             };
             return View(viewModel);

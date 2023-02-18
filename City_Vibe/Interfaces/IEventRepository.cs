@@ -14,6 +14,8 @@ namespace City_Vibe.Interfaces
 
         IQueryable<Event> ActiveEventBytimeIQueryable();
 
+        IQueryable<Event> ActiveEventAllIQueryable();
+
         bool Add(Event eventAdd);
         bool Update(Event eventUp);
         bool Delete(Event eventDelete);

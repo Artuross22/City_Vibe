@@ -46,31 +46,48 @@
                                 </li>
                             }
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="Index">Event</a>
-                            </li>
+                             @if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="Index">Event</a>
+                                </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Club" asp-action="Index">Club</a>
-                            </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Club" asp-action="Index">Club</a>
+                                </li>
 
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Club" asp-action="InterestingСlubsForTheUser">
-                                    Interested clubs
-                                </a>
-                            </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Club" asp-action="InterestingСlubsForTheUser">
+                                        Interested clubs
+                                    </a>
+                                </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="EventsSelectByTheUser">
-                                    Interested events
-                                </a>
-                            </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="EventsSelectByTheUser">
+                                        Interested events
+                                    </a>
+                                </li>
 
-                                                     
-                            <li class="nav-item">
+                                   <li class="nav-item">
                                 <a href="/blog" class="nav-link">Blog</a>
                             </li>
+                            }
+
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                @if (User.IsInRole("Admin"))
+                                {
+                                   
+                                }
+                                else
+                                {
+                                    <h5>Your role is</h5>
+                                }
+                            }
+
+                                                     
+                         
                         </ul>
                         @if (SignInManager.IsSignedIn(User))
                         {
@@ -91,23 +108,26 @@
                                             <span class="h6 mb-0">View Profile</span>
                                         </a>
 
-                                        <a class="dropdown-item" asp-controller="AppUser" asp-action="EditProfile">
-                                            <span class="h6 mb-0">Edit Profile</span>
-                                        </a>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <a class="dropdown-item" asp-controller="AppUser" asp-action="EditProfile">
+                                                <span class="h6 mb-0">Edit Profile</span>
+                                            </a>
 
-                                        <a class="dropdown-item" asp-area="" asp-controller="Club" asp-action="Create">
-                                            <span class="h6 mb-0">Create Club</span>
-                                        </a>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Event" asp-action="Create">
-                                            <span class="h6 mb-0">Create Event</span>
-                                        </a>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Dashboard" asp-action="Index">
-                                            <span class="h6 mb-0">Dashboard</span>
-                                        </a>
-                                        <form id="logoutForm" method="post" class="form-inline" asp-controller="Account"
+                                            <a class="dropdown-item" asp-area="" asp-controller="Club" asp-action="Create">
+                                                <span class="h6 mb-0">Create Club</span>
+                                            </a>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Event" asp-action="Create">
+                                                <span class="h6 mb-0">Create Event</span>
+                                            </a>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Dashboard" asp-action="Index">
+                                                <span class="h6 mb-0">Dashboard</span>
+                                            </a>
+                                            <form id="logoutForm" method="post" class="form-inline" asp-controller="Account"
                                           asp-action="Logout">
-                                            <button type="submit" class="btn nav-link">Logout</button>
-                                        </form>
+                                                <button type="submit" class="btn nav-link">Logout</button>
+                                            </form>
+                                        }
                                     </div>
                                 </li>
                             </ul>

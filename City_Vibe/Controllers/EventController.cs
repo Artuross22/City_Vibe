@@ -6,15 +6,18 @@ using City_Vibe.Models;
 using City_Vibe.Repository;
 using City_Vibe.Services;
 using City_Vibe.ViewModels.AppUserController;
+using City_Vibe.ViewModels.DashboardController;
 using City_Vibe.ViewModels.EventController;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 
 namespace City_Vibe.Controllers
@@ -43,10 +46,30 @@ namespace City_Vibe.Controllers
             saveEventRepository = saveEventRepo;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? category, string? name)
         {
-            var eventsList = await eventRepository.GetAll();
-            return View(eventsList);
+            IQueryable<Event> eventVM = eventRepository.ActiveEventAllIQueryable();
+
+            if (category != null && category != 0)
+            {
+                eventVM = eventVM.Where(p => p.CategoryId == category);
+            }
+            if (!string.IsNullOrEmpty(name))
+            {
+                eventVM = eventVM.Where(p => p.Name!.Contains(name));
+            }
+
+            List<Category> categories = dbContext.Categories.ToList();
+
+            categories.Insert(0, new Category { Name = "All", Id = 0 });
+
+            EventFilterViewModel viewModel = new EventFilterViewModel
+            {
+                Events = eventVM.ToList(),
+                Category = new SelectList(categories, "Id", "Name", category),
+                Name = name
+            };
+            return View(viewModel);
         }
 
 
