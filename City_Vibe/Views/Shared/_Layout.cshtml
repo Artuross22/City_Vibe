@@ -78,13 +78,23 @@
                             {
                                 @if (User.IsInRole("Admin"))
                                 {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Role"  asp-action="Index">
+                                            User Roles
+                                        </a>
+                                    </li>
                                    
                                 }
                                 else
                                 {
-                                    <h5>Your role is</h5>
+                                    
+                                    <h5>Your role is </h5>
                                 }
                             }
+
+
+
+               
 
                                                      
                          

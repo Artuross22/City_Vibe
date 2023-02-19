@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewData["Title"] = "UserList";
+}
+
+<h1>UserList</h1>
+
+@using Microsoft.AspNetCore.Identity
+
+
+@model IEnumerable<City_Vibe.Models.AppUser>
+
+<h2>
+    List of users
+</h2>
+<table class="table">
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Email</td> 
+         <td>
+
+                <a class="btn btn-sm btn-primary" asp-action="EditUserRole" asp-route-userid="@user.Id">Access rights</a>
+
+
+         
+      
+            </td>
+        </tr>
+    }
+</table>
