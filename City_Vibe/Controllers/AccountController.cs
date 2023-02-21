@@ -24,14 +24,12 @@ namespace City_Vibe.Controllers
             _roleManager = roleManager;
         }
 
-
-
-
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginViewModel model, string? returnurl = null)
         {
+         
 
             returnurl = returnurl ?? Url.Content("~/");
 
@@ -46,7 +44,6 @@ namespace City_Vibe.Controllers
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    //   await _userManager.AddToRoleAsync(user, "Pokemon");
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
@@ -65,6 +62,7 @@ namespace City_Vibe.Controllers
         [HttpGet]
         public async Task<IActionResult> ExternalLoginCallback(string returnurl = null, string remoteError = null)
         {
+
             if (remoteError != null)
             {
                 ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteError}");
@@ -75,11 +73,16 @@ namespace City_Vibe.Controllers
             {
                 return RedirectToAction("Login");
             }
+
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
             if (result.Succeeded)
             {
+
+
                 await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
-                return LocalRedirect(returnurl);  
+                return RedirectToAction("Index", "Home");
+
+               // return LocalRedirect(returnurl);  
             }
             else
             {
@@ -114,6 +117,7 @@ namespace City_Vibe.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
+
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
@@ -162,6 +166,7 @@ namespace City_Vibe.Controllers
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
         {
+          
             LoginViewModel loginViewModel = new LoginViewModel();
             loginViewModel.ReturnUrl = returnUrl ?? Url.Content("~/");
             return View(loginViewModel);

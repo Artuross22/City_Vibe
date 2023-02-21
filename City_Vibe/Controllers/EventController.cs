@@ -72,10 +72,10 @@ namespace City_Vibe.Controllers
             return View(viewModel);
         }
 
-
-
+     
         public async Task<IActionResult> DetailEvent(int id)
         {
+         
             Event eventDetail = await eventRepository.GetByIdAsync(id);
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
             var curSaveEvent = await saveEventRepository.FindEventByIdAsync(id);

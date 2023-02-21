@@ -2,6 +2,7 @@
 using City_Vibe.Models;
 using City_Vibe.ViewModels.RoleController;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -96,6 +97,8 @@ namespace City_Vibe.Controllers
         }
 
         public IActionResult UserList() => View(_userManager.Users.ToList());
+
+   
 
         public async Task<IActionResult> EditUserRole(string userId)
         {
