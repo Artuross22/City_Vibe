@@ -29,16 +29,14 @@ namespace City_Vibe.Controllers
         private readonly IlikeClubRepository likeClubRepository;
         private readonly IClubCommentRepository clubCommentRepository;
 
-        public readonly ApplicationDbContext dbContext;
 
         public ClubController(IClubRepository clubRepo, IPhotoService photoServ, IHttpContextAccessor сontextAccess, ICategoryRepository categoryRepo,
-            ApplicationDbContext applicationDbContex, ISaveClubRepository saveClubRepo, IlikeClubRepository ilikeClubRepo, IClubCommentRepository clubCommentRepo)
+          ISaveClubRepository saveClubRepo, IlikeClubRepository ilikeClubRepo, IClubCommentRepository clubCommentRepo)
         {
             categoryRepository = categoryRepo;
             clubRepository = clubRepo;
             photoService = photoServ;
             сontextAccessor = сontextAccess;
-            dbContext = applicationDbContex;
             saveClubRepository = saveClubRepo;
             likeClubRepository = ilikeClubRepo;
             clubCommentRepository = clubCommentRepo;
@@ -96,28 +94,7 @@ namespace City_Vibe.Controllers
             return View(clubVM);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> EditClub(int id)
-        {
-            var club = await clubRepository.GetByIdAsync(id);
-            if (club == null) return View("Error");
-            var clubVM = new EditClubViewModel
-            {
-                Title = club.Title,
-                Description = club.Description,
-                AddressId = club.AddressId,
-                Address = club.Address,
-                URL = club.Image,
-                Category = club.Category,
-                CategoryId = club.CategoryId
-            };
-
-            var CategoryList = categoryRepository.SelectList();
-            ViewBag.Categories = new SelectList(CategoryList, "Id", "Name");
-
-            return View(clubVM);
-        }
-
+   
         public async Task<IActionResult> DetailClub(int id)
         {
             Club club = await clubRepository.GetByIdAsync(id);
@@ -155,6 +132,28 @@ namespace City_Vibe.Controllers
             }
 
             return View(detailClubViewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditClub(int id)
+        {
+            var club = await clubRepository.GetByIdAsync(id);
+            if (club == null) return View("Error");
+            var clubVM = new EditClubViewModel
+            {
+                Title = club.Title,
+                Description = club.Description,
+                AddressId = club.AddressId,
+                Address = club.Address,
+                URL = club.Image,
+                Category = club.Category,
+                CategoryId = club.CategoryId
+            };
+
+            var CategoryList = categoryRepository.SelectList();
+            ViewBag.Categories = new SelectList(CategoryList, "Id", "Name");
+
+            return View(clubVM);
         }
 
 
@@ -337,7 +336,7 @@ namespace City_Vibe.Controllers
 
         public async Task<ActionResult> PostInformationDetail(int postInfoId)
         {
-            var clubInfo = dbContext.PostInfoInClub.Find(postInfoId);
+            var clubInfo = await clubRepository.FindByIdPostInfo(postInfoId);
             var listofComment = clubCommentRepository.GetAllCommentClubInfoById(postInfoId);
 
             var viewClubInfo = new PostInformationDetailViewModel

@@ -42,6 +42,11 @@ namespace City_Vibe.Repository
             return result;
         }
 
+        public async Task<int> GetCountAsync()
+        {
+            return await _context.Club.CountAsync();
+        }
+
         public bool Add(Club club)
         {
             _context.Add(club);
@@ -77,5 +82,11 @@ namespace City_Vibe.Repository
          return await _context.PostInfoInClub.Where(x => x.ClubId == id).ToListAsync();
 
         }
+
+        public async Task<PostInfoInClub> FindByIdPostInfo(int id)
+        {
+            return await _context.PostInfoInClub.FindAsync(id);
+        }
+
     }
 }
