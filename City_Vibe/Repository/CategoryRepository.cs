@@ -56,5 +56,10 @@ namespace City_Vibe.Repository
         {
             return context.Categories.FirstOrDefault(x => x.Id == id);
         }
+
+        public Task<List<Category>> FindAll()
+        {
+            return context.Categories.ToListAsync();
+        }
     }
 }

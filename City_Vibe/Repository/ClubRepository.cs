@@ -88,5 +88,26 @@ namespace City_Vibe.Repository
             return await _context.PostInfoInClub.FindAsync(id);
         }
 
+        public async Task<IEnumerable<Club>> GetSliceAsync(int offset, int size)
+        {
+            return await _context.Club.Include(i => i.Address).Skip(offset).Take(size).ToListAsync();
+        }
+
+        public async Task<int> GetCountByCategoryAsync(Category category)
+        {
+            return await _context.Club.CountAsync(c => c.Category == category);
+        }
+
+        public async Task<IEnumerable<Club>> GetClubsByCategoryAndSliceAsync(Category category, int offset, int size)
+        {
+            return await _context.Club
+                .Include(i => i.Address)
+                .Where(c => c.Category == category)
+                .Skip(offset)
+                .Take(size)
+                .ToListAsync();
+        }
+
+
     }
 }

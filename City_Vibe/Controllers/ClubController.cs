@@ -1,4 +1,5 @@
-﻿using City_Vibe.Data;
+﻿using Azure;
+using City_Vibe.Data;
 using City_Vibe.ExtensionMethod;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
@@ -16,6 +17,7 @@ using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing.Printing;
 
 namespace City_Vibe.Controllers
 {
@@ -43,10 +45,41 @@ namespace City_Vibe.Controllers
         }
 
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int category = -1, int page = 1, int pageSize = 6)
         {
-            IEnumerable<Club> clubs = await clubRepository.GetAll();
-            return View(clubs);
+            if (page < 1 || pageSize < 1)
+            {
+                return NotFound();
+            }
+
+            var cat = categoryRepository.GetById(category);
+      
+
+            var clubs = category switch
+            {
+                -1 => await clubRepository.GetSliceAsync((page - 1) * pageSize, pageSize),
+                _ => await clubRepository.GetClubsByCategoryAndSliceAsync(cat, (page - 1) * pageSize, pageSize),
+            };
+
+            var count = category switch
+            {
+                -1 => await clubRepository.GetCountAsync(),
+                _ => await clubRepository.GetCountByCategoryAsync(cat),
+            };
+
+            List<Category> categories = await categoryRepository.FindAll();
+
+            var clubViewModel = new IndexClubViewModel
+            {
+                Clubs = clubs,
+                Page = page,
+                PageSize = pageSize,
+                TotalClubs = count,
+                TotalPages = (int)Math.Ceiling(count / (double)pageSize),
+                Category  = new SelectList(categories, "Id", "Name", category)
+            };
+                     
+            return View(clubViewModel);
         }
 
 

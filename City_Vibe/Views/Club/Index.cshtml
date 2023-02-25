@@ -1,69 +1,112 @@
-﻿@model IEnumerable<Club>
+﻿@using City_Vibe.Data
+@using City_Vibe.ViewModels.ClubController
+@model IndexClubViewModel
+
+@{
+    bool isAuthenticated = User.Identity?.IsAuthenticated == true;
+
+    int resultStart = ((Model.Page - 1) * Model.PageSize) + 1;
+    int resultEnd = Math.Min(resultStart + Model.PageSize - 1, Model.TotalClubs);
 
 
-<div class="album py-5 bg-light">
+    bool isValidPage = resultStart <= Model.TotalClubs;
 
-    @if (User.Identity.IsAuthenticated)
-    {
-        <a type="btn btn-success" asp-controller="Club" asp-action="CreateClub" class="btn btn-sm btn-outline-secondary">Create Club</a>
-    }
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<section class="space-sm flush-with-above">
     <div class="container">
-
         <div class="row">
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+            <div class="col text-center">
+                <p>Club Categories</p>
+                <div class="mb-3">
 
-                    <div class="card-body">
-                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                            </div>
-                            <small class="text-muted">9 mins</small>
-                        </div>
-                    </div>
+                    <a type="button" class="btn btn-secondary mb-1" asp-action="Index" asp-route-page="1" asp-route-category="-1">All</a>
+                    @foreach (var category in  Model.Category)
+                    {
+                        <a type="button" class="btn btn-secondary mb-1" asp-action="Index" asp-route-page="1" asp-route-category="@category.Value">@category.Text</a>
+                    }
                 </div>
             </div>
-
-            @foreach (var item in Model)
-            {
-                <div class="col-md-4">
-                    <div class="card mb-4 shadow-sm">
-                        <img class="card-img-top" src="@item.Image" width="100%" height="225" atl="Card image cap">
-
-                        <div class="card-body">
-                            <p class="card-text">@item.Title</p>
-                            <p class="card-text">@item.Description</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-
-
-                                    @if (User.Identity.IsAuthenticated)
-                                    {
-
-                                        <a type="btn btn-success" asp-controller="Club" asp-action="DetailClub" asp-route-id="@item.Id"
-                                         class="btn btn-sm btn-outline-secondary">Detail</a>
-
-
-                                        @if (User.IsInRole("Admin"))
-                                        {
-                                            <a type="btn btn-success" asp-controller="Club" asp-action="EditClub" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
-                                            <a type="btn btn-success" asp-controller="Club" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
-                                        }
-                                    }
-
-
-                                </div>
-                                <small class="text-muted">@item.Category</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            }
         </div>
     </div>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                @if (isValidPage)
+                {
+                    <a type="button" class="btn btn-sm btn-outline-primary @prevDisabled"
+                   asp-action="Index" asp-route-page="@(Model.Page - 1)" asp-route-category="@Model.Category">
+                        Prev
+                    </a>
+                    <a type="button" class="btn btn-sm btn-outline-primary @nextDisabled"
+                   asp-action="Index" asp-route-page="@(Model.Page + 1)" asp-route-category="@Model.Category">
+                        Next
+                    </a>
+                    <span class="text-muted text-small">Results @resultStart - @resultEnd of @Model.TotalClubs</span>
+                }
+            </div>
+        </div>
+        <ul class="row feature-list feature-list-sm">
+            @foreach (var club in Model.Clubs)
+            {
+                <li class="col-12 col-md-6 col-lg-4">
+                    <div class="card">
+                        <a type="button" asp-controller="Club" asp-action="DetailClub" asp-route-runningClub="@club.Title" asp-route-id="@club.Id">
+                            @if (@club.Image != null)
+                            {
+                                <img class="card-img-top" src="@club.Image" alt="Card image cap">
+                            }
+                            else
+                            {
+                                <img class="card-img-top" src="/img/rungroopclub.png" alt="Card image cap">
+                            }
 
-</div>
+                        </a>
+                        <div class="card-body">
+                            <h4 class="card-title">@club.Title</h4>
+                            <p class="card-text">@club.Description</p>
+                            <p class="card-text">@club.Address.City, @club.Address.Region</p>
+                        </div>
+                        <div class="card-footer card-footer-borderless d-flex justify-content-between">
+                            <div>
+                                <small>@club.Category.Name</small>
+                            </div>
+                            @if (isAuthenticated && User.IsInRole("admin"))
+                            {
+                                <div>
+                                    <a type="button" class="btn btn-sm btn-outline-info" asp-controller="Club" asp-action="Edit" asp-route-id="@club.Id">
+                                        Edit
+                                    </a>
+                                    <a type="button" class="btn btn-sm btn-outline-danger" asp-controller="Club" asp-action="Delete" asp-route-id="@club.Id">
+                                        Delete
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                @if (isValidPage)
+                {
+                    <a type="button" class="btn btn-sm btn-outline-primary @prevDisabled"
+                   asp-action="Index" asp-route-page="@(Model.Page - 1)" asp-route-category="@Model.Category">
+                        Prev
+                    </a>
+                    <a type="button" class="btn btn-sm btn-outline-primary @nextDisabled"
+                   asp-action="Index" asp-route-page="@(Model.Page + 1)" asp-route-category="@Model.Category">
+                        Next
+                    </a>
+                    <span class="text-muted text-small">Results @resultStart - @resultEnd of @Model.TotalClubs</span>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+
+

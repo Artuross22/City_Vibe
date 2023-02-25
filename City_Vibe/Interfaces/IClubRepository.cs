@@ -15,6 +15,10 @@ namespace City_Vibe.Interfaces
         bool AddPostInfoInClub(PostInfoInClub postInfoInClub);
         Task<PostInfoInClub> FindByIdPostInfo(int id);
 
+        Task<IEnumerable<Club>> GetSliceAsync(int offset, int size);
+        Task<IEnumerable<Club>> GetClubsByCategoryAndSliceAsync(Category category, int offset, int size);
+        Task<int> GetCountByCategoryAsync(Category category);
+
         bool Add(Club club);
         bool Update(Club club);
         bool Delete(Club club);
