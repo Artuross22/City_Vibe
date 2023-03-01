@@ -39,7 +39,7 @@ namespace City_Vibe.Controllers
             c.DateTime = DateTime.Now;
             c.ForeignUserId = Guid.Parse(curUserId);
             commentRepository.Add(c);
-            return RedirectToAction("Index");
+            return RedirectToAction("DetailEvent", "Event", new { id = c.EventId });
         }
 
         [HttpPost]
@@ -56,7 +56,7 @@ namespace City_Vibe.Controllers
             r.InternalUserId = Guid.Parse(curUserId);
             r.CreatedDate = DateTime.Now;
             commentRepository.AddReplyComment(r);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Event");
         }
     }
 }

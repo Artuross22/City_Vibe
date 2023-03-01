@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -210,6 +211,7 @@ namespace City_Vibe.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, EditEventViewModel eventVM)
         {
+
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Failed to edit event");
@@ -276,6 +278,7 @@ namespace City_Vibe.Controllers
         public async Task<IActionResult> DeleteEvent(int id)
         {
             var eventDetails = await eventRepository.GetByIdAsync(id);
+            
 
             if (eventDetails == null)
             {
@@ -287,6 +290,7 @@ namespace City_Vibe.Controllers
                 _ = photoService.DeletePhotoAsync(eventDetails.Image);
             }
 
+         
             eventRepository.Delete(eventDetails);
             return RedirectToAction("Index");
         }

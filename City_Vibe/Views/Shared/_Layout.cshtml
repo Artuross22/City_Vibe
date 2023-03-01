@@ -1,8 +1,4 @@
-﻿
-
-
-
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 <!DOCTYPE html>
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
@@ -46,7 +42,7 @@
                                 </li>
                             }
 
-                             @if (User.Identity.IsAuthenticated)
+                            @if (User.Identity.IsAuthenticated)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="Index">Event</a>
@@ -69,9 +65,9 @@
                                     </a>
                                 </li>
 
-                                   <li class="nav-item">
-                                <a href="/blog" class="nav-link">Blog</a>
-                            </li>
+                                <li class="nav-item">
+                                    <a href="/blog" class="nav-link">Blog</a>
+                                </li>
                             }
 
                             @if (User.Identity.IsAuthenticated)
@@ -79,25 +75,20 @@
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Role"  asp-action="Index">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="Index">
                                             User Roles
                                         </a>
                                     </li>
-                                   
+
                                 }
                                 else
                                 {
-                                    
-                                    <h5>Your role is </h5>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Hello @UserManager.GetUserName(User)</a>
+                                    </li>
                                 }
                             }
 
-
-
-               
-
-                                                     
-                         
                         </ul>
                         @if (SignInManager.IsSignedIn(User))
                         {
@@ -124,10 +115,10 @@
                                                 <span class="h6 mb-0">Edit Profile</span>
                                             </a>
 
-                                            <a class="dropdown-item" asp-area="" asp-controller="Club" asp-action="Create">
+                                            <a class="dropdown-item" asp-area="" asp-controller="Club" asp-action="CreateClub">
                                                 <span class="h6 mb-0">Create Club</span>
                                             </a>
-                                            <a class="dropdown-item" asp-area="" asp-controller="Event" asp-action="Create">
+                                            <a class="dropdown-item" asp-area="" asp-controller="Event" asp-action="CreateEvent">
                                                 <span class="h6 mb-0">Create Event</span>
                                             </a>
                                             <a class="dropdown-item" asp-area="" asp-controller="Dashboard" asp-action="Index">

@@ -74,10 +74,10 @@ else
           @if (@Model.CheckAppointment > 0)
            {  
                 <td >                 
-                   @Html.ActionLink( "You have sent an invitation to this event" , "UserApplications", "Event", new { id = Model.Id}, null)                                  
+                   @Html.ActionLink( "You have sent an invitation to this event" , "UserApplications", "Appointment", new { id = Model.Id}, null)                                  
                 </td>
 
-             <p class="text-green"> You have sent an invitation to this event </p>
+         @*    <p class="text-green"> You have sent an invitation to this event </p>*@
              <p> Your application is being processed </p>
            }
     </a>

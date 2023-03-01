@@ -23,7 +23,7 @@
                 <div class="mb-3">
 
                     <a type="button" class="btn btn-secondary mb-1" asp-action="Index" asp-route-page="1" asp-route-category="-1">All</a>
-                    @foreach (var category in  Model.Category)
+                    @foreach (var category in Model.Category)
                     {
                         <a type="button" class="btn btn-secondary mb-1" asp-action="Index" asp-route-page="1" asp-route-category="@category.Value">@category.Text</a>
                     }
@@ -60,7 +60,7 @@
                             }
                             else
                             {
-                                <img class="card-img-top" src="/img/rungroopclub.png" alt="Card image cap">
+                                <img class="card-img-top" src="/img/CityClub.png" alt="Card image cap">
                             }
 
                         </a>
@@ -73,18 +73,26 @@
                             <div>
                                 <small>@club.Category.Name</small>
                             </div>
-                            @if (isAuthenticated && User.IsInRole("admin"))
+
+                            @if (User.Identity.IsAuthenticated)
                             {
-                                <div>
-                                    <a type="button" class="btn btn-sm btn-outline-info" asp-controller="Club" asp-action="Edit" asp-route-id="@club.Id">
-                                        Edit
-                                    </a>
-                                    <a type="button" class="btn btn-sm btn-outline-danger" asp-controller="Club" asp-action="Delete" asp-route-id="@club.Id">
-                                        Delete
-                                    </a>
-                                </div>
+
+                                <a type="btn btn-success" asp-controller="Club" asp-action="DetailClub" asp-route-id="@club.Id"
+                           class="btn btn-sm btn-outline-secondary">Detail</a>
+
+
+                                @if (isAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <a type="button" class="btn btn-sm btn-outline-info" asp-controller="Club" asp-action="EditClub" asp-route-id="@club.Id ">Edit</a>
+                                    <a type="button" class="btn btn-sm btn-outline-danger" asp-controller="Club" asp-action="Delete" asp-route-id="@club.Id">Delete</a>
+                                }
                             }
+                           
                         </div>
+
+
+
+
                     </div>
                 </li>
             }
