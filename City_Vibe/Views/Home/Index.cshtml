@@ -15,7 +15,7 @@
 }
 
 <section class="bg-dark space-lg" data-jarallax data-speed="0.2">
-    <img alt="Image" src="/img/photo-road.jpg" class="bg-image position-absolute opacity-20" />
+    <img alt="Image" src="/Photo/Kiev.jpg" class="bg-image position-absolute opacity-20" />
     <div class="container">
         <div class="row align-items-center justify-content-between">
             <div class="col-12 col-md-6 col-lg-5 section-intro">
@@ -66,7 +66,7 @@
         @if (Model.Clubs == null)
         {
             <h1 class="fw-light">
-                There are no running clubs in your area! <a asp-area="" asp-controller="Account"
+                There are no clubs in your area! <a asp-area="" asp-controller="Account"
                                                         asp-action="Login">Login</a> and create one!
             </h1>
         }
@@ -74,7 +74,10 @@
         {
             <div class="row justify-content-between mb-5">
                 <div class="col-auto">
-                    <h3>Running clubs near @Model.City, @Model.State</h3>
+                    <h3>
+
+                        Clubs near your location - @Model.City, @Model.State
+                    </h3>
                 </div>
                 <!--end of col-->
                 <div class="col-auto">
