@@ -2,7 +2,7 @@
 
 namespace City_Vibe.Interfaces
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository 
     {
         Task<IEnumerable<Category>> GetAll();
 
