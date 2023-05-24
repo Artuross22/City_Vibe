@@ -1,29 +1,16 @@
-﻿using Azure;
-using City_Vibe.Data;
-using City_Vibe.ExtensionMethod;
+﻿using City_Vibe.ExtensionMethod;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
-using City_Vibe.Repository;
 using City_Vibe.ViewModels.ClubController;
-using City_Vibe.ViewModels.CommentController;
-using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using SendGrid.Helpers.Mail;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing.Printing;
+
 
 namespace City_Vibe.Controllers
 {
     public class ClubController : Controller
     {
-        private readonly ICategoryRepository categoryRepository;
+    
         private readonly IClubRepository clubRepository;
         private readonly IPhotoService photoService;
         private readonly IHttpContextAccessor сontextAccessor;
@@ -31,17 +18,19 @@ namespace City_Vibe.Controllers
         private readonly IlikeClubRepository likeClubRepository;
         private readonly IClubCommentRepository clubCommentRepository;
 
+        private readonly IUnitOfWork unitOfWorkRepository;
 
-        public ClubController(IClubRepository clubRepo, IPhotoService photoServ, IHttpContextAccessor сontextAccess, ICategoryRepository categoryRepo,
-          ISaveClubRepository saveClubRepo, IlikeClubRepository ilikeClubRepo, IClubCommentRepository clubCommentRepo)
+
+        public ClubController(IClubRepository clubRepo, IPhotoService photoServ, IHttpContextAccessor сontextAccess,
+          ISaveClubRepository saveClubRepo, IlikeClubRepository ilikeClubRepo, IClubCommentRepository clubCommentRepo, IUnitOfWork unitOfWorkRepo)
         {
-            categoryRepository = categoryRepo;
             clubRepository = clubRepo;
             photoService = photoServ;
             сontextAccessor = сontextAccess;
             saveClubRepository = saveClubRepo;
             likeClubRepository = ilikeClubRepo;
             clubCommentRepository = clubCommentRepo;
+            unitOfWorkRepository = unitOfWorkRepo;
         }
 
 
@@ -52,7 +41,7 @@ namespace City_Vibe.Controllers
                 return NotFound();
             }
 
-            var cat = categoryRepository.GetById(category);
+            var cat = await unitOfWorkRepository.CategoryRepository.GetByIdAsync(category);
       
 
             var clubs = category switch
@@ -67,7 +56,7 @@ namespace City_Vibe.Controllers
                 _ => await clubRepository.GetCountByCategoryAsync(cat),
             };
 
-            List<Category> categories = await categoryRepository.FindAll();
+            List<Category> categories = await unitOfWorkRepository.CategoryRepository.GetAllAsync();
 
             var clubViewModel = new IndexClubViewModel
             {
@@ -88,7 +77,7 @@ namespace City_Vibe.Controllers
         public IActionResult CreateClub()
         {
 
-            var CategoryList = categoryRepository.SelectList();
+            var CategoryList = unitOfWorkRepository.CategoryRepository.GetAll();
             ViewBag.Categories = new SelectList(CategoryList, "Id", "Name");
 
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
@@ -183,7 +172,7 @@ namespace City_Vibe.Controllers
                 CategoryId = club.CategoryId
             };
 
-            var CategoryList = categoryRepository.SelectList();
+            var CategoryList = unitOfWorkRepository.CategoryRepository.GetAll();
             ViewBag.Categories = new SelectList(CategoryList, "Id", "Name");
 
             return View(clubVM);

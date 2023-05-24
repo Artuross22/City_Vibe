@@ -1,24 +1,11 @@
-﻿using Azure.Core;
-using City_Vibe.Data;
+﻿using City_Vibe.Data;
 using City_Vibe.ExtensionMethod;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
-using City_Vibe.Repository;
-using City_Vibe.Services;
-using City_Vibe.ViewModels.AppUserController;
-using City_Vibe.ViewModels.DashboardController;
 using City_Vibe.ViewModels.EventController;
-using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 
 namespace City_Vibe.Controllers
@@ -26,25 +13,31 @@ namespace City_Vibe.Controllers
     public class EventController : Controller
     {
         private readonly IEventRepository eventRepository;
-        private readonly ICategoryRepository categoryRepository;
         private readonly IPhotoService photoService;
         public readonly IHttpContextAccessor сontextAccessor;
         public readonly ICommentRepository commentRepository;
         private readonly ISaveEventRepository saveEventRepository;
         public readonly ApplicationDbContext dbContext;
+        public readonly IUnitOfWork unitOfWorkRepository;
 
 
 
-        public EventController(IEventRepository eventRepo, IPhotoService photoSe, IHttpContextAccessor сontextAccsess, ICategoryRepository categoryRepo, ICommentRepository commentRepo
-            , ISaveEventRepository saveEventRepo, ApplicationDbContext DbContexts)
+        public EventController(IEventRepository eventRepo,
+            IPhotoService photoSe, 
+            IHttpContextAccessor сontextAccsess, 
+            ICommentRepository commentRepo
+            ,ISaveEventRepository saveEventRepo,
+            ApplicationDbContext DbContexts,
+            IUnitOfWork unitOfWorkRepo
+            )
         {
             eventRepository = eventRepo;
             photoService = photoSe;
             сontextAccessor = сontextAccsess;
-            categoryRepository = categoryRepo;
             commentRepository = commentRepo;
             dbContext = DbContexts;
             saveEventRepository = saveEventRepo;
+            unitOfWorkRepository = unitOfWorkRepo;
         }
 
         public async Task<IActionResult> Index(int? category, string? name)
@@ -106,7 +99,7 @@ namespace City_Vibe.Controllers
             var listofComment = commentRepository.GetAllCommentByEventId(id);
             viewModel.Comments = listofComment;
 
-            var categoryEvent = categoryRepository.GetById(eventDetail.CategoryId);
+            var categoryEvent = unitOfWorkRepository.CategoryRepository.GetById(eventDetail.CategoryId);
             viewModel.Category = categoryEvent;
 
 
@@ -125,7 +118,7 @@ namespace City_Vibe.Controllers
         [HttpGet]
         public IActionResult CreateEvent(int clubId)
         {
-            var EventList = categoryRepository.SelectList();
+            var EventList = unitOfWorkRepository.CategoryRepository.GetAll();
             ViewBag.Categories = new SelectList(EventList, "Id", "Name");
 
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
@@ -201,7 +194,7 @@ namespace City_Vibe.Controllers
                 }
             };
 
-            var EventList = categoryRepository.SelectList();
+            var EventList = unitOfWorkRepository.CategoryRepository.GetAll();
             ViewBag.Categories = new SelectList(EventList, "Id", "Name");
 
             return View(eventVM);
@@ -267,7 +260,7 @@ namespace City_Vibe.Controllers
         {
             var eventDetails = await eventRepository.GetByIdAsync(id);
 
-            var EventList = categoryRepository.SelectList();
+            var EventList = unitOfWorkRepository.CategoryRepository.GetAll();
             ViewBag.Categories = new SelectList(EventList, "Id", "Name");
 
             if (eventDetails == null) return View("Error");

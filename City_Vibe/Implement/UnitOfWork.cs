@@ -12,42 +12,42 @@ namespace City_Vibe.Implement
         public UnitOfWork(ApplicationDbContext applicationDbContext)
         {
             appDbContext = applicationDbContext;
-            AppointmentRepo = new AppointmentRepository(applicationDbContext);
-            AppUserRepo = new AppUserRepository(applicationDbContext);
-            CategoryRepo = new CategoryRepository(applicationDbContext);
-            ClubCommentRepo = new ClubCommentRepository(applicationDbContext);
-            ClubRepo = new ClubRepository(applicationDbContext);
-            EventRepo = new EventRepository(applicationDbContext);
-            CommentRepo = new CommentRepository(applicationDbContext);
-            likeClubRepo = new likeClubRepository(applicationDbContext);
+            AppointmentRepository = new AppointmentRepository(applicationDbContext);
+            AppUserRepository = new AppUserRepository(applicationDbContext);
+            CategoryRepository = new CategoryRepository(applicationDbContext);
+            ClubCommentRepository = new ClubCommentRepository(applicationDbContext);
+            ClubRepository = new ClubRepository(applicationDbContext);
+            EventRepository = new EventRepository(applicationDbContext);
+            CommentRepository = new CommentRepository(applicationDbContext);
+            likeClubRepository = new likeClubRepository(applicationDbContext);
 
-            SaveClubRepo = new SaveClubRepository(applicationDbContext, httpContextAccessor);
-            SaveEventRepos = new SaveEventRepository(applicationDbContext , httpContextAccessor);
-            DashboardRepo = new DashboardRepository(applicationDbContext, httpContextAccessor);
+            SaveClubRepository = new SaveClubRepository(applicationDbContext, httpContextAccessor);
+            SaveEventRepository = new SaveEventRepository(applicationDbContext , httpContextAccessor);
+            DashboardRepository = new DashboardRepository(applicationDbContext, httpContextAccessor);
 
         }
 
-        public IAppointmentRepository AppointmentRepo { get; private set; }
+        public IAppointmentRepository AppointmentRepository { get; private set; }
 
-        public IAppUserRepository AppUserRepo { get; private set; }
+        public IAppUserRepository AppUserRepository { get; private set; }
 
-        public ICategoryRepository CategoryRepo { get; private set; }
+        public ICategoryRepository CategoryRepository { get; private set; }
 
-        public IClubCommentRepository ClubCommentRepo { get; private set; }
+        public IClubCommentRepository ClubCommentRepository { get; private set; }
 
-        public IClubRepository ClubRepo { get; private set; }
+        public IClubRepository ClubRepository { get; private set; }
 
-        public ICommentRepository CommentRepo { get; private set; }
+        public ICommentRepository CommentRepository { get; private set; }
 
-        public IEventRepository EventRepo { get; private set; }
+        public IEventRepository EventRepository { get; private set; }
 
-        public IlikeClubRepository likeClubRepo { get; private set; }
+        public IlikeClubRepository likeClubRepository { get; private set; }
 
-        public ISaveClubRepository SaveClubRepo { get; private set; }
+        public ISaveClubRepository SaveClubRepository { get; private set; }
 
-        public ISaveEventRepository SaveEventRepos { get; private set; }
+        public ISaveEventRepository SaveEventRepository { get; private set; }
 
-        public IDashboardRepository DashboardRepo { get; private set; }
+        public IDashboardRepository DashboardRepository { get; private set; }
    
         public int Save()
         {

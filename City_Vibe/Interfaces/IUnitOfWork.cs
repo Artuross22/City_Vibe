@@ -2,26 +2,28 @@
 {
     public interface IUnitOfWork :  IDisposable
     {
-        IAppointmentRepository AppointmentRepo {get;}
+        IAppointmentRepository AppointmentRepository {get;}
 
-        IAppUserRepository AppUserRepo { get; }
+        IAppUserRepository AppUserRepository { get; }
 
-        ICategoryRepository CategoryRepo { get; }
+        ICategoryRepository CategoryRepository { get; }
 
-        IClubCommentRepository ClubCommentRepo { get; }
+        IClubCommentRepository ClubCommentRepository { get; }
 
-        IClubRepository ClubRepo { get; }
+        IClubRepository ClubRepository { get; }
 
-        ICommentRepository CommentRepo { get; }
+        ICommentRepository CommentRepository { get; }
 
-        IDashboardRepository DashboardRepo { get; }
+        IDashboardRepository DashboardRepository { get; }
 
-        IEventRepository EventRepo { get; }
+        IEventRepository EventRepository { get; }
 
-        IlikeClubRepository likeClubRepo { get; }
+        IlikeClubRepository likeClubRepository { get; }
 
-        ISaveClubRepository SaveClubRepo { get; }
+        ISaveClubRepository SaveClubRepository { get; }
 
-        ISaveEventRepository SaveEventRepos { get;}
+        ISaveEventRepository SaveEventRepository { get;}
+
+        int Save();
     }
 }

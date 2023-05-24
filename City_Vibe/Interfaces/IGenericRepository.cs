@@ -1,8 +1,14 @@
-﻿namespace City_Vibe.Interfaces
+﻿using City_Vibe.Models;
+
+namespace City_Vibe.Interfaces
 {
     public interface IGenericRepository<TEntity> where TEntity : class
     {
         Task<List<TEntity>> GetAllAsync();
+
+        public IEnumerable<Category> GetAll();
+
+       public Category GetById(int id);
 
         Task<TEntity?> GetByIdAsync<T>(T id);
 

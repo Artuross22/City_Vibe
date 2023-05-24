@@ -1,5 +1,6 @@
 using City_Vibe.Data;
 using City_Vibe.Helpers;
+using City_Vibe.Implement;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using City_Vibe.Repository;
@@ -28,6 +29,8 @@ builder.Services.AddScoped<ISaveEventRepository, SaveEventRepository>();
 builder.Services.AddScoped<IlikeClubRepository, likeClubRepository>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IClubCommentRepository, ClubCommentRepository>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddTransient<ISendGridEmail, SendGridEmail>();
 

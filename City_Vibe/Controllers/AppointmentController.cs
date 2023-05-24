@@ -14,17 +14,17 @@ namespace City_Vibe.Controllers
 {
     public class AppointmentController : Controller
     {
-        private readonly ApplicationDbContext dbContext;
         public readonly IHttpContextAccessor сontextAccessor;
-        private readonly ICategoryRepository categoryRepository;
+        public readonly IUnitOfWork unitOfWorkRepository;
         private readonly IAppointmentRepository appointmentRepository;
 
-        public AppointmentController(ApplicationDbContext applicationDbContext, IHttpContextAccessor сontextAcces, ICategoryRepository categoryRepos, IAppointmentRepository appointmentRepos)
+        public AppointmentController(IHttpContextAccessor сontextAcces,
+            IAppointmentRepository appointmentRepos,
+            IUnitOfWork unitOfWorkRepos)
         {
-            dbContext = applicationDbContext;
             сontextAccessor = сontextAcces;
-            categoryRepository = categoryRepos;
             appointmentRepository = appointmentRepos;
+            unitOfWorkRepository = unitOfWorkRepos;
         }
 
         [HttpGet]
@@ -152,7 +152,7 @@ namespace City_Vibe.Controllers
 
             foreach (var appointment in getappointment)
             {
-                var categoryEvent = categoryRepository.GetById(appointment.Event.CategoryId);
+                var categoryEvent = unitOfWorkRepository.CategoryRepository.GetById(appointment.Event.CategoryId);
 
 
                 var viewModel = new PersonalApplicationViewModel
