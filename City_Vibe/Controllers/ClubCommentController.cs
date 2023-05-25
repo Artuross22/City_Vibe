@@ -12,16 +12,15 @@ namespace City_Vibe.Controllers
     public class ClubCommentController : Controller
     {
 
-        private readonly IClubCommentRepository commentRepository;
-        private readonly UserManager<AppUser> userManager;
+        private readonly IUnitOfWork unitOfWorkRepo;
         public readonly IHttpContextAccessor сontextAccessor;
 
-
-        public ClubCommentController(IClubCommentRepository commentRepo, UserManager<AppUser> userMngt, IHttpContextAccessor сontextAccess)
+        public ClubCommentController(
+            IHttpContextAccessor сontextAccess,
+            IUnitOfWork unitOfWorkRepository)
         {
-            commentRepository = commentRepo;
-            userManager = userMngt;
             сontextAccessor = сontextAccess;
+            unitOfWorkRepo = unitOfWorkRepository;
         }
 
         [HttpPost]
@@ -40,7 +39,7 @@ namespace City_Vibe.Controllers
             c.DateTime = DateTime.Now;
             c.ForeignUserId = Guid.Parse(curUserId);
             c.UserName = c.UserName;
-            commentRepository.Add(c);
+            unitOfWorkRepo.ClubCommentRepository.Add(c);
             return RedirectToAction("PostInformationDetail", "Club" , new { postInfoId = comment.PostInfoInClubId });
         }
 
@@ -59,7 +58,7 @@ namespace City_Vibe.Controllers
             r.InternalUserId = Guid.Parse(curUserId);
             r.CreatedDate = DateTime.Now;
             r.UserName = curUserName;
-            commentRepository.AddReplyComment(r);
+            unitOfWorkRepo.ClubCommentRepository.AddReplyComment(r);
             return RedirectToAction( "PostInformationDetail" ,"Club", new {postInfoId = commentreply.PostInfoInClubId });
         }
 

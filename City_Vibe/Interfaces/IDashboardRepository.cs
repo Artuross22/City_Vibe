@@ -2,7 +2,7 @@
 
 namespace City_Vibe.Interfaces
 {
-    public interface IDashboardRepository
+    public interface IDashboardRepository 
     {
         Task<List<Event>> GetAllUserEvent();
         Task<List<Club>> GetAllUserClubs();

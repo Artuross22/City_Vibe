@@ -1,13 +1,9 @@
-﻿using City_Vibe.Data;
-using City_Vibe.ExtensionMethod;
+﻿using City_Vibe.ExtensionMethod;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
-using City_Vibe.Repository;
 using City_Vibe.ViewModels.AppointmentController;
 using City_Vibe.ViewModels.EventController;
-using CityVibe.Migrations;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
 namespace City_Vibe.Controllers
@@ -16,14 +12,11 @@ namespace City_Vibe.Controllers
     {
         public readonly IHttpContextAccessor сontextAccessor;
         public readonly IUnitOfWork unitOfWorkRepository;
-        private readonly IAppointmentRepository appointmentRepository;
 
         public AppointmentController(IHttpContextAccessor сontextAcces,
-            IAppointmentRepository appointmentRepos,
             IUnitOfWork unitOfWorkRepos)
         {
             сontextAccessor = сontextAcces;
-            appointmentRepository = appointmentRepos;
             unitOfWorkRepository = unitOfWorkRepos;
         }
 
@@ -35,6 +28,8 @@ namespace City_Vibe.Controllers
             userappointment.AppUserId = curUserId;
             userappointment.EventId = eventId;
             return View(userappointment);
+
+          
         }
 
 
@@ -66,7 +61,7 @@ namespace City_Vibe.Controllers
                     Phone = appointmentModel.Phone,
                 };
 
-                appointmentRepository.Add(addAppointmentModel);
+                unitOfWorkRepository.AppointmentRepository.Add(addAppointmentModel);
 
                 return RedirectToAction("" ,"Event", new { id = appointmentModel.EventId });
             }
@@ -76,7 +71,7 @@ namespace City_Vibe.Controllers
 
         public async Task<IActionResult> AdmissionRequests(int eventId)
         {
-            var application = appointmentRepository.GetAppointmentsByEventId(eventId);
+            var application = unitOfWorkRepository.AppointmentRepository.GetAppointmentsByEventId(eventId);
 
             List<ApplicationUserViewModel> result = new List<ApplicationUserViewModel>();
             foreach (var appointment in application)
@@ -95,6 +90,7 @@ namespace City_Vibe.Controllers
                     
                 };
                 result.Add(viewApplication);
+
             }
             return View(result);
         }
@@ -111,14 +107,14 @@ namespace City_Vibe.Controllers
                 AppUserId = curUserId,
                 EventId = replyApp.EventId,
             };
-            appointmentRepository.AddReplyAppointment(result);
+            unitOfWorkRepository.AppointmentRepository.AddReplyAppointment(result);
             return RedirectToAction("", "Event");
         }
 
         public IActionResult AddAppointmentUpdate(AppointmentUpdateVM appointmentVM)
         {
 
-            var result = appointmentRepository.GetAppointmentByIdAsNoTracking(appointmentVM.AppointmentId);
+            var result = unitOfWorkRepository.AppointmentRepository.GetAppointmentByIdAsNoTracking(appointmentVM.AppointmentId);
             var updateAppointment = new Appointment
             {
                 Id = appointmentVM.AppointmentId,
@@ -136,7 +132,7 @@ namespace City_Vibe.Controllers
                 updateAppointment.ReplyAppointments = result.ReplyAppointments.ToList();
             }
 
-            appointmentRepository.Update(updateAppointment);
+            unitOfWorkRepository.AppointmentRepository.Update(updateAppointment);
             return RedirectToAction("", "Event");
         }
 
@@ -146,7 +142,7 @@ namespace City_Vibe.Controllers
         {
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
-            var getappointment = appointmentRepository.GetAppointmentByIdUser(curUserId);
+            var getappointment = unitOfWorkRepository.AppointmentRepository.GetAppointmentByIdUser(curUserId);
 
             List <PersonalApplicationViewModel> result = new List<PersonalApplicationViewModel>();
 
@@ -179,7 +175,7 @@ namespace City_Vibe.Controllers
 
         public async Task<IActionResult> ViewParticipants(int eventId)
         {
-            var application = appointmentRepository.GetAppointmentsByEventId(eventId);
+            var application = unitOfWorkRepository.AppointmentRepository.GetAppointmentsByEventId(eventId);
 
             List<ApplicationUserViewModel> result = new List<ApplicationUserViewModel>();
             foreach (var appointment in application)

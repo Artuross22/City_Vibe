@@ -1,35 +1,18 @@
 ﻿using City_Vibe.Data;
+using City_Vibe.Implement;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace City_Vibe.Repository
 {
-    public class ClubCommentRepository : IClubCommentRepository
+    public class ClubCommentRepository : GenericRepository<CommentClub>, IClubCommentRepository
     {
         private readonly ApplicationDbContext contextDb;
 
-        public ClubCommentRepository(ApplicationDbContext context)
+        public ClubCommentRepository(ApplicationDbContext context) : base(context)
         {
             contextDb = context;
-        }
-
-        public bool Add(CommentClub comment)
-        {
-            contextDb.Add(comment);
-            return Save();
-        }
-
-        public bool Delete(CommentClub comment)
-        {
-            contextDb.Remove(comment);
-            return Save();
-        }
-
-        public bool Update(CommentClub comment)
-        {
-            contextDb.Update(comment);
-            return Save();
         }
 
         public bool AddReplyComment(ReplyCommentClub replyCommentClub)
@@ -58,7 +41,6 @@ namespace City_Vibe.Repository
         {
             return await contextDb.CommentClubs.Include(i => i.ReplyCommentClubs).AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
         }
-
 
         public bool Save()
         {

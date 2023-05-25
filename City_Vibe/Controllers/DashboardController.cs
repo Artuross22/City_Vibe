@@ -11,26 +11,17 @@ namespace City_Vibe.Controllers
     [Authorize]
     public class DashboardController : Controller
     {
-        private readonly IDashboardRepository dashboardRespository;
-        private readonly IPhotoService photoService;
-        private readonly IAppUserRepository appUserRepository;
-        private readonly IEventRepository eventRepository;
-        private readonly ApplicationDbContext dbContext;
+        public IUnitOfWork unitOfWorkRespository;
 
-        public DashboardController(IDashboardRepository dashboardRespo, IPhotoService photoServ, IAppUserRepository appUserRepos, IEventRepository eventRepo,
-            ApplicationDbContext dbContex)
+        public DashboardController(IUnitOfWork unitOfWorkRespo)
         {
-            dashboardRespository = dashboardRespo;
-            photoService = photoServ;
-            appUserRepository = appUserRepos;
-            eventRepository = eventRepo;
-            dbContext = dbContex;
+            unitOfWorkRespository = unitOfWorkRespo;
         }
 
         public async Task<IActionResult> Index()
         {
-            var userEvents = await dashboardRespository.GetAllUserEvent();
-            var userClubs = await dashboardRespository.GetAllUserClubs();
+            var userEvents = await unitOfWorkRespository.DashboardRepository.GetAllUserEvent();
+            var userClubs = await  unitOfWorkRespository.DashboardRepository.GetAllUserClubs();
             var dashboardViewModel = new DashboardViewModel()
             {
                 Events = userEvents,
@@ -39,17 +30,13 @@ namespace City_Vibe.Controllers
             return View(dashboardViewModel);
         }
 
-
-
         public async Task<ActionResult> ActiveUsersIndex(int? category, string? name)
         {
 
             var userRoleName = UserRoles.ActiveUser;
-            var activeUsers =  appUserRepository.GetAllUsersByIQueryable(userRoleName);
+            var activeUsers = unitOfWorkRespository.AppUserRepository.GetAllUsersByIQueryable(userRoleName);
 
-            
-
-            IQueryable<Event> events =  eventRepository.ActiveEventBytimeIQueryable();
+            IQueryable<Event> events = unitOfWorkRespository.EventRepository.ActiveEventBytimeIQueryable();
             
          
             if (category != null && category != 0)
@@ -62,7 +49,7 @@ namespace City_Vibe.Controllers
                 activeUsers = activeUsers.Where(p => p.NickName.Contains(name) || p.UserDescription!.Contains(name));
             }
 
-            List<Category> categories = dbContext.Categories.ToList();
+            List<Category> categories = await unitOfWorkRespository.CategoryRepository.GetAllAsync();
             categories.Insert(0, new Category { Name = "All", Id = 0 });
 
             UserListViewModel viewModel = new UserListViewModel
@@ -80,9 +67,9 @@ namespace City_Vibe.Controllers
         {
 
             var userRoleName = UserRoles.ActiveUser;
-            var activeUsers = await appUserRepository.GetUsersByRole(userRoleName);
+            var activeUsers = await unitOfWorkRespository.AppUserRepository.GetUsersByRole(userRoleName);
 
-            var userEvents = await eventRepository.ActiveEventBytime();
+            var userEvents = await unitOfWorkRespository.EventRepository.ActiveEventBytime();
 
             var dashboardViewModel = new ActiveActionsDasboardVM()
             {

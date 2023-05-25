@@ -24,7 +24,6 @@ namespace City_Vibe.Implement
             SaveClubRepository = new SaveClubRepository(applicationDbContext, httpContextAccessor);
             SaveEventRepository = new SaveEventRepository(applicationDbContext , httpContextAccessor);
             DashboardRepository = new DashboardRepository(applicationDbContext, httpContextAccessor);
-
         }
 
         public IAppointmentRepository AppointmentRepository { get; private set; }

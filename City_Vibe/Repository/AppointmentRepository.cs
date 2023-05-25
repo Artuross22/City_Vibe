@@ -1,37 +1,19 @@
 ﻿using City_Vibe.Data;
+using City_Vibe.Implement;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
 
 namespace City_Vibe.Repository
 {
-    public class AppointmentRepository : IAppointmentRepository
+    public class AppointmentRepository : GenericRepository<Appointment>, IAppointmentRepository
     {
         private readonly ApplicationDbContext dbContext;
 
-        public AppointmentRepository(ApplicationDbContext _context)
+        public AppointmentRepository(ApplicationDbContext _context) : base(_context)
         {
             dbContext = _context;
-        }
-
-        public bool Add(Appointment appointmentAdd)
-        {
-            dbContext.Add(appointmentAdd);
-            return Save();
-        }
-
-        public bool Delete(Appointment appointmentDe)
-        {
-            dbContext.Remove(appointmentDe);
-            return Save();
-        }
-
-        public bool Update(Appointment appointmentUp)
-        {
-            dbContext.Update(appointmentUp);
-            return Save();
         }
 
         public bool AddReplyAppointment(ReplyAppointment replyAppointment)

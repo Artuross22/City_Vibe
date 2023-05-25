@@ -18,20 +18,14 @@ namespace City_Vibe.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> logger;
-
         private readonly IClubRepository clubRepository;
         private readonly UserManager<AppUser> userManager;
-        private readonly SignInManager<AppUser> signInManager;
-        private readonly ILocationService _locationService;
         private readonly IHttpContextAccessor сontextAccsess;
 
-        public HomeController(IClubRepository clubRepositoryAccess, SignInManager<AppUser> signInManagerAccess, UserManager<AppUser> userManagerAccess, ILogger<HomeController> _logger, IHttpContextAccessor сontextAccs)
+        public HomeController(IClubRepository clubRepositoryAccess, UserManager<AppUser> userManagerAccess, ILogger<HomeController> _logger, IHttpContextAccessor сontextAccs)
         {
-            signInManager = signInManagerAccess;
             userManager = userManagerAccess;
             clubRepository = clubRepositoryAccess;
-            logger = _logger;
             сontextAccsess = сontextAccs;
         }
 

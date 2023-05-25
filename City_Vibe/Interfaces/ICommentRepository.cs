@@ -2,17 +2,12 @@
 
 namespace City_Vibe.Interfaces
 {
-    public interface ICommentRepository
+    public interface ICommentRepository : IGenericRepository<Comment>
     {
-        public IEnumerable<Comment> GetAll();
-        public  Task<Comment> GetByIdAsync(int id);
+        public  Task<Comment> GetByIdIncludeReplyCommentAsync(int id);
         Task<Comment> GetByIdAsyncNoTracking(int id);
         ICollection<Comment> GetAllCommentByEventId(int id);
-
         bool AddReplyComment(ReplyComment replyComment);
-        bool Add(Comment comment);
-        bool Update(Comment comment);
-        bool Delete(Comment comment);
         bool Save();
     }
 }

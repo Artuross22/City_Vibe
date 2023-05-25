@@ -6,22 +6,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-
-
 namespace City_Vibe.Controllers
 {
     public class CommentController : Controller
     {
-        private readonly ICommentRepository commentRepository;
-        private readonly UserManager<AppUser> userManager;
         public readonly IHttpContextAccessor сontextAccessor;
+        public readonly IUnitOfWork unitOfWorkRepo;
 
 
-        public CommentController(ICommentRepository commentRepo, UserManager<AppUser> userMngt , IHttpContextAccessor сontextAccess)
+        public CommentController(IHttpContextAccessor сontextAccess, IUnitOfWork unitOfWorkRepository)
         {
-            commentRepository = commentRepo;
-            userManager = userMngt;
             сontextAccessor = сontextAccess;
+            unitOfWorkRepo = unitOfWorkRepository;
         }
 
         [HttpPost]
@@ -38,7 +34,7 @@ namespace City_Vibe.Controllers
             c.Body = Comment.CommentText;
             c.DateTime = DateTime.Now;
             c.ForeignUserId = Guid.Parse(curUserId);
-            commentRepository.Add(c);
+            unitOfWorkRepo.CommentRepository.Add(c);
             return RedirectToAction("DetailEvent", "Event", new { id = c.EventId });
         }
 
@@ -55,7 +51,7 @@ namespace City_Vibe.Controllers
             r.CommentId = commentreply.IDComment;
             r.InternalUserId = Guid.Parse(curUserId);
             r.CreatedDate = DateTime.Now;
-            commentRepository.AddReplyComment(r);
+            unitOfWorkRepo.CommentRepository.AddReplyComment(r);
             return RedirectToAction("Index","Event");
         }
     }

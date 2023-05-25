@@ -37,8 +37,7 @@ namespace City_Vibe.Controllers
         [HttpGet("users")]
         public async Task<IActionResult> Index()
         {
-            var sd = _userManager.Users.ToList();
-
+            
             var users = await _userRepository.GetAllUsers();
             List<AppUserViewModel> result = new List<AppUserViewModel>();
             foreach (var user in users)
