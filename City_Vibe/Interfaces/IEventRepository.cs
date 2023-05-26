@@ -2,23 +2,24 @@
 
 namespace City_Vibe.Interfaces
 {
-    public interface IEventRepository
+    public interface IEventRepository : IGenericRepository<Event>
     {
-        Task<IEnumerable<Event>> GetAll();
+        Task<Event> GetByIdIncludeCategoryAndAddressAsync(int id);
 
-        Task<Event> GetByIdAsync(int id);
         Task<Event> GetByIdAsyncNoTracking(int id);
 
         Task<Event> GetByIdIncludeCommentsAsync(int id);
+
         Task<List<Event>> ActiveEventBytime();
+
+        int CheckingTheExistenceOfAnAppointment(int currentEventId, string curUserId);
+
+        Appointment ReplyAppointment(int currentEventId, string curUserId);
 
         IQueryable<Event> ActiveEventBytimeIQueryable();
 
         IQueryable<Event> ActiveEventAllIQueryable();
 
-        bool Add(Event eventAdd);
-        bool Update(Event eventUp);
-        bool Delete(Event eventDelete);
         bool Save();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using City_Vibe.Data;
+using City_Vibe.Implement;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using Microsoft.EntityFrameworkCore;
@@ -6,21 +7,21 @@ using SendGrid.Helpers.Mail;
 
 namespace City_Vibe.Repository
 {
-    public class ClubRepository : IClubRepository
+    public class ClubRepository : GenericRepository<Club>, IClubRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public ClubRepository(ApplicationDbContext context)
+        public ClubRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<Club>> GetAll()
-        {
-            return await _context.Club.ToListAsync();
-        }
+        //public async Task<IEnumerable<Club>> GetAll()
+        //{
+        //    return await _context.Club.ToListAsync();
+        //}
 
-        public async Task<Club> GetByIdAsync(int id)
+        public async Task<Club> GetByIdIncludeAddressAsync(int id)
         {
             return await _context.Club.Include(i => i.Address).FirstOrDefaultAsync(i => i.Id == id);
         }
@@ -47,17 +48,17 @@ namespace City_Vibe.Repository
             return await _context.Club.CountAsync();
         }
 
-        public bool Add(Club club)
-        {
-            _context.Add(club);
-            return Save();
-        }
+        //public bool Add(Club club)
+        //{
+        //    _context.Add(club);
+        //    return Save();
+        //}
 
-        public bool Delete(Club club)
-        {
-            _context.Remove(club);
-            return Save();
-        }
+        //public bool Delete(Club club)
+        //{
+        //    _context.Remove(club);
+        //    return Save();
+        //}
 
         public bool AddPostInfoInClub(PostInfoInClub postInfoInClub)
         {
@@ -71,11 +72,11 @@ namespace City_Vibe.Repository
             return saved > 0 ? true : false;
         }
 
-        public bool Update(Club club)
-        {
-            _context.Update(club);
-            return Save();
-        }
+        //public bool Update(Club club)
+        //{
+        //    _context.Update(club);
+        //    return Save();
+        //}
 
         public async Task<IEnumerable<PostInfoInClub>> GetPostInfoInClubByClubId(int id)
         {

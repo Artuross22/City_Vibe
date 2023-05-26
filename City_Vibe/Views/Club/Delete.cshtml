@@ -71,19 +71,15 @@
     </div>
 </form>
 
-<div class="form-group">
-    <dl>
-        <dt class="col-sm-2">
-            <form action="Delete" method="post">
-                <input type="hidden" asp-for="Id" />
-                <input type="submit" value="Confirm" class="btn btn-danger float-right mt-3" />
-            </form>
-        </dt>
-        <dt class="col-sm-8">
-            <li class="btn btn-success  float-right mt-3">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Index" asp-action="Index">Back</a>
-            </li>
-        </dt>
-    </dl>
-</div>
+<form asp-action="Delete" asp-controller="Club" method="post">
+    <button type="submit" class="btn btn-danger float-right mt-10">Confirm</button>
+</form>
+
+<form asp-action="DetailClub" asp-controller="Club" asp-route-id="@Model.Id">
+    <button type="submit" class="btn btn-success float-right mt-20 ">Back</button>
+</form>
+
+
+
+
 

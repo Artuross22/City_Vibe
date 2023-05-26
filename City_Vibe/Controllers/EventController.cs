@@ -12,37 +12,27 @@ namespace City_Vibe.Controllers
 {
     public class EventController : Controller
     {
-        private readonly IEventRepository eventRepository;
         private readonly IPhotoService photoService;
         public readonly IHttpContextAccessor сontextAccessor;
-        public readonly ICommentRepository commentRepository;
         private readonly ISaveEventRepository saveEventRepository;
-        public readonly ApplicationDbContext dbContext;
         public readonly IUnitOfWork unitOfWorkRepository;
 
-
-
-        public EventController(IEventRepository eventRepo,
+        public EventController(
             IPhotoService photoSe, 
-            IHttpContextAccessor сontextAccsess, 
-            ICommentRepository commentRepo
-            ,ISaveEventRepository saveEventRepo,
-            ApplicationDbContext DbContexts,
+            IHttpContextAccessor сontextAccsess,
+            ISaveEventRepository saveEventRepo,
             IUnitOfWork unitOfWorkRepo
             )
         {
-            eventRepository = eventRepo;
             photoService = photoSe;
             сontextAccessor = сontextAccsess;
-            commentRepository = commentRepo;
-            dbContext = DbContexts;
             saveEventRepository = saveEventRepo;
             unitOfWorkRepository = unitOfWorkRepo;
         }
 
         public async Task<IActionResult> Index(int? category, string? name)
         {
-            IQueryable<Event> eventVM = eventRepository.ActiveEventAllIQueryable();
+            IQueryable<Event> eventVM = unitOfWorkRepository.EventRepository.ActiveEventAllIQueryable();
 
             if (category != null && category != 0)
             {
@@ -53,7 +43,7 @@ namespace City_Vibe.Controllers
                 eventVM = eventVM.Where(p => p.Name!.Contains(name));
             }
 
-            List<Category> categories = dbContext.Categories.ToList();
+            List<Category> categories = await unitOfWorkRepository.CategoryRepository.GetAllAsync();
 
             categories.Insert(0, new Category { Name = "All", Id = 0 });
 
@@ -67,17 +57,15 @@ namespace City_Vibe.Controllers
         }
 
      
-        public async Task<IActionResult> DetailEvent(int id)
+        public async Task<IActionResult> DetailEvent(int currentEventId)
         {
          
-            Event eventDetail = await eventRepository.GetByIdAsync(id);
-            var curUserId = сontextAccessor.HttpContext.User.GetUserId();
-            var curSaveEvent = await saveEventRepository.FindEventByIdAsync(id);
-            var сheckAppointment = dbContext.Appointments.Where(x => x.AppUserId == curUserId).Where(e => e.EventId == id).ToList().Count();
+            Event eventDetail = await unitOfWorkRepository.EventRepository.GetByIdIncludeCategoryAndAddressAsync(currentEventId);
+            var currentUserId = сontextAccessor.HttpContext.User.GetUserId();
+            var curSaveEvent = await saveEventRepository.FindEventByIdAsync(currentEventId);
 
-
-            var replyAppointment = dbContext.Appointments.Include(x => x.ReplyAppointments).FirstOrDefault(x => x.AppUserId == curUserId && x.EventId == id);
-
+            var сheckAppointment = unitOfWorkRepository.EventRepository.CheckingTheExistenceOfAnAppointment(currentEventId , currentUserId);
+            var replyAppointment = unitOfWorkRepository.EventRepository.ReplyAppointment(currentEventId, currentUserId);
 
             var viewModel = new EventDetailViewModel
             {
@@ -96,7 +84,7 @@ namespace City_Vibe.Controllers
                 SaveEvents = curSaveEvent.ToList(),
                 CheckAppointment = сheckAppointment,
             };
-            var listofComment = commentRepository.GetAllCommentByEventId(id);
+            var listofComment = unitOfWorkRepository.CommentRepository.GetAllCommentByEventId(currentEventId);
             viewModel.Comments = listofComment;
 
             var categoryEvent = unitOfWorkRepository.CategoryRepository.GetById(eventDetail.CategoryId);
@@ -159,7 +147,8 @@ namespace City_Vibe.Controllers
                     eventAdd.ClubId = eventVM.ClubId;
                 }
 
-                eventRepository.Add(eventAdd);
+                unitOfWorkRepository.EventRepository.Add(eventAdd);
+                unitOfWorkRepository.Save();
                 return RedirectToAction("Index");
             }
             else
@@ -174,7 +163,7 @@ namespace City_Vibe.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var editEvent = await eventRepository.GetByIdAsync(id);
+            var editEvent = await unitOfWorkRepository.EventRepository.GetByIdIncludeCategoryAndAddressAsync(id);
             if (editEvent == null) return View("Error");
 
             var eventVM = new EditEventViewModel
@@ -211,7 +200,7 @@ namespace City_Vibe.Controllers
                 return View("Edit", eventVM);
             }
 
-            var userEvent = await eventRepository.GetByIdAsyncNoTracking(id);
+            var userEvent = await unitOfWorkRepository.EventRepository.GetByIdAsyncNoTracking(id);
 
 
 
@@ -245,7 +234,8 @@ namespace City_Vibe.Controllers
                     }
                 };
 
-                eventRepository.Update(eventUpdate);
+                unitOfWorkRepository.EventRepository.Update(eventUpdate);
+                unitOfWorkRepository.Save();
 
                 return RedirectToAction("Index");
             }
@@ -258,7 +248,7 @@ namespace City_Vibe.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var eventDetails = await eventRepository.GetByIdAsync(id);
+            var eventDetails = await unitOfWorkRepository.EventRepository.GetByIdIncludeCategoryAndAddressAsync(id);
 
             var EventList = unitOfWorkRepository.CategoryRepository.GetAll();
             ViewBag.Categories = new SelectList(EventList, "Id", "Name");
@@ -270,7 +260,7 @@ namespace City_Vibe.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
-            var eventDetails = await eventRepository.GetByIdAsync(id);
+            var eventDetails = await unitOfWorkRepository.EventRepository.GetByIdIncludeCategoryAndAddressAsync(id);
             
 
             if (eventDetails == null)
@@ -283,8 +273,10 @@ namespace City_Vibe.Controllers
                 _ = photoService.DeletePhotoAsync(eventDetails.Image);
             }
 
-         
-            eventRepository.Delete(eventDetails);
+
+            unitOfWorkRepository.EventRepository.Delete(eventDetails);
+            unitOfWorkRepository.Save();
+
             return RedirectToAction("Index");
         }
 

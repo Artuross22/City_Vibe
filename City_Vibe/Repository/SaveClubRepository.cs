@@ -2,10 +2,8 @@
 using City_Vibe.ExtensionMethod;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using SendGrid.Helpers.Mail;
-using System.Collections;
+
 
 namespace City_Vibe.Repository
 {
@@ -70,8 +68,6 @@ namespace City_Vibe.Repository
         {
             var saved = dbcontext.SaveChanges();
             return saved > 0 ? true : false;
-        }
-
-       
+        }     
     }
 }

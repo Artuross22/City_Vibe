@@ -18,7 +18,7 @@
 
         IEventRepository EventRepository { get; }
 
-        IlikeClubRepository likeClubRepository { get; }
+        IlikeClubRepository LikeClubRepository { get; }
 
         ISaveClubRepository SaveClubRepository { get; }
 

@@ -12,16 +12,18 @@ namespace City_Vibe.Controllers
     public class DashboardController : Controller
     {
         public IUnitOfWork unitOfWorkRespository;
+        public IDashboardRepository dashboardRepository;
 
-        public DashboardController(IUnitOfWork unitOfWorkRespo)
+        public DashboardController(IUnitOfWork unitOfWorkRespo, IDashboardRepository dashboardRepos)
         {
             unitOfWorkRespository = unitOfWorkRespo;
+            dashboardRepository = dashboardRepos;
         }
 
         public async Task<IActionResult> Index()
         {
-            var userEvents = await unitOfWorkRespository.DashboardRepository.GetAllUserEvent();
-            var userClubs = await  unitOfWorkRespository.DashboardRepository.GetAllUserClubs();
+            var userEvents = await dashboardRepository.GetAllUserEvent();
+            var userClubs = await dashboardRepository.GetAllUserClubs();
             var dashboardViewModel = new DashboardViewModel()
             {
                 Events = userEvents,

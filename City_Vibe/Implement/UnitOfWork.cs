@@ -19,7 +19,7 @@ namespace City_Vibe.Implement
             ClubRepository = new ClubRepository(applicationDbContext);
             EventRepository = new EventRepository(applicationDbContext);
             CommentRepository = new CommentRepository(applicationDbContext);
-            likeClubRepository = new likeClubRepository(applicationDbContext);
+            LikeClubRepository = new likeClubRepository(applicationDbContext);
 
             SaveClubRepository = new SaveClubRepository(applicationDbContext, httpContextAccessor);
             SaveEventRepository = new SaveEventRepository(applicationDbContext , httpContextAccessor);
@@ -40,7 +40,7 @@ namespace City_Vibe.Implement
 
         public IEventRepository EventRepository { get; private set; }
 
-        public IlikeClubRepository likeClubRepository { get; private set; }
+        public IlikeClubRepository LikeClubRepository { get; private set; }
 
         public ISaveClubRepository SaveClubRepository { get; private set; }
 

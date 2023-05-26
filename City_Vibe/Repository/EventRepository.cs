@@ -1,57 +1,23 @@
 ﻿using City_Vibe.Data;
+using City_Vibe.Implement;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
+
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using Microsoft.VisualBasic;
-using SendGrid.Helpers.Mail;
-using System.Collections;
+
 
 namespace City_Vibe.Repository
 {
-    public class EventRepository : IEventRepository
+    public class EventRepository : GenericRepository<Event>, IEventRepository
     {
         private readonly ApplicationDbContext context;
 
-        public EventRepository(ApplicationDbContext _context)
+        public EventRepository(ApplicationDbContext _context) : base(_context)
         {
             context = _context;
         }
 
-        public bool Add(Event eventAdd)
-        {
-            context.Add(eventAdd);
-            return Save();
-        }
-
-        public bool Delete(Event eventDe)
-        {
-            context.Remove(eventDe);
-            return Save();
-        }
-
-        public bool Update(Event eventUp)
-        {
-            context.Update(eventUp);
-            return Save();
-        }
-
-        public bool Save()
-        {
-            var saved = context.SaveChanges();
-            return saved > 0 ? true : false;
-        }
-
-
-
-        public async Task<IEnumerable<Event>> GetAll()
-        {
-            return await context.Events.ToListAsync();
-        }
-
-        public async Task<Event> GetByIdAsync(int id)
+        public async Task<Event> GetByIdIncludeCategoryAndAddressAsync(int id)
         {
             return await context.Events.Include(i => i.Category).Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
         }
@@ -83,6 +49,25 @@ namespace City_Vibe.Repository
         {
             return  context.Events.Include(x => x.Category).OrderByDescending(x => x.Data);
         }
+
+        public int CheckingTheExistenceOfAnAppointment(int currentEventId, string currentUserId)
+        {
+            var сheckAppointment =  context.Appointments.Where(x => x.AppUserId == currentUserId).Where(e => e.EventId == currentEventId).ToList().Count();
+            return сheckAppointment;
+        }
+
+        public Appointment ReplyAppointment(int currentEventId, string currentUserId)
+        {
+            return context.Appointments.Include(x => x.ReplyAppointments).FirstOrDefault(x => x.AppUserId == currentUserId && x.EventId == currentEventId);         
+        }
+
+        
+        public bool Save()
+        {
+            var saved = context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+
     }
 }
 

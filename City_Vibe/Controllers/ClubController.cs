@@ -11,25 +11,21 @@ namespace City_Vibe.Controllers
     public class ClubController : Controller
     {
     
-        private readonly IClubRepository clubRepository;
         private readonly IPhotoService photoService;
         private readonly IHttpContextAccessor сontextAccessor;
         private readonly ISaveClubRepository saveClubRepository;
-        private readonly IlikeClubRepository likeClubRepository;
-        private readonly IClubCommentRepository clubCommentRepository;
-
         private readonly IUnitOfWork unitOfWorkRepository;
 
 
-        public ClubController(IClubRepository clubRepo, IPhotoService photoServ, IHttpContextAccessor сontextAccess,
-          ISaveClubRepository saveClubRepo, IlikeClubRepository ilikeClubRepo, IClubCommentRepository clubCommentRepo, IUnitOfWork unitOfWorkRepo)
+        public ClubController(
+            IPhotoService photoServ,
+            IHttpContextAccessor сontextAccess,
+            ISaveClubRepository saveClubRepo, 
+            IUnitOfWork unitOfWorkRepo)
         {
-            clubRepository = clubRepo;
-            photoService = photoServ;
+            photoService = photoServ; 
             сontextAccessor = сontextAccess;
             saveClubRepository = saveClubRepo;
-            likeClubRepository = ilikeClubRepo;
-            clubCommentRepository = clubCommentRepo;
             unitOfWorkRepository = unitOfWorkRepo;
         }
 
@@ -46,14 +42,14 @@ namespace City_Vibe.Controllers
 
             var clubs = category switch
             {
-                -1 => await clubRepository.GetSliceAsync((page - 1) * pageSize, pageSize),
-                _ => await clubRepository.GetClubsByCategoryAndSliceAsync(cat, (page - 1) * pageSize, pageSize),
+                -1 => await unitOfWorkRepository.ClubRepository.GetSliceAsync((page - 1) * pageSize, pageSize),
+                _ => await unitOfWorkRepository.ClubRepository.GetClubsByCategoryAndSliceAsync(cat, (page - 1) * pageSize, pageSize),
             };
 
             var count = category switch
             {
-                -1 => await clubRepository.GetCountAsync(),
-                _ => await clubRepository.GetCountByCategoryAsync(cat),
+                -1 => await unitOfWorkRepository.ClubRepository.GetCountAsync(),
+                _ => await unitOfWorkRepository.ClubRepository.GetCountByCategoryAsync(cat),
             };
 
             List<Category> categories = await unitOfWorkRepository.CategoryRepository.GetAllAsync();
@@ -106,7 +102,8 @@ namespace City_Vibe.Controllers
                     }
                 };
 
-                clubRepository.Add(club);
+                unitOfWorkRepository.ClubRepository.Add(club);
+                unitOfWorkRepository.Save();
                 return RedirectToAction("Index");
             }
             else
@@ -119,11 +116,11 @@ namespace City_Vibe.Controllers
    
         public async Task<IActionResult> DetailClub(int id)
         {
-            Club club = await clubRepository.GetByIdAsync(id);
-            var events = await clubRepository.GetClubsByEventId(id);
-            var curSaveClub = await saveClubRepository.FindClubsByIdAsync(id);
-            var countlikes = likeClubRepository.GetLikeClubsByClubId(id);
-            var getClubInformation = await clubRepository.GetPostInfoInClubByClubId(id);
+            Club club = await unitOfWorkRepository.ClubRepository.GetByIdIncludeAddressAsync(id);
+            var events = await unitOfWorkRepository.ClubRepository.GetClubsByEventId(id);
+            var curSaveClub = await unitOfWorkRepository.SaveClubRepository.FindClubsByIdAsync(id);
+            var countlikes = unitOfWorkRepository.LikeClubRepository.GetLikeClubsByClubId(id);
+            var getClubInformation = await unitOfWorkRepository.ClubRepository.GetPostInfoInClubByClubId(id);
 
             var detailClubViewModel = new DetailClubViewModel
             {
@@ -159,7 +156,7 @@ namespace City_Vibe.Controllers
         [HttpGet]
         public async Task<IActionResult> EditClub(int id)
         {
-            var club = await clubRepository.GetByIdAsync(id);
+            var club = await unitOfWorkRepository.ClubRepository.GetByIdAsync(id);
             if (club == null) return View("Error");
             var clubVM = new EditClubViewModel
             {
@@ -188,7 +185,7 @@ namespace City_Vibe.Controllers
                 return View("EditClub", clubVM);
             }
 
-            var userClub = await clubRepository.GetByIdAsyncNoTracking(id);
+            var userClub = await unitOfWorkRepository.ClubRepository.GetByIdAsyncNoTracking(id);
 
             if (userClub != null)
             {
@@ -215,7 +212,8 @@ namespace City_Vibe.Controllers
                     CategoryId = clubVM.CategoryId,
                 };
 
-                clubRepository.Update(club);
+                unitOfWorkRepository.ClubRepository.Update(club);
+                unitOfWorkRepository.Save();
 
                 return RedirectToAction("Index");
             }
@@ -228,7 +226,7 @@ namespace City_Vibe.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var clubDetails = await clubRepository.GetByIdAsync(id);
+            var clubDetails = await unitOfWorkRepository.ClubRepository.GetByIdAsync(id);
             if (clubDetails == null) return View("Error");
             return View(clubDetails);
         }
@@ -238,7 +236,7 @@ namespace City_Vibe.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteClub(int id)
         {
-            var clubDetails = await clubRepository.GetByIdAsync(id);
+            var clubDetails = await unitOfWorkRepository.ClubRepository.GetByIdAsync(id);
 
             if (clubDetails == null)
             {
@@ -250,7 +248,8 @@ namespace City_Vibe.Controllers
                 _ = photoService.DeletePhotoAsync(clubDetails.Image);
             }
 
-            clubRepository.Delete(clubDetails);
+            unitOfWorkRepository.ClubRepository.Delete(clubDetails);
+            unitOfWorkRepository.Save();
             return RedirectToAction("Index");
         }
 
@@ -262,8 +261,8 @@ namespace City_Vibe.Controllers
             var deleteInterestingClub = saveClubRepository.FindSafeClubusingUserAndClub(id);
             if (deleteInterestingClub.Count != 0)
             {
-                var deleteClub = await saveClubRepository.FindClubById(id);
-                saveClubRepository.Delete(deleteClub);
+                var deleteClub = await unitOfWorkRepository.SaveClubRepository.FindClubById(id);
+                unitOfWorkRepository.SaveClubRepository.Delete(deleteClub);
             }
             else
             {
@@ -272,7 +271,7 @@ namespace City_Vibe.Controllers
                     AppUserId = curUserId,
                     ClubId = id
                 };
-                saveClubRepository.Add(saveClub);
+                unitOfWorkRepository.SaveClubRepository.Add(saveClub);
             }
 
             return RedirectToAction("DetailClub", new { id = id });
@@ -290,7 +289,7 @@ namespace City_Vibe.Controllers
         {
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
-            var checkLikes = await likeClubRepository.FindLikeByUserIdAndClubId(curUserId, clubId);
+            var checkLikes = await unitOfWorkRepository.LikeClubRepository.FindLikeByUserIdAndClubId(curUserId, clubId);
 
             if (checkLikes.Count <= 0)
             {
@@ -304,12 +303,12 @@ namespace City_Vibe.Controllers
                     Like = countLike,
                 };
 
-                likeClubRepository.Add(addLike);
+                unitOfWorkRepository.LikeClubRepository.Add(addLike);
             }
             else
             {
-                var delete = await likeClubRepository.FindLikeClubByUserId(curUserId);
-                likeClubRepository.Delete(delete);
+                var delete = await unitOfWorkRepository.LikeClubRepository.FindLikeClubByUserId(curUserId);
+                unitOfWorkRepository.LikeClubRepository.Delete(delete);
             }
             return RedirectToAction("DetailClub", new { id = clubId });
         }
@@ -351,15 +350,15 @@ namespace City_Vibe.Controllers
                 var result = await photoService.AddPhotoAsync(postInfo.Image);
                 addPostInfo.Image = result.Url.ToString();
             }
-            clubRepository.AddPostInfoInClub(addPostInfo);
+            unitOfWorkRepository.ClubRepository.AddPostInfoInClub(addPostInfo);
             return View();
         }
 
 
         public async Task<ActionResult> PostInformationDetail(int postInfoId)
         {
-            var clubInfo = await clubRepository.FindByIdPostInfo(postInfoId);
-            var listofComment = clubCommentRepository.GetAllCommentClubInfoById(postInfoId);
+            var clubInfo = await unitOfWorkRepository.ClubRepository.FindByIdPostInfo(postInfoId);
+            var listofComment = unitOfWorkRepository.ClubCommentRepository.GetAllCommentClubInfoById(postInfoId);
 
             var viewClubInfo = new PostInformationDetailViewModel
             {
