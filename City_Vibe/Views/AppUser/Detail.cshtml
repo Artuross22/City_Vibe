@@ -28,24 +28,29 @@
             @Html.DisplayFor(model => model.UserName)
         </dd>
 
+     
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.City)
+            @Html.DisplayNameFor(model => model.Address.Region)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.City)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Region)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Region)
+            @Html.DisplayFor(model => model.Address.Region)
         </dd>
    
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
+            @Html.DisplayNameFor(model => model.Address.Street)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Location)
+            @Html.DisplayFor(model => model.Address.Street)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Address.City)
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                var CityDisplay = Model.Address?.City ?? string.Empty;
+            }
+            @Html.DisplayFor(model => CityDisplay)
         </dd>
     </dl>
 

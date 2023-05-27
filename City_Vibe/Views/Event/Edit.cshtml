@@ -9,7 +9,13 @@
 
 
 <form method="post" asp-action="Edit" enctype="multipart/form-data">
-    <input type="hidden" value="AddressId" id="AddressId" />
+
+    <input asp-for="AddressId" type="hidden" class="form-control"/>
+    <input asp-for="AppUserId" type="hidden" class="form-control"/>
+    <input asp-for="URL" type="hidden" class="form-control"/>
+    <input asp-for="Address.Id" type="hidden" class="form-control"/>
+        
+
     <div class="form-group">
         <label asp-for="Name">Title</label>
         <input asp-for="Name" class="form-control" placeholder="Title">

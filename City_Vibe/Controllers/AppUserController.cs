@@ -13,6 +13,7 @@ using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Data;
+using City_Vibe.ExtensionMethod;
 
 namespace City_Vibe.Controllers
 {
@@ -22,17 +23,20 @@ namespace City_Vibe.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IPhotoService _photoService;
         private readonly RoleManager<IdentityRole> _roleManager;
+        public readonly IHttpContextAccessor сontextAccessor;
 
         public AppUserController(
             IAppUserRepository userRepository,
             UserManager<AppUser> userManager,
             IPhotoService photoService,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IHttpContextAccessor сontextAccessor)
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _photoService = photoService;
             _roleManager = roleManager;
+            this.сontextAccessor = сontextAccessor;
         }
 
         [HttpGet("users")]
@@ -60,18 +64,19 @@ namespace City_Vibe.Controllers
     
         public async Task<IActionResult> Detail(string id)
         {
-            var user = await _userRepository.GetUserById(id);
-            if (user == null)
+            var returnUser = await _userRepository.GetUserByIdIncludeAdress(id);
+            if (returnUser == null)
             {
                 return RedirectToAction("Index", "Users");
             }
             var userDetailViewModel = new AppUserDetailViewModel()
             {
-                Id = user.Id,
-                City = user.City,
-                Region = user.Region,
-                UserName = user.UserName,
-                ProfileImageUrl = user.ProfileImageUrl ?? "/img/avatar-male-4.jpg",
+                Id = returnUser.Id,
+                City = returnUser.City,
+                Region = returnUser.Region,
+                UserName = returnUser.UserName,
+                Address = returnUser.Address,
+                ProfileImageUrl = returnUser.ProfileImageUrl ?? "/img/avatar-male-4.jpg",
             };
             return View(userDetailViewModel);
         }
@@ -82,16 +87,24 @@ namespace City_Vibe.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            if (user == null)
+          // var curUserId =  сontextAccessor.HttpContext.User.GetUserId();
+            
+            var returnUser = await _userRepository.GetUserByIdIncludeAdress(user.Id);
+
+            if (returnUser == null)
             {
                 return View("Error");
             }
 
             var editMV = new EditProfileViewModel()
             {
-                City = user.City,
-                Region = user.Region,
-                ProfileImageUrl = user.ProfileImageUrl,
+                City = returnUser.City,
+                Region = returnUser.Region,
+                ProfileImageUrl = returnUser.ProfileImageUrl,
+                AddressId = returnUser.AddressId,
+                Address = returnUser.Address,
+         
+                
             };
             return View(editMV);
         }
@@ -113,7 +126,7 @@ namespace City_Vibe.Controllers
                 return View("Error");
             }
 
-            if (editVM.Image != null) // only update profile image
+            if (editVM.Image != null) 
             {
                 var photoResult = await _photoService.AddPhotoAsync(editVM.Image);
 
@@ -135,15 +148,7 @@ namespace City_Vibe.Controllers
                 await _userManager.UpdateAsync(user);
             }
 
-            Address adress = new Address
-            {
-                City = editVM.Address.City,
-                Region = editVM.Address.Region,
-                ZipCode = editVM.Address.ZipCode,
-                Street = editVM.Address.Street,
-            };
-
-            user.Address = adress;
+            user.Address = editVM.Address;
 
             await _userManager.UpdateAsync(user);
 

@@ -25,6 +25,7 @@ namespace City_Vibe.Models
         [ForeignKey("Address")]
         public int? AddressId { get; set; }
         public Address? Address { get; set; }
+
         public ICollection<Club> Clubs { get; set; }
         public ICollection<Event> Event { get; set; }
         public ICollection<SaveClub> SaveClubs { get; set; }

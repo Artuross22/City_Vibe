@@ -1,11 +1,10 @@
-﻿using City_Vibe.Data;
-using City_Vibe.ExtensionMethod;
+﻿using City_Vibe.ExtensionMethod;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using City_Vibe.ViewModels.EventController;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+
 
 
 namespace City_Vibe.Controllers
@@ -175,12 +174,10 @@ namespace City_Vibe.Controllers
                 URL = editEvent.Image,
                 CategoryId = editEvent.CategoryId,
                 Category = editEvent.Category,
-                Address = new Address
-                {
-                    Street = editEvent.Address.Street,
-                    City = editEvent.Address.City,
-                    Region = editEvent.Address.Region,
-                }
+                Address = editEvent.Address,
+                AppUserId = editEvent.AppUserId,
+                 
+               
             };
 
             var EventList = unitOfWorkRepository.CategoryRepository.GetAll();
@@ -226,12 +223,8 @@ namespace City_Vibe.Controllers
                     AddressId = eventVM.AddressId,
                     Data = eventVM.CreatedDate,
                     CategoryId = eventVM.CategoryId,
-                    Address = new Address
-                    {
-                        Street = eventVM.Address.Street,
-                        City = eventVM.Address.City,
-                        Region = eventVM.Address.Region,
-                    }
+                    Address = eventVM.Address,
+                    AppUserId = eventVM.AppUserId,
                 };
 
                 unitOfWorkRepository.EventRepository.Update(eventUpdate);

@@ -1,4 +1,6 @@
-﻿namespace City_Vibe.ViewModels.AppUserController
+﻿using City_Vibe.Models;
+
+namespace City_Vibe.ViewModels.AppUserController
 {
     public class AppUserDetailViewModel
     {
@@ -7,6 +9,8 @@
         public string? City { get; set; }
         public string? Region { get; set; }
         public string ProfileImageUrl { get; set; }
+        public Address? Address { get; set; }
+
 
         public string Location => (City, Region) switch
         {

@@ -10,6 +10,7 @@ namespace City_Vibe.ViewModels.AppUserController
             public string? City { get; set; }
             public string? Region { get; set; }
             public IFormFile? Image { get; set; }
-           public Address Address { get; set; }
+            public Address? Address { get; set; }
+            public int? AddressId { get; set; }
     }
 }

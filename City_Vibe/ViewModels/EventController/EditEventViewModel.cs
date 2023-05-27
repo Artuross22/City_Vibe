@@ -10,6 +10,7 @@ namespace City_Vibe.ViewModels.EventController
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public string? AppUserId { get; set; }
 
         [Required]
         public IFormFile Image { get; set; }

@@ -73,5 +73,11 @@ namespace City_Vibe.Repository
 
             return userByRole;
         }
+
+        public async Task<AppUser> GetUserByIdIncludeAdress(string id)
+        {
+             var result = await _dbContext.AppUser.Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
+            return result;
+        }
     }
 }

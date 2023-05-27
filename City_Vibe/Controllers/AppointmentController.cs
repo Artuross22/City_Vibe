@@ -27,9 +27,7 @@ namespace City_Vibe.Controllers
             var userappointment = new AppointmentViewModel();
             userappointment.AppUserId = curUserId;
             userappointment.EventId = eventId;
-            return View(userappointment);
-
-          
+            return View(userappointment);         
         }
 
 

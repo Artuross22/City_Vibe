@@ -1,4 +1,5 @@
 ﻿using City_Vibe.Models;
+using NuGet.ProjectModel;
 
 namespace City_Vibe.Interfaces
 {
@@ -7,6 +8,8 @@ namespace City_Vibe.Interfaces
         Task<IEnumerable<AppUser>> GetAllUsers();
         Task<AppUser> GetUserById(string id);
 
+        Task< AppUser> GetUserByIdIncludeAdress(string id);
+
         Task<IEnumerable<AppUser>> GetUsersByRole(string role);
 
         IQueryable<AppUser> GetAllUsersByIQueryable(string role);
@@ -14,5 +17,6 @@ namespace City_Vibe.Interfaces
         bool Update(AppUser user);
         bool Delete(AppUser user);
         bool Save();
+
     }
 }
