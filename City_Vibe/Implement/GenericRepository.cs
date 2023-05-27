@@ -19,16 +19,14 @@ namespace City_Vibe.Implement
             return await appDbContext.Set<TEntity>().ToListAsync();
         }
 
-        public IEnumerable<Category> GetAll()
+        public IEnumerable<TEntity> GetAll()
         {
-          
-            return appDbContext.Categories.ToList();
-          
+             return appDbContext.Set<TEntity>().ToList();         
         }
 
-        public Category GetById(int id)
+        public TEntity GetById<T>(T id)
         {
-            return appDbContext.Categories.FirstOrDefault(x => x.Id == id);
+            return appDbContext.Set<TEntity>().Find(id);
         }
 
         public async Task<TEntity?> GetByIdAsync<T>(T id)

@@ -21,16 +21,17 @@ namespace City_Vibe.Controllers
         private readonly IAppUserRepository _userRepository;
         private readonly UserManager<AppUser> _userManager;
         private readonly IPhotoService _photoService;
-        private readonly ApplicationDbContext _dbContext;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AppUserController(IAppUserRepository userRepository, UserManager<AppUser> userManager, IPhotoService photoService,
-            ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager)
+        public AppUserController(
+            IAppUserRepository userRepository,
+            UserManager<AppUser> userManager,
+            IPhotoService photoService,
+            RoleManager<IdentityRole> roleManager)
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _photoService = photoService;
-            _dbContext = dbContext;
             _roleManager = roleManager;
         }
 

@@ -3,12 +3,9 @@ using City_Vibe.ExtensionMethod;
 using City_Vibe.Helpers;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
-using City_Vibe.Repository;
-using City_Vibe.ViewModels.AccountController;
 using City_Vibe.ViewModels.HomeViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Globalization;
@@ -18,15 +15,19 @@ namespace City_Vibe.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IClubRepository clubRepository;
+        private readonly IUnitOfWork unitOfWorkRepository;
         private readonly UserManager<AppUser> userManager;
         private readonly IHttpContextAccessor сontextAccsess;
 
-        public HomeController(IClubRepository clubRepositoryAccess, UserManager<AppUser> userManagerAccess, ILogger<HomeController> _logger, IHttpContextAccessor сontextAccs)
+        public HomeController(
+            IUnitOfWork unitOfWorkRepo,
+            UserManager<AppUser> userManagerAccess,
+            ILogger<HomeController> _logger,
+            IHttpContextAccessor сontextAccs)
         {
             userManager = userManagerAccess;
-            clubRepository = clubRepositoryAccess;
             сontextAccsess = сontextAccs;
+            unitOfWorkRepository = unitOfWorkRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -45,7 +46,7 @@ namespace City_Vibe.Controllers
                 homeViewModel.State = ipInfo.Region;
                 if (homeViewModel.City != null)
                 {
-                    homeViewModel.Clubs = await clubRepository.GetClubByCity(homeViewModel.City);
+                    homeViewModel.Clubs = await unitOfWorkRepository.ClubRepository.GetClubByCity(homeViewModel.City);
                 }
                 return View(homeViewModel);
             }

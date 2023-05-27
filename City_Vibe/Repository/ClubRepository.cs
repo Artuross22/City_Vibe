@@ -16,11 +16,6 @@ namespace City_Vibe.Repository
             _context = context;
         }
 
-        //public async Task<IEnumerable<Club>> GetAll()
-        //{
-        //    return await _context.Club.ToListAsync();
-        //}
-
         public async Task<Club> GetByIdIncludeAddressAsync(int id)
         {
             return await _context.Club.Include(i => i.Address).FirstOrDefaultAsync(i => i.Id == id);
@@ -48,18 +43,6 @@ namespace City_Vibe.Repository
             return await _context.Club.CountAsync();
         }
 
-        //public bool Add(Club club)
-        //{
-        //    _context.Add(club);
-        //    return Save();
-        //}
-
-        //public bool Delete(Club club)
-        //{
-        //    _context.Remove(club);
-        //    return Save();
-        //}
-
         public bool AddPostInfoInClub(PostInfoInClub postInfoInClub)
         {
             _context.Add(postInfoInClub);
@@ -72,11 +55,6 @@ namespace City_Vibe.Repository
             return saved > 0 ? true : false;
         }
 
-        //public bool Update(Club club)
-        //{
-        //    _context.Update(club);
-        //    return Save();
-        //}
 
         public async Task<IEnumerable<PostInfoInClub>> GetPostInfoInClubByClubId(int id)
         {

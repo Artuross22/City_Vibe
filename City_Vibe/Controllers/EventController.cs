@@ -14,8 +14,8 @@ namespace City_Vibe.Controllers
     {
         private readonly IPhotoService photoService;
         public readonly IHttpContextAccessor сontextAccessor;
-        private readonly ISaveEventRepository saveEventRepository;
         public readonly IUnitOfWork unitOfWorkRepository;
+        private readonly ISaveEventRepository saveEventRepository;
 
         public EventController(
             IPhotoService photoSe, 

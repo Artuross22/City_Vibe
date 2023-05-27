@@ -1,33 +1,31 @@
 ﻿using City_Vibe.Data;
+using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using City_Vibe.ViewModels.RoleController;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace City_Vibe.Controllers
 {
 
     public class RoleController : Controller
     {
-        private readonly ApplicationDbContext _db;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUnitOfWork unitOfWorkRepository;
 
 
-        public RoleController(ApplicationDbContext db, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
+        public RoleController(ApplicationDbContext db, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager , IUnitOfWork unitOfWorkRepos)
         {
-            _db = db;
             _roleManager = roleManager;
             _userManager = userManager;
+            unitOfWorkRepository = unitOfWorkRepos;
         }
 
 
         public IActionResult Index()
         {
-            var roles = _db.Roles.ToList();
+            var roles = unitOfWorkRepository.RoleRepository.GetAll();
             return View(roles);
         }
 
@@ -40,8 +38,7 @@ namespace City_Vibe.Controllers
             }
             else
             {
-                //update
-                var user = _db.Roles.FirstOrDefault(u => u.Id == id);
+                var user = unitOfWorkRepository.RoleRepository.GetById(id);
                 return View(user);
             }
         }
@@ -62,14 +59,14 @@ namespace City_Vibe.Controllers
             else
             {
                 //update
-                var roleDb = _db.Roles.FirstOrDefault(u => u.Id == role.Id);
-                if (roleDb == null)
+                var roleById = unitOfWorkRepository.RoleRepository.GetById(role.Id);
+                if (roleById == null)
                 {
                     return RedirectToAction(nameof(Index));
                 }
-                roleDb.Name = role.Name;
-                roleDb.NormalizedName = role.Name.ToUpper();
-                var result = await _roleManager.UpdateAsync(roleDb);
+                roleById.Name = role.Name;
+                roleById.NormalizedName = role.Name.ToUpper();
+                var result = await _roleManager.UpdateAsync(roleById);
             }
             return RedirectToAction(nameof(Index));
 
@@ -80,18 +77,19 @@ namespace City_Vibe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
-            var roleDb = _db.Roles.FirstOrDefault(u => u.Id == id);
-            if (roleDb == null)
+            var roleById = unitOfWorkRepository.RoleRepository.GetById(id);
+            if (roleById == null)
             {
                 return RedirectToAction(nameof(Index));
             }
 
-            var userRolesForThisRole = _db.UserRoles.Where(u => u.RoleId == id).Count();
+            var userRolesForThisRole = unitOfWorkRepository.RoleRepository.UserRolesCount(id);
+
             if (userRolesForThisRole > 0)
             {
                 return RedirectToAction(nameof(Index));
             }
-            await _roleManager.DeleteAsync(roleDb);
+            await _roleManager.DeleteAsync(roleById);
             return RedirectToAction(nameof(Index));
 
         }

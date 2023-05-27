@@ -6,9 +6,9 @@ namespace City_Vibe.Interfaces
     {
         Task<List<TEntity>> GetAllAsync();
 
-        public IEnumerable<Category> GetAll();
+        public IEnumerable<TEntity> GetAll();
 
-       public Category GetById(int id);
+       public TEntity GetById<T>(T id);
 
         Task<TEntity?> GetByIdAsync<T>(T id);
 

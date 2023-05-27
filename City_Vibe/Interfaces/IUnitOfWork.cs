@@ -24,6 +24,9 @@
 
         ISaveEventRepository SaveEventRepository { get;}
 
+
+        IRoleRepository RoleRepository { get; }
+
         int Save();
     }
 }
