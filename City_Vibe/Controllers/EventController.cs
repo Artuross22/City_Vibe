@@ -2,10 +2,10 @@
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using City_Vibe.ViewModels.EventController;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
-
+using System.Drawing;
 
 namespace City_Vibe.Controllers
 {
@@ -199,27 +199,38 @@ namespace City_Vibe.Controllers
 
             var userEvent = await unitOfWorkRepository.EventRepository.GetByIdAsyncNoTracking(id);
 
-
-
             if (userEvent != null)
             {
+
                 try
                 {
-                    await photoService.DeletePhotoAsync(userEvent.Image);
+                    if (eventVM.Image != null)
+                    {
+                        await photoService.DeletePhotoAsync(userEvent.Image);
+                    }
+                       
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "Could not delete photo");
+                    ModelState.AddModelError("", $"Could not delete photo ,{ex}");
                     return View(eventVM);
                 }
-                var photoResult = await photoService.AddPhotoAsync(eventVM.Image);
 
+                string newImage = new Event().Image;
+
+                if (eventVM.Image != null)
+                {
+                    var photoResult = await photoService.AddPhotoAsync(eventVM.Image);
+                    newImage = photoResult.Uri.ToString();
+                }
+
+         
                 var eventUpdate = new Event
                 {
                     Id = id,
                     Name = eventVM.Name,
                     Desciption = eventVM.Description,
-                    Image = photoResult.Url.ToString(),
+                    Image = newImage??  eventVM.URL.ToString(),
                     AddressId = eventVM.AddressId,
                     Data = eventVM.CreatedDate,
                     CategoryId = eventVM.CategoryId,

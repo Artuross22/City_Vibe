@@ -1,5 +1,4 @@
 ﻿using City_Vibe.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Build.Framework;
 
 namespace City_Vibe.ViewModels.EventController
@@ -13,7 +12,7 @@ namespace City_Vibe.ViewModels.EventController
         public string? AppUserId { get; set; }
 
         [Required]
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
         public string? URL { get; set; }
         public int? AddressId { get; set; }
         public Address Address { get; set; }

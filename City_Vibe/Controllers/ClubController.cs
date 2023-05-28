@@ -130,12 +130,7 @@ namespace City_Vibe.Controllers
                 Image = club.Image,
                 AppUserId = club.AppUserId,
                 CategoryId = club.CategoryId,
-                Address = new Address
-                {
-                    Street = club.Address.Street,
-                    City = club.Address.City,
-                    Region = club.Address.Region,
-                },
+                Address = club.Address,
                 Events = events.ToList(),
                 CountLikes = countlikes
             };

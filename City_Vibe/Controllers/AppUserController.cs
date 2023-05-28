@@ -87,8 +87,6 @@ namespace City_Vibe.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-          // var curUserId =  сontextAccessor.HttpContext.User.GetUserId();
-            
             var returnUser = await _userRepository.GetUserByIdIncludeAdress(user.Id);
 
             if (returnUser == null)
@@ -142,7 +140,7 @@ namespace City_Vibe.Controllers
                 }
 
                 user.ProfileImageUrl = photoResult.Url.ToString();
-                editVM.ProfileImageUrl = user.ProfileImageUrl;
+              // editVM.ProfileImageUrl = user.ProfileImageUrl;
 
 
                 await _userManager.UpdateAsync(user);
