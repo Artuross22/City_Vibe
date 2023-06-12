@@ -9,12 +9,7 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace City_Vibe.Tests.Controllers
 {
@@ -30,21 +25,18 @@ namespace City_Vibe.Tests.Controllers
         private readonly ISaveClubRepository saveClubRepository;
         private readonly IlikeClubRepository likeClubRepository;
         private readonly IClubCommentRepository clubCommentRepository;
+        private readonly IUnitOfWork unitOfWorkRepository;
 
 
 
         public ClubControllerTest()
         {
-            clubRepository = A.Fake<IClubRepository>();
             photoService = A.Fake<IPhotoService>();
-            categoryRepository = A.Fake<ICategoryRepository>();
             сontextAccessor = A.Fake<IHttpContextAccessor>();
-            saveClubRepository = A.Fake<ISaveClubRepository>();
-            likeClubRepository = A.Fake<IlikeClubRepository>();
-            clubCommentRepository = A.Fake<IClubCommentRepository>();
+            unitOfWorkRepository = A.Fake<IUnitOfWork>();
 
             //SUT
-            clubController = new ClubController(clubRepository, photoService, сontextAccessor, categoryRepository, saveClubRepository, likeClubRepository, clubCommentRepository);
+            clubController = new ClubController( photoService, сontextAccessor, unitOfWorkRepository);
         }
 
         [Fact]
@@ -52,7 +44,7 @@ namespace City_Vibe.Tests.Controllers
         {
             //Arrange - What do i need to bring in?
             var clubs = A.Fake<IEnumerable<Club>>();
-            A.CallTo(() => clubRepository.GetAll()).Returns(clubs);
+            A.CallTo(() => unitOfWorkRepository.ClubRepository.GetAll()).Returns(clubs);
 
             //Act
             var result = clubController.Index();

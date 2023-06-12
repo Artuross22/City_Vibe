@@ -36,7 +36,6 @@ namespace City_Vibe.Controllers
             var homeViewModel = new HomeViewModel();
             try
             {
-
                 string url = "https://ipinfo.io?token=7c545833f3a6f8";
                 var info = new WebClient().DownloadString(url);
                 ipInfo = JsonConvert.DeserializeObject<IPInfo>(info);

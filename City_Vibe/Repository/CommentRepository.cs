@@ -15,6 +15,11 @@ namespace City_Vibe.Repository
             contextDb = context;
         }
 
+        public  ICollection<Comment> GetAllCommentByEventId(int id)
+        {
+            var commentsModel = contextDb.Comments.Where(x => x.EventId == id).Include(x => x.ReplyComment).ThenInclude(x => x.AppUser).OrderByDescending(x => x.DateTime).ToList();
+            return  commentsModel;
+        }
 
         public bool AddReplyComment(ReplyComment replyComment)
         {
@@ -22,22 +27,6 @@ namespace City_Vibe.Repository
             return Save();
         }
 
-        public  ICollection<Comment> GetAllCommentByEventId(int id)
-        {
-            var commentsModel = contextDb.Comments.Where(x => x.EventId == id).Include(x => x.ReplyComment).ThenInclude(x => x.AppUser).OrderByDescending(x => x.DateTime).ToList();
-            return  commentsModel;
-        }
-
-        public async Task<Comment> GetByIdIncludeReplyCommentAsync(int id)
-        {
-            return await contextDb.Comments.Include(i => i.ReplyComment).FirstOrDefaultAsync(i => i.Id == id);
-        }
-
-        public async Task<Comment> GetByIdAsyncNoTracking(int id)
-        {
-            return await contextDb.Comments.Include(i => i.ReplyComment).AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
-        }
-  
         public bool Save()
         {
             var saved = contextDb.SaveChanges();

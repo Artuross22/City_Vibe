@@ -6,10 +6,10 @@ namespace City_Vibe.Implement
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly IHttpContextAccessor httpContextAccessor;
+       // private readonly IHttpContextAccessor httpContextAccessor;
         private readonly ApplicationDbContext appDbContext;
 
-        public UnitOfWork(ApplicationDbContext applicationDbContext)
+        public UnitOfWork(ApplicationDbContext applicationDbContext, IHttpContextAccessor httpContextAccessor)
         {
             appDbContext = applicationDbContext;
             AppointmentRepository = new AppointmentRepository(applicationDbContext);

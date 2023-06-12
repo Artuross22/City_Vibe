@@ -2,8 +2,6 @@
 using City_Vibe.Implement;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace City_Vibe.Repository
 {

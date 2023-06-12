@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace City_Vibe.Repository
 {
-    public class DashboardRepository  : IDashboardRepository
+    public class DashboardRepository : IDashboardRepository
     {
 
         private readonly ApplicationDbContext contextDb;
@@ -29,29 +29,6 @@ namespace City_Vibe.Repository
             var curUser = httpContextAccessor.HttpContext?.User.GetUserId();
             var userEvent = contextDb.Events.Where(r => r.AppUser.Id == curUser);
             return userEvent.ToList();
-        }
-
-
-        public async Task<AppUser> GetUserById(string id)
-        {
-            return await contextDb.Users.FindAsync(id);
-        }
-
-        public async Task<AppUser> GetByIdNoTracking(string id)
-        {
-            return await contextDb.Users.Where(u => u.Id == id).AsNoTracking().FirstOrDefaultAsync();
-        }
-
-        public bool Update(AppUser user)
-        {
-            contextDb.Users.Update(user);
-            return Save();
-        }
-
-        public bool Save()
-        {
-            var saved = contextDb.SaveChanges();
-            return saved > 0 ? true : false;
         }
     }
 }

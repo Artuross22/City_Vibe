@@ -3,7 +3,6 @@ using City_Vibe.Implement;
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using Microsoft.EntityFrameworkCore;
-using SendGrid.Helpers.Mail;
 
 namespace City_Vibe.Repository
 {
@@ -16,45 +15,36 @@ namespace City_Vibe.Repository
             _context = context;
         }
 
-        public async Task<Club> GetByIdIncludeAddressAsync(int id)
+        public async Task<IEnumerable<Event>> GetClubsByEventId(int id)
         {
-            return await _context.Club.Include(i => i.Address).FirstOrDefaultAsync(i => i.Id == id);
+            var result = await _context.Events.Where(c => c.ClubId == id).Include(x => x.Address).Include(x => x.Category).ToListAsync();
+            return result;
         }
 
-        public async Task<Club> GetByIdAsyncNoTracking(int id)
+        public async Task<IEnumerable<Club>> GetClubsByCategoryAndSliceAsync(Category category, int offset, int size)
         {
-            return await _context.Club.Include(i => i.Address).AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
+            return await _context.Club
+                .Include(i => i.Address)
+                .Where(c => c.Category == category)
+                .Skip(offset)
+                .Take(size)
+                .ToListAsync();
         }
-
 
         public async Task<IEnumerable<Club>> GetClubByCity(string city)
         {
             return await _context.Club.Where(c => c.Address.City.Contains(city)).ToListAsync();
         }
-
-        public async Task< IEnumerable<Event>> GetClubsByEventId(int id)
+  
+        public async Task<Club> GetByIdIncludeAddressAsync(int id)
         {
-            var result = await _context.Events.Where(c => c.ClubId == id).Include(x => x.Address).Include( x=> x.Category).ToListAsync();
-            return result;
+            return await _context.Club.Include(i => i.Address).FirstOrDefaultAsync(i => i.Id == id);
         }
 
         public async Task<int> GetCountAsync()
         {
             return await _context.Club.CountAsync();
         }
-
-        public bool AddPostInfoInClub(PostInfoInClub postInfoInClub)
-        {
-            _context.Add(postInfoInClub);
-            return Save();
-        }
-
-        public bool Save()
-        {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
-        }
-
 
         public async Task<IEnumerable<PostInfoInClub>> GetPostInfoInClubByClubId(int id)
         {
@@ -77,16 +67,22 @@ namespace City_Vibe.Repository
             return await _context.Club.CountAsync(c => c.Category == category);
         }
 
-        public async Task<IEnumerable<Club>> GetClubsByCategoryAndSliceAsync(Category category, int offset, int size)
+        public async Task<Club> GetByIdAsyncNoTracking(int id)
         {
-            return await _context.Club
-                .Include(i => i.Address)
-                .Where(c => c.Category == category)
-                .Skip(offset)
-                .Take(size)
-                .ToListAsync();
+            return await _context.Club.Include(i => i.Address).AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
         }
 
 
+        public bool AddPostInfoInClub(PostInfoInClub postInfoInClub)
+        {
+            _context.Add(postInfoInClub);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }

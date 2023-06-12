@@ -4,6 +4,8 @@ using City_Vibe.Models;
 using City_Vibe.ViewModels.AppointmentController;
 using City_Vibe.ViewModels.EventController;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
 namespace City_Vibe.Controllers
@@ -60,6 +62,7 @@ namespace City_Vibe.Controllers
                 };
 
                 unitOfWorkRepository.AppointmentRepository.Add(addAppointmentModel);
+                unitOfWorkRepository.Save();
 
                 return RedirectToAction("" ,"Event", new { id = appointmentModel.EventId });
             }
@@ -105,14 +108,16 @@ namespace City_Vibe.Controllers
                 AppUserId = curUserId,
                 EventId = replyApp.EventId,
             };
+
+         
             unitOfWorkRepository.AppointmentRepository.AddReplyAppointment(result);
             return RedirectToAction("", "Event");
         }
 
         public IActionResult AddAppointmentUpdate(AppointmentUpdateVM appointmentVM)
         {
+            var result =  unitOfWorkRepository.AppointmentRepository.Find(x => x.Id == appointmentVM.AppointmentId).AsNoTracking().FirstOrDefault();
 
-            var result = unitOfWorkRepository.AppointmentRepository.GetAppointmentByIdAsNoTracking(appointmentVM.AppointmentId);
             var updateAppointment = new Appointment
             {
                 Id = appointmentVM.AppointmentId,
@@ -131,10 +136,12 @@ namespace City_Vibe.Controllers
             }
 
             unitOfWorkRepository.AppointmentRepository.Update(updateAppointment);
+            unitOfWorkRepository.Save();
             return RedirectToAction("", "Event");
         }
 
-        
+ 
+
 
         public async Task<IActionResult> UserApplications()
         {

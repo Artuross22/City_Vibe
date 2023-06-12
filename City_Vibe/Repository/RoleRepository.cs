@@ -8,9 +8,8 @@ namespace City_Vibe.Repository
     public class RoleRepository : GenericRepository<IdentityRole>, IRoleRepository
     {
 
-        public RoleRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
-        {
-        }
+        public RoleRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext) { }
+       
 
         public int UserRolesCount(string id)
         {

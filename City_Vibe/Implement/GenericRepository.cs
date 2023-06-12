@@ -2,6 +2,7 @@
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace City_Vibe.Implement
 {
@@ -39,6 +40,11 @@ namespace City_Vibe.Implement
             return appDbContext.Set<TEntity>();
         }
 
+        public IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
+        {
+            return appDbContext.Set<TEntity>().Where(predicate);
+        }
+
 
         public void Add(TEntity entity)
         {
@@ -55,11 +61,12 @@ namespace City_Vibe.Implement
             appDbContext.Set<TEntity>().Update(entity);
         }
 
+
+
         public Task SaveChangeAsync()
         {
             return appDbContext.SaveChangesAsync();
         }
 
-       
     }
 }

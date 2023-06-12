@@ -2,10 +2,9 @@
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using City_Vibe.ViewModels.EventController;
-using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Drawing;
+using Microsoft.EntityFrameworkCore;
 
 namespace City_Vibe.Controllers
 {
@@ -14,28 +13,27 @@ namespace City_Vibe.Controllers
         private readonly IPhotoService photoService;
         public readonly IHttpContextAccessor сontextAccessor;
         public readonly IUnitOfWork unitOfWorkRepository;
-        private readonly ISaveEventRepository saveEventRepository;
 
         public EventController(
             IPhotoService photoSe, 
             IHttpContextAccessor сontextAccsess,
-            ISaveEventRepository saveEventRepo,
             IUnitOfWork unitOfWorkRepo
             )
         {
             photoService = photoSe;
             сontextAccessor = сontextAccsess;
-            saveEventRepository = saveEventRepo;
             unitOfWorkRepository = unitOfWorkRepo;
         }
 
         public async Task<IActionResult> Index(int? category, string? name)
         {
-            IQueryable<Event> eventVM = unitOfWorkRepository.EventRepository.ActiveEventAllIQueryable();
 
+             IQueryable<Event> eventVM =  unitOfWorkRepository.EventRepository.ActiveEventAllIQueryable();
+
+         
             if (category != null && category != 0)
             {
-                eventVM = eventVM.Where(p => p.CategoryId == category);
+                eventVM =  eventVM.Where(p => p.CategoryId == category);
             }
             if (!string.IsNullOrEmpty(name))
             {
@@ -59,9 +57,9 @@ namespace City_Vibe.Controllers
         public async Task<IActionResult> DetailEvent(int currentEventId)
         {
          
-            Event eventDetail = await unitOfWorkRepository.EventRepository.GetByIdIncludeCategoryAndAddressAsync(currentEventId);
+            var eventDetail = await unitOfWorkRepository.EventRepository.GetByIdIncludeCategoryAndAddressAsync(currentEventId);
             var currentUserId = сontextAccessor.HttpContext.User.GetUserId();
-            var curSaveEvent = await saveEventRepository.FindEventByIdAsync(currentEventId);
+            var curSaveEvent = await unitOfWorkRepository.SaveEventRepository.FindEventByIdAsync(currentEventId);
 
             var сheckAppointment = unitOfWorkRepository.EventRepository.CheckingTheExistenceOfAnAppointment(currentEventId , currentUserId);
             var replyAppointment = unitOfWorkRepository.EventRepository.ReplyAppointment(currentEventId, currentUserId);
@@ -197,7 +195,7 @@ namespace City_Vibe.Controllers
                 return View("Edit", eventVM);
             }
 
-            var userEvent = await unitOfWorkRepository.EventRepository.GetByIdAsyncNoTracking(id);
+            var userEvent = await unitOfWorkRepository.EventRepository.Find(x => x.Id == eventVM.Id).AsNoTracking().Include(c => c.Category).FirstOrDefaultAsync();
 
             if (userEvent != null)
             {
@@ -289,11 +287,12 @@ namespace City_Vibe.Controllers
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
 
-            var selectEvent = saveEventRepository.FindSafeEventsinUserAndEvent(eventId);
+            var selectEvent = unitOfWorkRepository.SaveEventRepository.FindSafeEventsinUserAndEvent(eventId);
             if (selectEvent.Count != 0)
             {
-                var deleteEvent = await saveEventRepository.FindEventById(eventId);
-                saveEventRepository.Delete(deleteEvent);
+                var deleteEvent = await unitOfWorkRepository.SaveEventRepository.Find(c => c.EventId == eventId).FirstOrDefaultAsync();
+                unitOfWorkRepository.SaveEventRepository.Delete(deleteEvent);
+                unitOfWorkRepository.Save();
             }
             else
             {
@@ -302,16 +301,17 @@ namespace City_Vibe.Controllers
                     AppUserId = curUserId,
                     EventId = eventId,
                 };
-                saveEventRepository.Add(saveEvent);
+                unitOfWorkRepository.SaveEventRepository.Add(saveEvent);
+                unitOfWorkRepository.Save();
             }
-            return RedirectToAction("DetailEvent", new { id = eventId });
+            return RedirectToAction("DetailEvent", new { currentEventId = eventId });
         }
 
-        public async Task<ActionResult> EventsSelectByTheUser(int eventId)
+        public async Task<ActionResult> EventsSelectByTheUser()
         {
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
-            var selectEvent = saveEventRepository.FindEventById(curUserId);
+            var selectEvent = unitOfWorkRepository.SaveEventRepository.Find(x => x.AppUserId == curUserId).Include(c => c.Event).ToList();
 
             var viewEvents = new TopUserEventsViewModel
             {

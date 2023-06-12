@@ -44,7 +44,7 @@ namespace City_Vibe.Controllers
                 ModelState.AddModelError("", "Failed to edit category ");
                 return View(category);
             }
-            // var categoryUpdate = categoryRepository.GetById(category.Id);
+
             var categoryUpdate = new Category { Name = category.Name , Id = category.Id};
 
             unitOfWorkRepo.CategoryRepository.Update(categoryUpdate);

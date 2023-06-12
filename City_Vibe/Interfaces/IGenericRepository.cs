@@ -1,4 +1,5 @@
 ﻿using City_Vibe.Models;
+using System.Linq.Expressions;
 
 namespace City_Vibe.Interfaces
 {
@@ -13,6 +14,8 @@ namespace City_Vibe.Interfaces
         Task<TEntity?> GetByIdAsync<T>(T id);
 
         IQueryable<TEntity> GetQueryable();
+
+        IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
 
         void Add(TEntity entity);
 

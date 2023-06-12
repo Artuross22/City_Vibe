@@ -4,16 +4,24 @@ using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace City_Vibe.Repository
 {
     public class AppointmentRepository : GenericRepository<Appointment>, IAppointmentRepository
     {
         private readonly ApplicationDbContext dbContext;
 
-        public AppointmentRepository(ApplicationDbContext _context) : base(_context)
+        public AppointmentRepository(ApplicationDbContext _context) : base(_context) => dbContext = _context;
+      
+        public ICollection<Appointment> GetAppointmentsByEventId(int eventId)
         {
-            dbContext = _context;
+            var application = dbContext.Appointments.Where(e => e.EventId == eventId).Include(x => x.AppUser);
+            return application.ToList();
+        }
+
+        public ICollection<Appointment> GetAppointmentByIdUser(string curUserId)
+        {
+            var getappointment = dbContext.Appointments.Where(x => x.AppUserId == curUserId).Include(x => x.AppUser).Include(e => e.Event);
+            return getappointment.ToList();
         }
 
         public bool AddReplyAppointment(ReplyAppointment replyAppointment)
@@ -26,24 +34,6 @@ namespace City_Vibe.Repository
         {
             var saved = dbContext.SaveChanges();
             return saved > 0 ? true : false;
-        }
-
-        public ICollection<Appointment> GetAppointmentsByEventId(int eventId)
-        {
-            var application = dbContext.Appointments.Where(e => e.EventId == eventId).Include(x => x.AppUser);
-            return application.ToList();
-        }
-
-        public Appointment GetAppointmentByIdAsNoTracking(int appointmentId)
-        {
-            var result = dbContext.Appointments.AsNoTracking().FirstOrDefault(x => x.Id == appointmentId);
-            return (result);
-        }
-
-        public ICollection<Appointment> GetAppointmentByIdUser(string curUserId)
-        {
-            var getappointment = dbContext.Appointments.Where(x => x.AppUserId == curUserId).Include(x => x.AppUser).Include(e => e.Event);
-            return getappointment.ToList();
         }
     }
 }

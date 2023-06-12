@@ -4,46 +4,41 @@ using City_Vibe.ViewModels.AppUserController;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using City_Vibe.Repository;
 using System.Security.Claims;
-using City_Vibe.Data;
-using System.Linq;
-using CloudinaryDotNet.Actions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Data;
-using City_Vibe.ExtensionMethod;
 
 namespace City_Vibe.Controllers
 {
     public class AppUserController : Controller
     {
-        private readonly IAppUserRepository _userRepository;
-        private readonly UserManager<AppUser> _userManager;
-        private readonly IPhotoService _photoService;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        public readonly IHttpContextAccessor сontextAccessor;
+        private readonly IUnitOfWork unitOfWorkRepository;
+        public  readonly  IHttpContextAccessor сontextAccessor;
+        private readonly IPhotoService photoService;
+        private readonly UserManager<AppUser> userManager;
+        private readonly RoleManager<IdentityRole> roleManager;
+      
+        
 
         public AppUserController(
-            IAppUserRepository userRepository,
-            UserManager<AppUser> userManager,
-            IPhotoService photoService,
-            RoleManager<IdentityRole> roleManager,
-            IHttpContextAccessor сontextAccessor)
+            UserManager<AppUser> _userManager,
+            IPhotoService _photoService,
+            RoleManager<IdentityRole> _roleManager,
+            IHttpContextAccessor _сontextAccessor,
+            IUnitOfWork _unitOfWorkRepository
+            )
         {
-            _userRepository = userRepository;
-            _userManager = userManager;
-            _photoService = photoService;
-            _roleManager = roleManager;
-            this.сontextAccessor = сontextAccessor;
+            userManager = _userManager;
+            photoService = _photoService;
+            roleManager = _roleManager;
+            сontextAccessor = _сontextAccessor;
+            unitOfWorkRepository = _unitOfWorkRepository;
         }
 
         [HttpGet("users")]
         public async Task<IActionResult> Index()
         {
-            
-            var users = await _userRepository.GetAllUsers();
+
+            var users = await unitOfWorkRepository.AppUserRepository.GetAllAsync();
             List<AppUserViewModel> result = new List<AppUserViewModel>();
             foreach (var user in users)
             {
@@ -64,7 +59,7 @@ namespace City_Vibe.Controllers
     
         public async Task<IActionResult> Detail(string id)
         {
-            var returnUser = await _userRepository.GetUserByIdIncludeAdress(id);
+            var returnUser = await unitOfWorkRepository.AppUserRepository.GetUserByIdIncludeAdress(id);
             if (returnUser == null)
             {
                 return RedirectToAction("Index", "Users");
@@ -85,9 +80,9 @@ namespace City_Vibe.Controllers
         [Authorize]
         public async Task<IActionResult> EditProfile()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await userManager.GetUserAsync(User);
 
-            var returnUser = await _userRepository.GetUserByIdIncludeAdress(user.Id);
+            var returnUser = await unitOfWorkRepository.AppUserRepository.GetUserByIdIncludeAdress(user.Id);
 
             if (returnUser == null)
             {
@@ -117,7 +112,7 @@ namespace City_Vibe.Controllers
                 return View("EditProfile", editVM);
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = await userManager.GetUserAsync(User);
 
             if (user == null)
             {
@@ -126,7 +121,7 @@ namespace City_Vibe.Controllers
 
             if (editVM.Image != null) 
             {
-                var photoResult = await _photoService.AddPhotoAsync(editVM.Image);
+                var photoResult = await photoService.AddPhotoAsync(editVM.Image);
 
                 if (photoResult.Error != null)
                 {
@@ -136,19 +131,16 @@ namespace City_Vibe.Controllers
 
                 if (!string.IsNullOrEmpty(user.ProfileImageUrl))
                 {
-                    _ = _photoService.DeletePhotoAsync(user.ProfileImageUrl);
+                    _ = photoService.DeletePhotoAsync(user.ProfileImageUrl);
                 }
 
                 user.ProfileImageUrl = photoResult.Url.ToString();
-              // editVM.ProfileImageUrl = user.ProfileImageUrl;
-
-
-                await _userManager.UpdateAsync(user);
+                await userManager.UpdateAsync(user);
             }
 
             user.Address = editVM.Address;
 
-            await _userManager.UpdateAsync(user);
+            await userManager.UpdateAsync(user);
 
             return RedirectToAction("Detail", "AppUser", new { user.Id });
         }
@@ -158,7 +150,7 @@ namespace City_Vibe.Controllers
         [HttpGet]
         public async Task<IActionResult> ManageClaims(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
@@ -167,7 +159,7 @@ namespace City_Vibe.Controllers
 
 
 
-            var existingUserClaims = await _userManager.GetClaimsAsync(user);
+            var existingUserClaims = await userManager.GetClaimsAsync(user);
 
             var model = new AppUserClaimsViewModel()
             {
@@ -194,22 +186,22 @@ namespace City_Vibe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ManageClaims(AppUserClaimsViewModel userClaimsViewModel)
         {
-            var user = await _userManager.FindByIdAsync(userClaimsViewModel.UserId);
+            var user = await userManager.FindByIdAsync(userClaimsViewModel.UserId);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            var claims = await _userManager.GetClaimsAsync(user);
-            var result = await _userManager.RemoveClaimsAsync(user, claims);
+            var claims = await userManager.GetClaimsAsync(user);
+            var result = await userManager.RemoveClaimsAsync(user, claims);
 
             if (!result.Succeeded)
             {
                 return View(userClaimsViewModel);
             }
 
-            result = await _userManager.AddClaimsAsync(user,
+            result = await userManager.AddClaimsAsync(user,
                 userClaimsViewModel.Claims.Where(c => c.IsSelected).Select(c => new Claim(c.ClaimType, c.IsSelected.ToString())));
 
             if (!result.Succeeded)

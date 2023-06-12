@@ -29,8 +29,6 @@ namespace City_Vibe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginViewModel model, string? returnurl = null)
         {
-         
-
             returnurl = returnurl ?? Url.Content("~/");
 
             if (ModelState.IsValid)

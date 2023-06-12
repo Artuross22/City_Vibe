@@ -5,7 +5,6 @@ namespace City_Vibe.Interfaces
     public interface IAppointmentRepository : IGenericRepository<Appointment>
     {
         ICollection<Appointment> GetAppointmentsByEventId(int eventId);
-        Appointment GetAppointmentByIdAsNoTracking(int eventId);
         ICollection<Appointment> GetAppointmentByIdUser(string Id);
 
         bool AddReplyAppointment(ReplyAppointment replyAppointment);
