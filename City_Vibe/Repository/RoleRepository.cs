@@ -10,7 +10,6 @@ namespace City_Vibe.Repository
 
         public RoleRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext) { }
        
-
         public int UserRolesCount(string id)
         {
             var userRolesForThisRole = appDbContext.UserRoles.Where(u => u.RoleId == id).Count();

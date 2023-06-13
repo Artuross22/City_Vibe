@@ -17,7 +17,7 @@ namespace City_Vibe.Repository
             return await context.Events.Include(i => i.Category).Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public  IQueryable<Event> ActiveEventAllIQueryable()
+        public IQueryable<Event> AllActiveEventIQueryable()
         {
             return  context.Events.Include(x => x.Category).OrderByDescending(x => x.Data);
         }

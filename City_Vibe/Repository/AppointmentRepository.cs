@@ -18,12 +18,6 @@ namespace City_Vibe.Repository
             return application.ToList();
         }
 
-        public ICollection<Appointment> GetAppointmentByIdUser(string curUserId)
-        {
-            var getappointment = dbContext.Appointments.Where(x => x.AppUserId == curUserId).Include(x => x.AppUser).Include(e => e.Event);
-            return getappointment.ToList();
-        }
-
         public bool AddReplyAppointment(ReplyAppointment replyAppointment)
         {
             dbContext.Add(replyAppointment);

@@ -2,10 +2,7 @@
 using City_Vibe.Interfaces;
 using City_Vibe.Models;
 using City_Vibe.ViewModels.ClubCommentController;
-using City_Vibe.ViewModels.CommentController;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace City_Vibe.Controllers
 {
@@ -59,6 +56,8 @@ namespace City_Vibe.Controllers
             r.CreatedDate = DateTime.Now;
             r.UserName = curUserName;
             unitOfWorkRepo.ClubCommentRepository.AddReplyComment(r);
+            
+
             return RedirectToAction( "PostInformationDetail" ,"Club", new {postInfoId = commentreply.PostInfoInClubId });
         }
 

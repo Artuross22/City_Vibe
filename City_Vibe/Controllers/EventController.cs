@@ -28,7 +28,7 @@ namespace City_Vibe.Controllers
         public async Task<IActionResult> Index(int? category, string? name)
         {
 
-             IQueryable<Event> eventVM =  unitOfWorkRepository.EventRepository.ActiveEventAllIQueryable();
+             IQueryable<Event> eventVM =  unitOfWorkRepository.EventRepository.AllActiveEventIQueryable();
 
          
             if (category != null && category != 0)

@@ -147,7 +147,7 @@ namespace City_Vibe.Controllers
         {
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
-            var getappointment = unitOfWorkRepository.AppointmentRepository.GetAppointmentByIdUser(curUserId);
+            var getappointment = unitOfWorkRepository.AppointmentRepository.Find(x => x.AppUserId == curUserId).Include(x => x.AppUser).Include(e => e.Event);
 
             List <PersonalApplicationViewModel> result = new List<PersonalApplicationViewModel>();
 

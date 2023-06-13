@@ -10,11 +10,8 @@ namespace City_Vibe.Repository
     {
         private readonly ApplicationDbContext dbContext;
 
-        public AppUserRepository(ApplicationDbContext _dbContext) : base(_dbContext)
-        {
-            dbContext = _dbContext; 
-        }
-      
+        public AppUserRepository(ApplicationDbContext _dbContext) : base(_dbContext) => dbContext = _dbContext; 
+          
        public async Task<IEnumerable<AppUser>> GetUsersByRole(string roleName)
         {
             var userByRole = await(from appuser in dbContext.AppUser

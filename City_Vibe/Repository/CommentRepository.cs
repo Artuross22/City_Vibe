@@ -10,15 +10,11 @@ namespace City_Vibe.Repository
     {
         private readonly ApplicationDbContext contextDb;
 
-        public CommentRepository(ApplicationDbContext context) : base(context)
-        {
-            contextDb = context;
-        }
-
+        public CommentRepository(ApplicationDbContext context) : base(context) => contextDb = context;
+   
         public  ICollection<Comment> GetAllCommentByEventId(int id)
         {
-            var commentsModel = contextDb.Comments.Where(x => x.EventId == id).Include(x => x.ReplyComment).ThenInclude(x => x.AppUser).OrderByDescending(x => x.DateTime).ToList();
-            return  commentsModel;
+           return contextDb.Comments.Where(x => x.EventId == id).Include(x => x.ReplyComment).ThenInclude(x => x.AppUser).OrderByDescending(x => x.DateTime).ToList();
         }
 
         public bool AddReplyComment(ReplyComment replyComment)

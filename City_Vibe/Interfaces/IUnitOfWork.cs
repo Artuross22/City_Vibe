@@ -1,4 +1,6 @@
-﻿namespace City_Vibe.Interfaces
+﻿using CloudinaryDotNet;
+
+namespace City_Vibe.Interfaces
 {
     public interface IUnitOfWork :  IDisposable
     {
@@ -23,7 +25,6 @@
         ISaveClubRepository SaveClubRepository { get; }
 
         ISaveEventRepository SaveEventRepository { get;}
-
 
         IRoleRepository RoleRepository { get; }
 
