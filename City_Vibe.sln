@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "City_Vibe", "City_Vibe\City_Vibe.csproj", "{C43833A7-F92D-4EA4-BC12-EC636E0FF9FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "City_Vibe.Tests", "City_Vibe.Tests\City_Vibe.Tests.csproj", "{96F19D8D-74EA-4417-821B-FF48A55F47BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "City_Vibe.Tests", "City_Vibe.Tests\City_Vibe.Tests.csproj", "{96F19D8D-74EA-4417-821B-FF48A55F47BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

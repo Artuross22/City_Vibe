@@ -10,7 +10,5 @@ namespace City_Vibe.Interfaces
 
         Appointment ReplyAppointment(int currentEventId, string curUserId);
 
-        IQueryable<Event> AllActiveEventIQueryable();
-
     }
 }

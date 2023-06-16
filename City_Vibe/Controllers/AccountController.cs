@@ -79,8 +79,6 @@ namespace City_Vibe.Controllers
 
                 await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
                 return RedirectToAction("Index", "Home");
-
-               // return LocalRedirect(returnurl);  
             }
             else
             {

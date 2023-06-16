@@ -5,7 +5,6 @@ namespace City_Vibe.Interfaces
     public interface ICommentRepository : IGenericRepository<Comment>
     {
 
-        ICollection<Comment> GetAllCommentByEventId(int id);
         bool AddReplyComment(ReplyComment replyComment);
         bool Save();
     }

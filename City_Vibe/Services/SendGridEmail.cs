@@ -32,7 +32,6 @@ namespace City_Vibe.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                // From = new EmailAddress("rungroops@gmail.com"),
                 From = new EmailAddress("gazzzik08@gmail.com", "Welcome to ASP Net CORE "),
                 Subject = subject,
                 PlainTextContent = message,

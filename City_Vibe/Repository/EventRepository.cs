@@ -17,11 +17,6 @@ namespace City_Vibe.Repository
             return await context.Events.Include(i => i.Category).Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public IQueryable<Event> AllActiveEventIQueryable()
-        {
-            return  context.Events.Include(x => x.Category).OrderByDescending(x => x.Data);
-        }
-
         public int CheckingTheExistenceOfAnAppointment(int currentEventId, string currentUserId)
         {
             return context.Appointments.Where(x => x.AppUserId == currentUserId).Where(e => e.EventId == currentEventId).ToList().Count();            

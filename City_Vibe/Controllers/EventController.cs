@@ -28,9 +28,12 @@ namespace City_Vibe.Controllers
         public async Task<IActionResult> Index(int? category, string? name)
         {
 
-             IQueryable<Event> eventVM =  unitOfWorkRepository.EventRepository.AllActiveEventIQueryable();
+                 IQueryable<Event> eventVM = unitOfWorkRepository.EventRepository
+                .GetQueryable()
+                .Include(x => x.Category)
+                .OrderByDescending(x => x.Data);
 
-         
+
             if (category != null && category != 0)
             {
                 eventVM =  eventVM.Where(p => p.CategoryId == category);
@@ -72,16 +75,17 @@ namespace City_Vibe.Controllers
                 AppUser = eventDetail.AppUser,
                 Data = eventDetail.Data,
                 Image = eventDetail.Image,
-                Address = new Address
-                {
-                    Street = eventDetail.Address.Street,
-                    City = eventDetail.Address.City,
-                    Region = eventDetail.Address.Region,
-                },
+                Address = eventDetail.Address,
                 SaveEvents = curSaveEvent.ToList(),
                 CheckAppointment = сheckAppointment,
             };
-            var listofComment = unitOfWorkRepository.CommentRepository.GetAllCommentByEventId(currentEventId);
+            var listofComment = unitOfWorkRepository.CommentRepository
+                .Find(x => x.EventId == currentEventId)
+                .Include(x => x.ReplyComment)
+                .ThenInclude(x => x.AppUser)
+                .OrderByDescending(x => x.DateTime)
+                .ToList();
+
             viewModel.Comments = listofComment;
 
             var categoryEvent = unitOfWorkRepository.CategoryRepository.GetById(eventDetail.CategoryId);
