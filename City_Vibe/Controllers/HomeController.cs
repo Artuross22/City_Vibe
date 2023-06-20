@@ -1,15 +1,16 @@
-﻿using City_Vibe.Data;
-using City_Vibe.ExtensionMethod;
-using City_Vibe.Helpers;
-using City_Vibe.Interfaces;
-using City_Vibe.Models;
-using City_Vibe.ViewModels.HomeViewModel;
+﻿using City_Vibe.ViewModels.HomeViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net;
+
+using City_Vibe.Application.Interfaces;
+using City_Vibe.Domain.Models;
+using City_Vibe.ExtensionMethod;
+using City_Vibe.Infrastructure.Data;
+using City_Vibe.Infrastructure.Helpers;
 
 namespace City_Vibe.Controllers
 {
@@ -45,7 +46,7 @@ namespace City_Vibe.Controllers
                 homeViewModel.State = ipInfo.Region;
                 if (homeViewModel.City != null)
                 {
-                    homeViewModel.Clubs = await unitOfWorkRepository.ClubRepository.GetClubByCity(homeViewModel.City);
+                  homeViewModel.Clubs = await unitOfWorkRepository .ClubRepository.GetClubByCity(homeViewModel.City);
                 }
                 return View(homeViewModel);
             }

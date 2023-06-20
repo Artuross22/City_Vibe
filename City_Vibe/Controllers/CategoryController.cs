@@ -1,7 +1,8 @@
-﻿using City_Vibe.Interfaces;
-using City_Vibe.Models;
-using City_Vibe.ViewModels.Categories;
+﻿using City_Vibe.ViewModels.Categories;
 using Microsoft.AspNetCore.Mvc;
+
+using City_Vibe.Application.Interfaces;
+using City_Vibe.Domain.Models;
 
 namespace City_Vibe.Controllers
 {

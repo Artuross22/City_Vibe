@@ -1,41 +1,17 @@
-using City_Vibe.Data;
-using City_Vibe.Helpers;
-using City_Vibe.Implement;
-using City_Vibe.Interfaces;
-using City_Vibe.Models;
-using City_Vibe.Repository;
-using City_Vibe.Services;
+using City_Vibe.ExtensionMethod;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<ApplicationDbContext>(e => e.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
 
+builder.Services
+    .AddInfrastructureServices(builder.Configuration)
+    .AddApplicationRepositories()
+    .AddApplicationServices();
 
-builder.Services.AddScoped<IEventRepository, EventRepository>();
-builder.Services.AddScoped<IClubRepository, ClubRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IPhotoService, PhotoService>();
-builder.Services.AddScoped<ICommentRepository, CommentRepository>();
-builder.Services.AddScoped<IAppUserRepository, AppUserRepository>();
-builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
-builder.Services.AddScoped<ISaveClubRepository, SaveClubRepository>();
-builder.Services.AddScoped<ISaveEventRepository, SaveEventRepository>();
-builder.Services.AddScoped<IlikeClubRepository, likeClubRepository>();
-builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-builder.Services.AddScoped<IClubCommentRepository, ClubCommentRepository>();
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-builder.Services.AddTransient<ISendGridEmail, SendGridEmail>();
-
-builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration.GetSection("SendGrid"));  // common pattern
-builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
-
-// builder pattern 
+//builder pattern 
 builder.Services.AddAuthentication()
 
 .AddFacebook(options =>

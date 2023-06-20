@@ -1,9 +1,11 @@
-﻿using City_Vibe.Data;
-using City_Vibe.Interfaces;
-using City_Vibe.Models;
-using City_Vibe.ViewModels.RoleController;
+﻿using City_Vibe.ViewModels.RoleController;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
+using City_Vibe.Application.Interfaces;
+using City_Vibe.Domain.Models;
+
+
 
 namespace City_Vibe.Controllers
 {
@@ -15,7 +17,7 @@ namespace City_Vibe.Controllers
         private readonly IUnitOfWork unitOfWorkRepository;
 
 
-        public RoleController(ApplicationDbContext db, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager , IUnitOfWork unitOfWorkRepos)
+        public RoleController( UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager , IUnitOfWork unitOfWorkRepos)
         {
             _roleManager = roleManager;
             _userManager = userManager;

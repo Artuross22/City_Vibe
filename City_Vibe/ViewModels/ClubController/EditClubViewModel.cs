@@ -1,4 +1,5 @@
-﻿using City_Vibe.Models;
+﻿
+using City_Vibe.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace City_Vibe.ViewModels.ClubController

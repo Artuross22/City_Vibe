@@ -1,11 +1,12 @@
-﻿using City_Vibe.Interfaces;
-using City_Vibe.Models;
-using City_Vibe.ViewModels.AppUserController;
+﻿using City_Vibe.ViewModels.AppUserController;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Data;
+
+using City_Vibe.Application.Interfaces;
+using City_Vibe.Domain.Models;
 
 namespace City_Vibe.Controllers
 {

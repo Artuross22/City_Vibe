@@ -1,12 +1,13 @@
-﻿using City_Vibe.Data;
-using City_Vibe.Interfaces;
-using City_Vibe.Models;
-using City_Vibe.ViewModels.DashboardController;
+﻿using City_Vibe.ViewModels.DashboardController;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
+
+using City_Vibe.Application.Interfaces;
+using City_Vibe.Domain.Models;
+using City_Vibe.Infrastructure.Data;
+
 
 namespace City_Vibe.Controllers
 {

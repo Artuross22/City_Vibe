@@ -1,10 +1,9 @@
-﻿using City_Vibe.ExtensionMethod;
-using City_Vibe.Interfaces;
-using City_Vibe.Models;
-using City_Vibe.ViewModels.CommentController;
-using Microsoft.AspNetCore.Identity;
+﻿using City_Vibe.ViewModels.CommentController;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
+using City_Vibe.Application.Interfaces;
+using City_Vibe.Domain.Models;
+using City_Vibe.ExtensionMethod;
 
 namespace City_Vibe.Controllers
 {

@@ -1,10 +1,11 @@
 ﻿using City_Vibe.ExtensionMethod;
-using City_Vibe.Interfaces;
-using City_Vibe.Models;
 using City_Vibe.ViewModels.ClubController;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
+using City_Vibe.Application.Interfaces;
+using City_Vibe.Domain.Models;
 
 namespace City_Vibe.Controllers
 {
@@ -112,10 +113,10 @@ namespace City_Vibe.Controllers
    
         public async Task<IActionResult> DetailClub(int id)
         {
-            var club = await unitOfWorkRepository.ClubRepository.GetByIdIncludeAddressAsync(id);
-            var events = await unitOfWorkRepository.ClubRepository.GetClubsByEventId(id);
-            var curSaveClub = await unitOfWorkRepository.SaveClubRepository.FindClubsByIdAsync(id);
-            var countlikes = unitOfWorkRepository.LikeClubRepository.GetLikeClubsByClubId(id);
+            var club = await unitOfWorkRepository.ClubRepository.Find(i => i.Id == id).Include(i => i.Address).FirstOrDefaultAsync();
+            var events = await unitOfWorkRepository.EventRepository.Find(c => c.ClubId == id).Include(x => x.Address).Include(x => x.Category).ToListAsync();
+            var curSaveClub = unitOfWorkRepository.SaveClubRepository.Find(c => c.ClubId == id);
+            var countlikes = unitOfWorkRepository.LikeClubRepository.Find(x => x.ClubId == id).ToList().Count();
             var getClubInformation = await unitOfWorkRepository.ClubRepository.GetPostInfoInClubByClubId(id);
 
             var detailClubViewModel = new DetailClubViewModel
@@ -375,9 +376,7 @@ namespace City_Vibe.Controllers
                 PostInformation = clubInfo.PostInformation,
                 CommentClub = listofComment,
                 Image = clubInfo.Image,
-
             };
-
             return View(viewClubInfo);
         }
     }

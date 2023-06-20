@@ -1,6 +1,6 @@
-﻿using City_Vibe.ExtensionMethod;
-using City_Vibe.Interfaces;
-using City_Vibe.Models;
+﻿using City_Vibe.Application.Interfaces;
+using City_Vibe.Domain.Models;
+using City_Vibe.ExtensionMethod;
 using City_Vibe.ViewModels.AppointmentController;
 using City_Vibe.ViewModels.EventController;
 using Microsoft.AspNetCore.Mvc;

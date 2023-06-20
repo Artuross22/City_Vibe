@@ -8,7 +8,7 @@
 @using Microsoft.AspNetCore.Identity
 
 
-@model IEnumerable<City_Vibe.Models.AppUser>
+@model IEnumerable<City_Vibe.Domain.Models.AppUser>
 
 <h2>
     List of users
@@ -21,9 +21,7 @@
          <td>
 
                 <a class="btn btn-sm btn-primary" asp-action="EditUserRole" asp-route-userid="@user.Id">Access rights</a>
-
-
-         
+        
       
             </td>
         </tr>

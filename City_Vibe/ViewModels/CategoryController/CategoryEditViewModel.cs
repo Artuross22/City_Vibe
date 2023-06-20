@@ -1,5 +1,4 @@
-﻿using City_Vibe.Models;
-
+﻿
 namespace City_Vibe.ViewModels.Categories
 {
     public class CategoryEditViewModel

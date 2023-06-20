@@ -1,9 +1,6 @@
-﻿using City_Vibe.Controllers;
-using City_Vibe.Data;
-using City_Vibe.Interfaces;
-using City_Vibe.Models;
-using City_Vibe.Repository;
-using City_Vibe.Services;
+﻿using City_Vibe.Application.Interfaces;
+using City_Vibe.Controllers;
+using City_Vibe.Domain.Models;
 using City_Vibe.ViewModels.ClubController;
 using FakeItEasy;
 using FluentAssertions;
@@ -62,10 +59,10 @@ namespace City_Vibe.Tests.Controllers
             A.CallTo(() => clubRepository.GetByIdAsync(id)).Returns(club);
 
             var events = A.Fake<IEnumerable<Event>>();
-            A.CallTo(() => clubRepository.GetClubsByEventId(id)).Returns(events);
+          //  A.CallTo(() => clubRepository.GetClubsByEventId(id)).Returns(events);
 
             var saveClub = A.Fake<IEnumerable<SaveClub>>();
-            A.CallTo(() => saveClubRepository.FindClubsByIdAsync(id)).Returns(saveClub);
+          //  A.CallTo(() => saveClubRepository.FindClubsByIdAsync(id)).Returns(saveClub);
 
 
             var postInfoInClub = A.Fake<IEnumerable<PostInfoInClub>>();

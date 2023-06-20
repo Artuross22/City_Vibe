@@ -1,5 +1,4 @@
-﻿using City_Vibe.Models;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using City_Vibe.Domain.Models;
 
 namespace City_Vibe.ViewModels.AppointmentController
 {

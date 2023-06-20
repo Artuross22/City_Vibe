@@ -1,10 +1,11 @@
 ﻿using City_Vibe.ExtensionMethod;
-using City_Vibe.Interfaces;
-using City_Vibe.Models;
 using City_Vibe.ViewModels.EventController;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
+using City_Vibe.Application.Interfaces;
+using City_Vibe.Domain.Models;
 
 namespace City_Vibe.Controllers
 {
@@ -62,9 +63,9 @@ namespace City_Vibe.Controllers
          
             var eventDetail = await unitOfWorkRepository.EventRepository.GetByIdIncludeCategoryAndAddressAsync(currentEventId);
             var currentUserId = сontextAccessor.HttpContext.User.GetUserId();
-            var curSaveEvent = await unitOfWorkRepository.SaveEventRepository.FindEventByIdAsync(currentEventId);
+            var curSaveEvent =  unitOfWorkRepository.SaveEventRepository.Find(c => c.EventId == currentEventId);
 
-            var сheckAppointment = unitOfWorkRepository.EventRepository.CheckingTheExistenceOfAnAppointment(currentEventId , currentUserId);
+            var сheckAppointment =  unitOfWorkRepository.EventRepository.CheckingTheExistenceOfAnAppointment(currentEventId , currentUserId);
             var replyAppointment = unitOfWorkRepository.EventRepository.ReplyAppointment(currentEventId, currentUserId);
 
             var viewModel = new EventDetailViewModel
