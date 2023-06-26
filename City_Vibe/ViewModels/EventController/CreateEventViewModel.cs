@@ -6,9 +6,9 @@ namespace City_Vibe.ViewModels.EventController
 {
     public class CreateEventViewModel
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string Desciption { get; set; }
         public Address Address { get; set; }
         public IFormFile Image { get; set; }
 

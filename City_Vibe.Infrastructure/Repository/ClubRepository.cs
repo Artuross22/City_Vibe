@@ -17,10 +17,12 @@ namespace City_Vibe.Infrastructure.Repository
 
         public async Task<IEnumerable<Club>> GetClubsByCategoryAndSliceAsync(Category category, int offset, int size)
         {
+            var pageOffset = (1 - offset) * size;
+
             return await _context.Club
                 .Include(i => i.Address)
                 .Where(c => c.Category == category)
-                .Skip(offset)
+                .Skip(pageOffset)
                 .Take(size)
                 .ToListAsync();
         }
@@ -47,9 +49,10 @@ namespace City_Vibe.Infrastructure.Repository
             return await _context.PostInfoInClub.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Club>> GetSliceAsync(int offset, int size)
+        public async Task<IEnumerable<Club>> GetSliceAsync(int page , int offset, int size)
         {
-            return await _context.Club.Include(i => i.Address).Skip(offset).Take(size).ToListAsync();
+            var result = (  page - 1 ) * offset;
+            return await _context.Club.Include(i => i.Address).Skip(result).Take(size).ToListAsync();
         }
 
         public async Task<int> GetCountByCategoryAsync(Category category)

@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Domain.Models;
-
-
+using AutoMapper;
 
 namespace City_Vibe.Controllers
 {
@@ -14,14 +13,19 @@ namespace City_Vibe.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWorkRepository;
 
 
-        public RoleController( UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager , IUnitOfWork unitOfWorkRepos)
+        public RoleController( UserManager<AppUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IUnitOfWork unitOfWorkRepos,
+            IMapper mapp)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             unitOfWorkRepository = unitOfWorkRepos;
+            mapper = mapp;
         }
 
 
@@ -107,14 +111,12 @@ namespace City_Vibe.Controllers
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var allRoles = _roleManager.Roles.ToList();
-                ChangeRoleViewModel model = new ChangeRoleViewModel
-                {
-                    UserId = user.Id,
-                    UserEmail = user.Email,
-                    UserRoles = userRoles,
-                    AllRoles = allRoles
-                };
-                return View(model);
+
+                var model = mapper.Map<ChangeRoleViewModel>(user);
+                model.UserRoles = userRoles;
+                model.AllRoles = allRoles;
+
+                return RedirectToAction("Index");
             }
 
             return NotFound();

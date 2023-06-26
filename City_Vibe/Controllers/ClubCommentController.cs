@@ -4,40 +4,47 @@ using Microsoft.AspNetCore.Mvc;
 
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Domain.Models;
+using AutoMapper;
 
 namespace City_Vibe.Controllers
 {
     public class ClubCommentController : Controller
     {
 
-        private readonly IUnitOfWork unitOfWorkRepo;
+        private readonly IUnitOfWork unitOfWorkRepository;
         public readonly IHttpContextAccessor сontextAccessor;
+        private readonly IMapper mapper;
 
         public ClubCommentController(
             IHttpContextAccessor сontextAccess,
-            IUnitOfWork unitOfWorkRepository)
+            IUnitOfWork unitOfWorkRepo,
+            IMapper mapp
+            )
+
         {
             сontextAccessor = сontextAccess;
-            unitOfWorkRepo = unitOfWorkRepository;
+            unitOfWorkRepository = unitOfWorkRepo;
+            mapper = mapp;
         }
 
         [HttpPost]
         public ActionResult PostComment(PostCommentClubViewModel comment)
         {
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
-
             var curUserName = сontextAccessor.HttpContext.User.Identity.Name;
+
             if (curUserId == null)
             {
                 return RedirectToAction("Login", "Account");
             }
-            CommentClub c = new CommentClub();
-            c.PostInfoInClubId = comment.PostInfoInClubId;
-            c.Body = comment.CommentText;
-            c.DateTime = DateTime.Now;
-            c.ForeignUserId = Guid.Parse(curUserId);
-            c.UserName = c.UserName;
-            unitOfWorkRepo.ClubCommentRepository.Add(c);
+
+            var commentClub = mapper.Map<CommentClub>(comment);
+            commentClub.ForeignUserId = Guid.Parse(curUserId);
+            commentClub.DateTime = DateTime.Now;
+            commentClub.UserName = curUserName;
+
+            unitOfWorkRepository.ClubCommentRepository.Add(commentClub);
+            unitOfWorkRepository.Save();
             return RedirectToAction("PostInformationDetail", "Club" , new { postInfoId = comment.PostInfoInClubId });
         }
 
@@ -50,14 +57,12 @@ namespace City_Vibe.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
-            ReplyCommentClub r = new ReplyCommentClub();
-            r.Text = commentreply.ReplyText;
-            r.CommentClubId = commentreply.IdComment;
-            r.InternalUserId = Guid.Parse(curUserId);
-            r.CreatedDate = DateTime.Now;
-            r.UserName = curUserName;
-            unitOfWorkRepo.ClubCommentRepository.AddReplyComment(r);
-            
+            var comment = mapper.Map<ReplyCommentClub>(commentreply);
+            comment.InternalUserId = Guid.Parse(curUserId);
+            comment.CreatedDate = DateTime.Now;
+            comment.UserName = curUserName;
+
+            unitOfWorkRepository.ClubCommentRepository.AddReplyComment(comment);
 
             return RedirectToAction( "PostInformationDetail" ,"Club", new {postInfoId = commentreply.PostInfoInClubId });
         }

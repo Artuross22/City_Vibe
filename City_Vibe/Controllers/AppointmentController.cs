@@ -1,11 +1,11 @@
-﻿using City_Vibe.Application.Interfaces;
+﻿using AutoMapper;
+using City_Vibe.Application.Interfaces;
 using City_Vibe.Domain.Models;
 using City_Vibe.ExtensionMethod;
 using City_Vibe.ViewModels.AppointmentController;
 using City_Vibe.ViewModels.EventController;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
 namespace City_Vibe.Controllers
@@ -14,23 +14,29 @@ namespace City_Vibe.Controllers
     {
         public readonly IHttpContextAccessor сontextAccessor;
         public readonly IUnitOfWork unitOfWorkRepository;
+        public readonly IMapper mapper;
 
-        public AppointmentController(IHttpContextAccessor сontextAcces,
-            IUnitOfWork unitOfWorkRepos)
+        public AppointmentController(
+            IHttpContextAccessor сontextAcces,
+            IUnitOfWork unitOfWorkRepos,
+            IMapper mapp)
         {
             сontextAccessor = сontextAcces;
             unitOfWorkRepository = unitOfWorkRepos;
+            mapper = mapp;
         }
 
         [HttpGet]
         public async Task<IActionResult> AddUserAppointment(int eventId)
         {
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
+
             var userappointment = new AppointmentViewModel();
             userappointment.AppUserId = curUserId;
             userappointment.EventId = eventId;
-            return View(userappointment);         
+            return View(userappointment);
         }
+
 
 
         [HttpPost]
@@ -38,6 +44,7 @@ namespace City_Vibe.Controllers
         {
             if (ModelState.IsValid)
             {
+                appointmentModel.CreatedDate = DateTime.Now;
                 string addPhone = "";
                 Regex regex = new Regex(@"\+[0-9]{2}[0-9]{3}[0-9]{3}[0-9]{4}$");
                 MatchCollection matches = regex.Matches(appointmentModel.Phone);
@@ -51,15 +58,8 @@ namespace City_Vibe.Controllers
                     return View(appointmentModel);
                 }
 
-                var addAppointmentModel = new Appointment
-                {
-                    AppUserId = appointmentModel.AppUserId,
-                    EventId = appointmentModel.EventId,
-                    CreatedDate = DateTime.Now,
-                    Description = appointmentModel.Description,
-                    Title = appointmentModel.Title,
-                    Phone = appointmentModel.Phone,
-                };
+                 var addAppointmentModel = mapper.Map<Appointment>(appointmentModel);
+                 addAppointmentModel.CreatedDate = DateTime.Now;
 
                 unitOfWorkRepository.AppointmentRepository.Add(addAppointmentModel);
                 unitOfWorkRepository.Save();
@@ -77,19 +77,10 @@ namespace City_Vibe.Controllers
             List<ApplicationUserViewModel> result = new List<ApplicationUserViewModel>();
             foreach (var appointment in application)
             {
-                var viewApplication = new ApplicationUserViewModel
-                {
-                    Id = appointment.Id,
-                    Title = appointment.Title,
-                    Description = appointment.Description,
-                    Phone = appointment.Phone,
-                    UserName = appointment.AppUser.UserName,
-                    ProfileImageUrl = appointment.AppUser.ProfileImageUrl,
-                    Email = appointment.AppUser.Email,
-                    EventId = appointment.EventId,
-                    AppUserId  = appointment.AppUserId,
-                    
-                };
+               var viewApplication = mapper.Map<ApplicationUserViewModel>(appointment);
+                viewApplication.Email = appointment.AppUser.Email;
+                viewApplication.ProfileImageUrl = appointment.AppUser.ProfileImageUrl;
+                viewApplication.UserName = appointment.AppUser.UserName;
                 result.Add(viewApplication);
 
             }
@@ -99,18 +90,13 @@ namespace City_Vibe.Controllers
         [HttpPost]
         public IActionResult ReplayStatement(ReplyAppointment replyApp)
         {
+            
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
-            var result = new ReplyAppointment
-            {
-                AppointmentId = replyApp.AppointmentId,
-                Description = replyApp.Description,
-                Reason = replyApp.Reason,
-                AppUserId = curUserId,
-                EventId = replyApp.EventId,
-            };
-
+            var result =mapper.Map<ReplyAppointment>(replyApp);
+            result.AppUserId = curUserId;
          
             unitOfWorkRepository.AppointmentRepository.AddReplyAppointment(result);
+            unitOfWorkRepository.Save();
             return RedirectToAction("", "Event");
         }
 
@@ -118,19 +104,10 @@ namespace City_Vibe.Controllers
         {
             var result =  unitOfWorkRepository.AppointmentRepository.Find(x => x.Id == appointmentVM.AppointmentId).AsNoTracking().FirstOrDefault();
 
-            var updateAppointment = new Appointment
-            {
-                Id = appointmentVM.AppointmentId,
-                Title = result.Title,
-                Description = result.Description,
-                CreatedDate = result.CreatedDate,
-                Phone = result.Phone,
-                AppUserId = result.AppUserId,
-                EventId = result.EventId,
-                Statement = appointmentVM.Statement
-            };
+            var updateAppointment = mapper.Map<Appointment>(result);
+            updateAppointment.Statement = appointmentVM.Statement;
 
-            if (result.ReplyAppointments != null)
+            if (result?.ReplyAppointments != null)
             {
                 updateAppointment.ReplyAppointments = result.ReplyAppointments.ToList();
             }
@@ -155,23 +132,14 @@ namespace City_Vibe.Controllers
             {
                 var categoryEvent = unitOfWorkRepository.CategoryRepository.GetById(appointment.Event.CategoryId);
 
+                var viewModel = mapper.Map<PersonalApplicationViewModel>(appointment);
+                viewModel.EventName = appointment.Event.Name;
+                viewModel.UserName = appointment.AppUser?.UserName;
+                viewModel.ProfileImageUrl = appointment.Event.Image;
+                viewModel.Email = appointment.AppUser?.Email;
+                viewModel.StartEvent = appointment.Event.Data;
+                viewModel.Category = categoryEvent.Name;
 
-                var viewModel = new PersonalApplicationViewModel
-                {
-                    Id = appointment.Id,
-                    EventName = appointment.Event.Name,
-
-                    Title = appointment.Title,
-                    Category = categoryEvent.Name,
-                    StartEvent = appointment.Event.Data,
-                    Description = appointment.Description,
-                    Phone = appointment.Phone,
-                    UserName = appointment.AppUser.UserName,
-                    ProfileImageUrl = appointment.Event.Image,
-                    Email = appointment.AppUser.Email,
-                    CreateStatement = appointment.CreatedDate,
-                    EventId = appointment.EventId,
-                };
                 result.Add(viewModel);
 
             }
@@ -185,16 +153,11 @@ namespace City_Vibe.Controllers
             List<ApplicationUserViewModel> result = new List<ApplicationUserViewModel>();
             foreach (var appointment in application)
             {
-                var viewApplication = new ApplicationUserViewModel
-                {
-                    AppUserId = appointment.AppUserId,
-                    Id = appointment.Id,
-                    Title = appointment.Title,
-                    Phone = appointment.Phone,
-                    UserName = appointment.AppUser.UserName,
-                    ProfileImageUrl = appointment.AppUser.ProfileImageUrl,
-                    Email = appointment.AppUser.Email,
-                };
+                var viewApplication = mapper.Map<ApplicationUserViewModel>(appointment);
+                viewApplication.ProfileImageUrl = appointment.AppUser.ProfileImageUrl;
+                viewApplication.Email = appointment.AppUser.Email;
+                viewApplication.UserName = appointment.AppUser.UserName;
+
                 result.Add(viewApplication);
             }
             return View(result);

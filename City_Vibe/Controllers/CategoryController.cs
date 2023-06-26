@@ -3,21 +3,24 @@ using Microsoft.AspNetCore.Mvc;
 
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Domain.Models;
+using AutoMapper;
 
 namespace City_Vibe.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly IUnitOfWork unitOfWorkRepo;
+        private readonly IUnitOfWork unitOfWorkRepository;
+        private readonly IMapper mapper;
 
-        public CategoryController(IUnitOfWork UnitOfWorkRepository)
+        public CategoryController(IUnitOfWork UnitOfWorkRepo, IMapper mapp)
         {
-            unitOfWorkRepo = UnitOfWorkRepository;
+            unitOfWorkRepository = UnitOfWorkRepo;
+            mapper = mapp; 
         }
 
         public async Task<IActionResult> ListOfCategories()
         {
-            IEnumerable<Category> category = await unitOfWorkRepo.CategoryRepository.GetAllAsync();
+            IEnumerable<Category> category = await unitOfWorkRepository.CategoryRepository.GetAllAsync();
             return View(category);
         }
 
@@ -26,10 +29,11 @@ namespace City_Vibe.Controllers
         {
             if (IdEdit != null)
             {
-                Category category = await unitOfWorkRepo.CategoryRepository.GetByIdAsync(IdEdit);
+                Category category = await unitOfWorkRepository.CategoryRepository.GetByIdAsync(IdEdit);
+
                 if (category != null)
                 {
-                    var categoryViewModel = new CategoryEditViewModel { Name = category.Name, Id = category.Id};
+                    var categoryViewModel = mapper.Map<CategoryEditViewModel>(category);
                     return View(categoryViewModel);
                 }
             }
@@ -46,10 +50,10 @@ namespace City_Vibe.Controllers
                 return View(category);
             }
 
-            var categoryUpdate = new Category { Name = category.Name , Id = category.Id};
+            var categoryUpdate = mapper.Map<Category>(category);
 
-            unitOfWorkRepo.CategoryRepository.Update(categoryUpdate);
-            unitOfWorkRepo.Save();
+            unitOfWorkRepository.CategoryRepository.Update(categoryUpdate);
+            unitOfWorkRepository.Save();
 
             return RedirectToAction("ListOfCategories");
         }
@@ -68,12 +72,11 @@ namespace City_Vibe.Controllers
 
             if (ModelState.IsValid)
             {
-                var category = new Category  { Name = categoryAddVM.Name};
-                unitOfWorkRepo.CategoryRepository.Add(category);
-                unitOfWorkRepo.Save();
-               
+                var category = mapper.Map<Category>(categoryAddVM);
+                unitOfWorkRepository.CategoryRepository.Add(category);
+                unitOfWorkRepository.Save();       
                 return RedirectToAction("ListOfCategories");
-                
+
             }
             return View(categoryAddVM);
         }
@@ -88,13 +91,13 @@ namespace City_Vibe.Controllers
                 return NotFound();
             }
 
-            var categoryDelete = await unitOfWorkRepo.CategoryRepository.GetByIdAsync(id);
+            var categoryDelete = await unitOfWorkRepository.CategoryRepository.GetByIdAsync(id);
 
             if (categoryDelete == null)
                 return View("Error");
 
-            unitOfWorkRepo.CategoryRepository.Delete(categoryDelete);
-            unitOfWorkRepo.Save();
+            unitOfWorkRepository.CategoryRepository.Delete(categoryDelete);
+            unitOfWorkRepository.Save();
 
             return RedirectToAction(nameof(ListOfCategories));
            

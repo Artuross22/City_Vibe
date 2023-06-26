@@ -23,6 +23,7 @@ namespace City_Vibe.Controllers
         public ActionResult PostComment(PostCommentViewModel Comment)
         {
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
+            var curUserName = сontextAccessor.HttpContext.User.Identity.Name;
 
             if (curUserId == null)
             {
@@ -33,6 +34,8 @@ namespace City_Vibe.Controllers
             c.Body = Comment.CommentText;
             c.DateTime = DateTime.Now;
             c.ForeignUserId = Guid.Parse(curUserId);
+            c.UserName = curUserName;
+
             unitOfWorkRepo.CommentRepository.Add(c);
             unitOfWorkRepo.Save();
             return RedirectToAction("DetailEvent", "Event", new { currentEventId = c.EventId });

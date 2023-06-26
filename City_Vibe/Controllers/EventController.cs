@@ -6,11 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Domain.Models;
+using AutoMapper;
 
 namespace City_Vibe.Controllers
 {
     public class EventController : Controller
     {
+        private readonly IMapper mapper;
         private readonly IPhotoService photoService;
         public readonly IHttpContextAccessor сontextAccessor;
         public readonly IUnitOfWork unitOfWorkRepository;
@@ -18,12 +20,14 @@ namespace City_Vibe.Controllers
         public EventController(
             IPhotoService photoSe, 
             IHttpContextAccessor сontextAccsess,
-            IUnitOfWork unitOfWorkRepo
+            IUnitOfWork unitOfWorkRepo,
+            IMapper mapp
             )
         {
             photoService = photoSe;
             сontextAccessor = сontextAccsess;
             unitOfWorkRepository = unitOfWorkRepo;
+            mapper = mapp;
         }
 
         public async Task<IActionResult> Index(int? category, string? name)
@@ -68,18 +72,10 @@ namespace City_Vibe.Controllers
             var сheckAppointment =  unitOfWorkRepository.EventRepository.CheckingTheExistenceOfAnAppointment(currentEventId , currentUserId);
             var replyAppointment = unitOfWorkRepository.EventRepository.ReplyAppointment(currentEventId, currentUserId);
 
-            var viewModel = new EventDetailViewModel
-            {
-                Id = eventDetail.Id,
-                Title = eventDetail.Name,
-                Desciption = eventDetail.Desciption,
-                AppUser = eventDetail.AppUser,
-                Data = eventDetail.Data,
-                Image = eventDetail.Image,
-                Address = eventDetail.Address,
-                SaveEvents = curSaveEvent.ToList(),
-                CheckAppointment = сheckAppointment,
-            };
+            var viewModel = mapper.Map<EventDetailViewModel>(eventDetail);
+            viewModel.SaveEvents = curSaveEvent.ToList();
+            viewModel.CheckAppointment = сheckAppointment;
+ 
             var listofComment = unitOfWorkRepository.CommentRepository
                 .Find(x => x.EventId == currentEventId)
                 .Include(x => x.ReplyComment)
@@ -105,8 +101,10 @@ namespace City_Vibe.Controllers
             return View(viewModel);
         }
 
+
+
         [HttpGet]
-        public IActionResult CreateEvent(int clubId)
+        public IActionResult CreateEvent(int? clubId)
         {
             var EventList = unitOfWorkRepository.CategoryRepository.GetAll();
             ViewBag.Categories = new SelectList(EventList, "Id", "Name");
@@ -114,7 +112,7 @@ namespace City_Vibe.Controllers
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
             var createEventViewModel = new CreateEventViewModel { AppUserId = curUserId };
 
-            if (clubId != null)
+            if (clubId != null )
             {
                 createEventViewModel.ClubId = clubId;
             }
@@ -127,24 +125,15 @@ namespace City_Vibe.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await photoService.AddPhotoAsync(eventVM.Image);
-                var eventAdd = new Event
-                {
-                    Name = eventVM.Name,
-                    Desciption = eventVM.Description,
-                    Image = result.Url.ToString(),
-                    Data = eventVM.CreatedDate,
-                    CategoryId = eventVM.CategoryId,
-                    AppUserId = eventVM.AppUserId,
-                    Address = new Address
-                    {
-                        Street = eventVM.Address.Street,
-                        City = eventVM.Address.City,
-                        Region = eventVM.Address.Region,
-                    }
-                };
 
-                if (eventAdd.ClubId != null)
+         
+                var result = await photoService.AddPhotoAsync(eventVM.Image);
+
+                var eventAdd = mapper.Map<Event>(eventVM);
+                eventAdd.Image = result.Url.ToString();
+                eventAdd.Data = DateTime.Now;
+
+                if (eventAdd.ClubId != null )
                 {
                     eventAdd.ClubId = eventVM.ClubId;
                 }
@@ -178,9 +167,7 @@ namespace City_Vibe.Controllers
                 CategoryId = editEvent.CategoryId,
                 Category = editEvent.Category,
                 Address = editEvent.Address,
-                AppUserId = editEvent.AppUserId,
-                 
-               
+                AppUserId = editEvent.AppUserId,            
             };
 
             var EventList = unitOfWorkRepository.CategoryRepository.GetAll();

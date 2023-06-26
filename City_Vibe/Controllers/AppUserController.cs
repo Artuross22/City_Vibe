@@ -7,11 +7,13 @@ using System.Data;
 
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Domain.Models;
+using AutoMapper;
 
 namespace City_Vibe.Controllers
 {
     public class AppUserController : Controller
     {
+        private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWorkRepository;
         public  readonly  IHttpContextAccessor сontextAccessor;
         private readonly IPhotoService photoService;
@@ -20,12 +22,13 @@ namespace City_Vibe.Controllers
       
         
 
-        public AppUserController(
+            public AppUserController(
             UserManager<AppUser> _userManager,
             IPhotoService _photoService,
             RoleManager<IdentityRole> _roleManager,
             IHttpContextAccessor _сontextAccessor,
-            IUnitOfWork _unitOfWorkRepository
+            IUnitOfWork _unitOfWorkRepository,
+            IMapper _mapper
             )
         {
             userManager = _userManager;
@@ -33,6 +36,7 @@ namespace City_Vibe.Controllers
             roleManager = _roleManager;
             сontextAccessor = _сontextAccessor;
             unitOfWorkRepository = _unitOfWorkRepository;
+            mapper = _mapper;
         }
 
         [HttpGet("users")]
@@ -43,14 +47,9 @@ namespace City_Vibe.Controllers
             List<AppUserViewModel> result = new List<AppUserViewModel>();
             foreach (var user in users)
             {
-                var userViewModel = new AppUserViewModel()
-                {
-                    Id = user.Id,
-                    City = user.City,
-                    Region = user.Region,
-                    UserName = user.UserName,
-                    ProfileImageUrl = user.ProfileImageUrl ?? "/img/avatar-male-4.jpg",
-                };
+                var userViewModel = mapper.Map<AppUserViewModel>(user);
+
+                userViewModel.ProfileImageUrl = user.ProfileImageUrl ?? "/img/avatar-male-4.jpg";
                 result.Add(userViewModel);
             }
             return View(result);
@@ -65,15 +64,10 @@ namespace City_Vibe.Controllers
             {
                 return RedirectToAction("Index", "Users");
             }
-            var userDetailViewModel = new AppUserDetailViewModel()
-            {
-                Id = returnUser.Id,
-                City = returnUser.City,
-                Region = returnUser.Region,
-                UserName = returnUser.UserName,
-                Address = returnUser.Address,
-                ProfileImageUrl = returnUser.ProfileImageUrl ?? "/img/avatar-male-4.jpg",
-            };
+
+            var userDetailViewModel = mapper.Map<AppUserDetailViewModel>(returnUser);
+
+            userDetailViewModel.ProfileImageUrl = returnUser.ProfileImageUrl ?? "/img/avatar-male-4.jpg";
             return View(userDetailViewModel);
         }
 
@@ -90,17 +84,9 @@ namespace City_Vibe.Controllers
                 return View("Error");
             }
 
-            var editMV = new EditProfileViewModel()
-            {
-                City = returnUser.City,
-                Region = returnUser.Region,
-                ProfileImageUrl = returnUser.ProfileImageUrl,
-                AddressId = returnUser.AddressId,
-                Address = returnUser.Address,
-         
-                
-            };
-            return View(editMV);
+            var editVM = mapper.Map<EditProfileViewModel>(returnUser);
+
+            return View(editVM);
         }
 
         [HttpPost]

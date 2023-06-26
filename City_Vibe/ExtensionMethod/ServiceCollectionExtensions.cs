@@ -49,6 +49,8 @@ namespace City_Vibe.ExtensionMethod
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IPhotoService, PhotoService>();
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             return services;
 
         }

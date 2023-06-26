@@ -6,11 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Domain.Models;
+using AutoMapper;
 
 namespace City_Vibe.Controllers
 {
     public class ClubController : Controller
-    {  
+    {
+        private readonly IMapper mapper;
         private readonly IPhotoService photoService;
         private readonly IHttpContextAccessor сontextAccessor;
         private readonly IUnitOfWork unitOfWorkRepository;
@@ -19,11 +21,14 @@ namespace City_Vibe.Controllers
         public ClubController(
             IPhotoService photoServ,
             IHttpContextAccessor сontextAccess,
-            IUnitOfWork unitOfWorkRepo)
+            IUnitOfWork unitOfWorkRepo,
+            IMapper mapp
+            )
         {
             photoService = photoServ; 
             сontextAccessor = сontextAccess;
             unitOfWorkRepository = unitOfWorkRepo;
+            mapper = mapp;
         }
 
 
@@ -34,19 +39,19 @@ namespace City_Vibe.Controllers
                 return NotFound();
             }
 
-            var cat = await unitOfWorkRepository.CategoryRepository.GetByIdAsync(category);
+            var byCategory = await unitOfWorkRepository.CategoryRepository.GetByIdAsync(category);
       
 
             var clubs = category switch
             {
-                -1 => await unitOfWorkRepository.ClubRepository.GetSliceAsync((page - 1) * pageSize, pageSize),
-                _ => await unitOfWorkRepository.ClubRepository.GetClubsByCategoryAndSliceAsync(cat, (page - 1) * pageSize, pageSize),
+                -1 => await unitOfWorkRepository.ClubRepository.GetSliceAsync(page , pageSize, pageSize),
+                _ => await unitOfWorkRepository.ClubRepository.GetClubsByCategoryAndSliceAsync(byCategory, page , pageSize),
             };
 
             var count = category switch
             {
                 -1 => await unitOfWorkRepository.ClubRepository.GetCountAsync(),
-                _ => await unitOfWorkRepository.ClubRepository.GetCountByCategoryAsync(cat),
+                _ => await unitOfWorkRepository.ClubRepository.GetCountByCategoryAsync(byCategory),
             };
 
             List<Category> categories = await unitOfWorkRepository.CategoryRepository.GetAllAsync();
@@ -83,21 +88,10 @@ namespace City_Vibe.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await photoService.AddPhotoAsync(clubVM.Image);
-                var club = new Club
-                {
-                    Title = clubVM.Title,
-                    Description = clubVM.Description,
-                    Image = result.Url.ToString(),
-                    AppUserId = clubVM.AppUserId,
-                    CategoryId = clubVM.CategoryId,
-                    Address = new Address
-                    {
-                        Street = clubVM.Address.Street,
-                        City = clubVM.Address.City,
-                        Region = clubVM.Address.Region,
-                    }
-                };
+                var addImage = await photoService.AddPhotoAsync(clubVM.Image);
+
+                var club = mapper.Map<Club>(clubVM);
+                club.Image = addImage.Url.ToString();
 
                 unitOfWorkRepository.ClubRepository.Add(club);
                 unitOfWorkRepository.Save();
@@ -119,18 +113,9 @@ namespace City_Vibe.Controllers
             var countlikes = unitOfWorkRepository.LikeClubRepository.Find(x => x.ClubId == id).ToList().Count();
             var getClubInformation = await unitOfWorkRepository.ClubRepository.GetPostInfoInClubByClubId(id);
 
-            var detailClubViewModel = new DetailClubViewModel
-            {
-                Id = id,
-                Title = club.Title,
-                Description = club.Description,
-                Image = club.Image,
-                AppUserId = club.AppUserId,
-                CategoryId = club.CategoryId,
-                Address = club.Address,
-                Events = events.ToList(),
-                CountLikes = countlikes
-            };
+            var detailClubViewModel = mapper.Map<DetailClubViewModel>(club);
+            detailClubViewModel.CountLikes = countlikes;
+            detailClubViewModel.Events = events.ToList();
 
             if (getClubInformation != null)
             {
@@ -150,6 +135,7 @@ namespace City_Vibe.Controllers
         {
             var club = await unitOfWorkRepository.ClubRepository.GetByIdAsync(id);
             if (club == null) return View("Error");
+
             var clubVM = new EditClubViewModel
             {
                 Title = club.Title,
@@ -343,14 +329,9 @@ namespace City_Vibe.Controllers
 
             var curUserName = сontextAccessor.HttpContext.User.Identity.Name;
 
-            var addPostInfo = new PostInfoInClub
-            {
-                ClubId = postInfo.ClubId,
-                AppUserId = postInfo.AppUserId,
-                PostInformation = postInfo.PostInformation,
-                DateAndTime = DateTime.Now,
-                UserName = curUserName,
-            };
+            var addPostInfo = mapper.Map<PostInfoInClub>(postInfo);
+            addPostInfo.DateAndTime = DateTime.Now;
+            addPostInfo.UserName = curUserName;
 
             if (postInfo.Image != null)
             {
@@ -358,25 +339,18 @@ namespace City_Vibe.Controllers
                 addPostInfo.Image = result.Url.ToString();
             }
             unitOfWorkRepository.ClubRepository.AddPostInfoInClub(addPostInfo);
-            return View();
+            return RedirectToAction("DetailClub", new { id = postInfo.ClubId });
         }
 
 
         public async Task<ActionResult> PostInformationDetail(int postInfoId)
         {
-
             var clubInfo = await unitOfWorkRepository.ClubRepository.FindByIdPostInfo(postInfoId);
             var listofComment = unitOfWorkRepository.ClubCommentRepository.GetAllCommentsClubById(postInfoId);
 
-            var viewClubInfo = new PostInformationDetailViewModel
-            {
-                Id = postInfoId,
-                UserName = clubInfo.UserName,
-                DateAndTime = clubInfo.DateAndTime,
-                PostInformation = clubInfo.PostInformation,
-                CommentClub = listofComment,
-                Image = clubInfo.Image,
-            };
+            var viewClubInfo = mapper.Map<PostInformationDetailViewModel>(clubInfo);
+            viewClubInfo.CommentClub = listofComment;
+
             return View(viewClubInfo);
         }
     }

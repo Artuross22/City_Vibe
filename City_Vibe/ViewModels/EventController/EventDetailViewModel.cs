@@ -7,7 +7,8 @@ namespace City_Vibe.ViewModels.EventController
     public class EventDetailViewModel
     {
         public int Id { get; set; }
-        public string? Title { get; set; }
+
+        public string? Name { get; set; }
 
         public string? Desciption { get; set; }
 

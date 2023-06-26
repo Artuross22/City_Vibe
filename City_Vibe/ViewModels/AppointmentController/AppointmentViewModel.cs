@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using City_Vibe.Domain.Models;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace City_Vibe.ViewModels.AppointmentController
 {
@@ -23,3 +24,8 @@ namespace City_Vibe.ViewModels.AppointmentController
         public int? EventId { get; set; }
     }
 }
+
+
+
+
+

@@ -2,8 +2,11 @@
 {
     public class ReplyCommentClubViewModel
     {
-        public string? ReplyText { get; set; }
-        public int IdComment { get; set; }
+
+        public string Text { get; set; }
+
+        public int? CommentClubId { get; set; }
+
         public int PostInfoInClubId { get; set; }
     }
 }
