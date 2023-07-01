@@ -48,25 +48,34 @@ namespace City_Vibe.Infrastructure.Implement
         }
 
 
-        public void Add(TEntity entity)
+        public bool Add(TEntity entity)
         {
             Entities.Add(entity);
+            return SaveChange();
         }
 
-        public void Delete(TEntity id)
+        public bool Delete(TEntity id)
         {
             Entities.Remove(id);
+            return SaveChange();
         }
 
-        public void Update(TEntity entity)
+        public bool Update(TEntity entity)
         {
             Entities.Update(entity);
+            return SaveChange();
         }
 
-        public Task SaveChangeAsync()
+        public bool SaveChange()
         {
-            return appDbContext.SaveChangesAsync();
+            var saved = appDbContext.SaveChanges();
+            return saved > 0 ? true : false;
         }
+
+        //public Task SaveChange()
+        //{
+        //    return appDbContext.SaveChangesAsync();
+        //}
 
     }
 }

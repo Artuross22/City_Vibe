@@ -1,26 +1,22 @@
 ﻿using City_Vibe.ViewModels.Categories;
 using Microsoft.AspNetCore.Mvc;
-
-using City_Vibe.Application.Interfaces;
 using City_Vibe.Domain.Models;
-using AutoMapper;
+using City_Vibe.Contracts;
 
 namespace City_Vibe.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly IUnitOfWork unitOfWorkRepository;
-        private readonly IMapper mapper;
+        private readonly ICategoryService  categoryService;
 
-        public CategoryController(IUnitOfWork UnitOfWorkRepo, IMapper mapp)
+        public CategoryController(ICategoryService categoryServ)
         {
-            unitOfWorkRepository = UnitOfWorkRepo;
-            mapper = mapp; 
+            categoryService = categoryServ;
         }
 
         public async Task<IActionResult> ListOfCategories()
         {
-            IEnumerable<Category> category = await unitOfWorkRepository.CategoryRepository.GetAllAsync();
+            IEnumerable<Category> category = await categoryService.ListOfCategories();
             return View(category);
         }
 
@@ -29,13 +25,15 @@ namespace City_Vibe.Controllers
         {
             if (IdEdit != null)
             {
-                Category category = await unitOfWorkRepository.CategoryRepository.GetByIdAsync(IdEdit);
+                CategoryEditViewModel category = await categoryService.EditCategoryGet(IdEdit);
 
-                if (category != null)
+                if(category == null || category.Id == 0)
                 {
-                    var categoryViewModel = mapper.Map<CategoryEditViewModel>(category);
-                    return View(categoryViewModel);
+                    return NotFound();
                 }
+
+                return View(category);
+
             }
             return NotFound();
         }
@@ -49,34 +47,24 @@ namespace City_Vibe.Controllers
                 ModelState.AddModelError("", "Failed to edit category ");
                 return View(category);
             }
-
-            var categoryUpdate = mapper.Map<Category>(category);
-
-            unitOfWorkRepository.CategoryRepository.Update(categoryUpdate);
-            unitOfWorkRepository.Save();
-
-            return RedirectToAction("ListOfCategories");
+            var request = categoryService.EditCategoryPost(category);
+            return RedirectToAction("ListOfCategories", request);
         }
 
 
         [HttpGet]
         public IActionResult AddCategory()
-        {
-            
+        {       
             return View();
         }
 
         [HttpPost]
         public IActionResult AddCategory(CategoryAddViewModel categoryAddVM)
         {
-
             if (ModelState.IsValid)
-            {
-                var category = mapper.Map<Category>(categoryAddVM);
-                unitOfWorkRepository.CategoryRepository.Add(category);
-                unitOfWorkRepository.Save();       
-                return RedirectToAction("ListOfCategories");
-
+            {             
+                var response = categoryService.AddCategory(categoryAddVM);     
+                return RedirectToAction("ListOfCategories", response.Success);
             }
             return View(categoryAddVM);
         }
@@ -91,13 +79,10 @@ namespace City_Vibe.Controllers
                 return NotFound();
             }
 
-            var categoryDelete = await unitOfWorkRepository.CategoryRepository.GetByIdAsync(id);
+            var categoryDelete = await categoryService.DeleteCategory(id);
 
-            if (categoryDelete == null)
-                return View("Error");
+            if(categoryDelete == false)  return NotFound();
 
-            unitOfWorkRepository.CategoryRepository.Delete(categoryDelete);
-            unitOfWorkRepository.Save();
 
             return RedirectToAction(nameof(ListOfCategories));
            

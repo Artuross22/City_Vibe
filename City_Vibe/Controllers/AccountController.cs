@@ -1,11 +1,10 @@
-﻿
-using City_Vibe.Application.Interfaces;
+﻿using City_Vibe.Application.Interfaces;
+using City_Vibe.Contracts;
 using City_Vibe.Domain.Models;
 using City_Vibe.ViewModels.AccountController;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 
 namespace City_Vibe.Controllers
@@ -16,13 +15,16 @@ namespace City_Vibe.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ISendGridEmail _sendGridEmail;
+        private readonly IAccountService accountService;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ISendGridEmail sendGridEmail, RoleManager<IdentityRole> roleManager)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ISendGridEmail sendGridEmail,
+            RoleManager<IdentityRole> roleManager , IAccountService _accountService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
              _sendGridEmail = sendGridEmail;
             _roleManager = roleManager;
+            accountService = _accountService;
         }
 
         [HttpPost]
@@ -39,22 +41,45 @@ namespace City_Vibe.Controllers
                 {
                     return View("Error");
                 }
-                var user = new AppUser { UserName = model.Email, Email = model.Email, NickName = model.Name };
-                var result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
+
+                var request = await accountService.ExternalLoginConfirmation(model, info, returnurl);
+
+                if (request)
                 {
-                    result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
-                        return LocalRedirect(returnurl);  
-                    }
+                   return LocalRedirect(returnurl);                 
                 }
+
                 ModelState.AddModelError("Email", "This user already exists");
             }
             ViewData["ReturnUrl"] = returnurl;
             return View(model);
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> Register(string? returnUrl = null)
+        {
+            var request = await accountService.RegisterGet(returnUrl);
+            return View(request);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel registerViewModel, string? returnUrl = null)
+        {
+            registerViewModel.ReturnUrl = returnUrl;
+            returnUrl = returnUrl ?? Url.Content("~/");
+            if (ModelState.IsValid)
+            {
+
+                var request = await accountService.RegisterPost(registerViewModel, returnUrl);
+
+                if (request)
+                    return LocalRedirect(returnUrl);
+
+                ModelState.AddModelError("Password", "User could not be created. Password not unique enough");
+            }
+            return View(registerViewModel);
         }
 
 
@@ -76,8 +101,6 @@ namespace City_Vibe.Controllers
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
             if (result.Succeeded)
             {
-
-
                 await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
                 return RedirectToAction("Index", "Home");
             }
@@ -101,6 +124,7 @@ namespace City_Vibe.Controllers
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirecturl);
             return Challenge(properties, provider); 
         }
+
         public IActionResult Index()
         {
             return View();
@@ -122,11 +146,13 @@ namespace City_Vibe.Controllers
                 {
                     return RedirectToAction("ForgotPasswordConfirmation");
                 }
+
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackurl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
 
                 await _sendGridEmail.SendEmailAsync(model.Email, "Reset Email Confirmation", "Please reset email by going to this " +
-                    "<a href=\"" + callbackurl + "\">link</a>");
+                 "<a href=\"" + callbackurl + "\">link</a>");
+
                 return RedirectToAction("ForgotPasswordConfirmation");
             }
             return View(model);
@@ -195,60 +221,7 @@ namespace City_Vibe.Controllers
             return View(loginViewModel);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Register(string? returnUrl = null)
-        {
-            if (!await _roleManager.RoleExistsAsync("Admin")) 
-            {
-                await _roleManager.CreateAsync(new IdentityRole("Admin"));
-                await _roleManager.CreateAsync(new IdentityRole("Trainer"));
-            }
-
-            List<SelectListItem> listItems = new List<SelectListItem>();    
-            listItems.Add(new SelectListItem()
-            {
-                Value = "Trainer",
-                Text = "Trainer"
-            });
-
-            listItems.Add(new SelectListItem()
-            {
-                Value = "Admin",
-                Text = "Admin"
-            });
-
-            RegisterViewModel registerViewModel = new RegisterViewModel();
-            registerViewModel.RoleList = listItems;
-            registerViewModel.ReturnUrl = returnUrl;
-            return View(registerViewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel registerViewModel, string? returnUrl = null)
-        {
-            registerViewModel.ReturnUrl = returnUrl;
-            returnUrl = returnUrl ?? Url.Content("~/");
-            if (ModelState.IsValid)
-            {
-                var user = new AppUser { Email = registerViewModel.Email, UserName = registerViewModel.UserName, NickName = registerViewModel.UserName };
-                var result = await _userManager.CreateAsync(user, registerViewModel.Password);
-                if (result.Succeeded)
-                {
-                    if (registerViewModel.RoleSelected != null && registerViewModel.RoleSelected.Length > 0 && registerViewModel.RoleSelected == "Trainer")
-                    {
-                        await _userManager.AddToRoleAsync(user, "Trainer");
-                    }
-                    else
-                    {
-                        await _userManager.AddToRoleAsync(user, "Admin");
-                    }
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
-                }
-                ModelState.AddModelError("Password", "User could not be created. Password not unique enough");
-            }
-            return View(registerViewModel);
-        }
+  
 
         [HttpGet]
         public IActionResult ForgotPasswordConfirmation()

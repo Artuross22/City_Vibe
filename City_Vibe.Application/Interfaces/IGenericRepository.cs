@@ -16,12 +16,12 @@ namespace City_Vibe.Application.Interfaces
 
         IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
 
-        void Add(TEntity entity);
+        bool Add(TEntity entity);
 
-        void Update(TEntity entity);
+        bool Update(TEntity entity);
 
-        void Delete(TEntity id);
+        bool Delete(TEntity id);
 
-        Task SaveChangeAsync();
+        bool SaveChange();
     }
 }

@@ -8,7 +8,8 @@ builder.Services.AddControllersWithViews();
 builder.Services
     .AddInfrastructureServices(builder.Configuration)
     .AddApplicationRepositories()
-    .AddApplicationServices();
+    .AddApplicationServices()
+    .AddContractsServices();
 
 
 //builder pattern 

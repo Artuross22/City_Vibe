@@ -1,4 +1,5 @@
 ﻿using City_Vibe.Application.Interfaces;
+using City_Vibe.Contracts;
 using City_Vibe.Domain.Interfaces;
 using City_Vibe.Domain.Models;
 using City_Vibe.Infrastructure.Data;
@@ -6,6 +7,7 @@ using City_Vibe.Infrastructure.Helpers;
 using City_Vibe.Infrastructure.Implement;
 using City_Vibe.Infrastructure.Repository;
 using City_Vibe.Infrastructure.Services;
+using City_Vibe.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,6 +52,18 @@ namespace City_Vibe.ExtensionMethod
             services.AddScoped<IPhotoService, PhotoService>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            return services;
+
+        }
+
+        public static IServiceCollection AddContractsServices(this IServiceCollection services)
+        {
+
+            services.AddScoped<ICategoryService,CategoryService>();
+            services.AddScoped<IAccountService, AccountService>();
+
+
 
             return services;
 

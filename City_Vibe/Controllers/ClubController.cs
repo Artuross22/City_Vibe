@@ -289,7 +289,6 @@ namespace City_Vibe.Controllers
                 };
 
                 unitOfWorkRepository.LikeClubRepository.Add(addLike);
-                unitOfWorkRepository.Save();
             }
             else
             {
