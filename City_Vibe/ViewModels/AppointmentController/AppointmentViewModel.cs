@@ -22,6 +22,8 @@ namespace City_Vibe.ViewModels.AppointmentController
         public DateTime CreatedDate { get; set; }
         public string? AppUserId { get; set; }
         public int? EventId { get; set; }
+
+        public bool? Success { get; set; }
     }
 }
 

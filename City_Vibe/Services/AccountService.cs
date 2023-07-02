@@ -98,47 +98,5 @@ namespace City_Vibe.Services
             return false;
         }
 
-
-
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model, AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public IActionResult ExternalLogin(string provider, string returnurl = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IActionResult> ExternalLoginCallback(string returnurl = null, string remoteError = null)
-        {
-            throw new NotImplementedException();
-        }
-
-     
-
-        public IActionResult Login(string? returnUrl = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IActionResult> Login(LoginViewModel loginViewModel, string returnUrl)
-        {
-            throw new NotImplementedException();
-        }
-
-    
-
-        public IActionResult ResetPassword(string code = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordViewModel)
-        {
-            throw new NotImplementedException();
-
-        }
     }
 }

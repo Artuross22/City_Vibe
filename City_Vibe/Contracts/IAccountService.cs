@@ -14,19 +14,5 @@ namespace City_Vibe.Contracts
         Task<bool> RegisterPost(RegisterViewModel registerViewModel, string? returnUrl = null);
 
 
-        Task<IActionResult> ExternalLoginCallback(string returnurl = null, string remoteError = null);
-
-        IActionResult ExternalLogin(string provider, string returnurl = null);
-
-        Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model,AppUser user);
-
-        IActionResult ResetPassword(string code = null);
-
-        Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordViewModel);
-
-        IActionResult Login(string? returnUrl = null);
-
-        Task<IActionResult> Login(LoginViewModel loginViewModel, string returnUrl);
-
     }
 }

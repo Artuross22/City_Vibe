@@ -62,6 +62,7 @@ namespace City_Vibe.ExtensionMethod
 
             services.AddScoped<ICategoryService,CategoryService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
 
 
 

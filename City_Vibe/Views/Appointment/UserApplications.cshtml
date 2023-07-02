@@ -70,7 +70,7 @@
                                     </div>
                                 </th>
                                 <td>
-                                    <form asp-controller="Event" asp-action="DetailEvent" method="post" asp-route-id="@user.EventId">
+                                    <form asp-controller="Event" asp-action="DetailEvent" method="post" asp-route-currentEventId="@user.EventId">
                                         <input type="submit" value="View Event" />
                                     </form>
                                 </td>
