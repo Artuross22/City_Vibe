@@ -8,67 +8,36 @@ using System.Data;
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Domain.Models;
 using AutoMapper;
+using City_Vibe.Contracts;
+using City_Vibe.Infrastructure.ExtensionMethod;
 
 namespace City_Vibe.Controllers
 {
     public class AppUserController : Controller
     {
-        private readonly IMapper mapper;
-        private readonly IUnitOfWork unitOfWorkRepository;
-        public  readonly  IHttpContextAccessor сontextAccessor;
-        private readonly IPhotoService photoService;
+        private readonly IAppUserService appUserService;
         private readonly UserManager<AppUser> userManager;
-        private readonly RoleManager<IdentityRole> roleManager;
-      
-        
 
-            public AppUserController(
-            UserManager<AppUser> _userManager,
-            IPhotoService _photoService,
-            RoleManager<IdentityRole> _roleManager,
-            IHttpContextAccessor _сontextAccessor,
-            IUnitOfWork _unitOfWorkRepository,
-            IMapper _mapper
-            )
+        public AppUserController(
+        UserManager<AppUser> _userManager,
+        IAppUserService _appUserService)
         {
             userManager = _userManager;
-            photoService = _photoService;
-            roleManager = _roleManager;
-            сontextAccessor = _сontextAccessor;
-            unitOfWorkRepository = _unitOfWorkRepository;
-            mapper = _mapper;
+            appUserService = _appUserService;
         }
 
         [HttpGet("users")]
         public async Task<IActionResult> Index()
         {
-
-            var users = await unitOfWorkRepository.AppUserRepository.GetAllAsync();
-            List<AppUserViewModel> result = new List<AppUserViewModel>();
-            foreach (var user in users)
-            {
-                var userViewModel = mapper.Map<AppUserViewModel>(user);
-
-                userViewModel.ProfileImageUrl = user.ProfileImageUrl ?? "/img/avatar-male-4.jpg";
-                result.Add(userViewModel);
-            }
+            var result = await appUserService.Index();
             return View(result);
         }
 
-
-    
         public async Task<IActionResult> Detail(string id)
         {
-            var returnUser = await unitOfWorkRepository.AppUserRepository.GetUserByIdIncludeAdress(id);
-            if (returnUser == null)
-            {
-                return RedirectToAction("Index", "Users");
-            }
-
-            var userDetailViewModel = mapper.Map<AppUserDetailViewModel>(returnUser);
-
-            userDetailViewModel.ProfileImageUrl = returnUser.ProfileImageUrl ?? "/img/avatar-male-4.jpg";
-            return View(userDetailViewModel);
+            var result = await appUserService.Detail(id);
+            if (result.Succeeded == false) return RedirectToAction("Index", "Users");
+            else return View(result);
         }
 
         [HttpGet]
@@ -76,18 +45,12 @@ namespace City_Vibe.Controllers
         public async Task<IActionResult> EditProfile()
         {
             var user = await userManager.GetUserAsync(User);
+            var result = await appUserService.EditProfileGet(user);
 
-            var returnUser = await unitOfWorkRepository.AppUserRepository.GetUserByIdIncludeAdress(user.Id);
-
-            if (returnUser == null)
-            {
-                return View("Error");
-            }
-
-            var editVM = mapper.Map<EditProfileViewModel>(returnUser);
-
-            return View(editVM);
+            if (result.Succeeded == false) return View("Error");
+            return View(result);
         }
+
 
         [HttpPost]
         [Authorize]
@@ -106,67 +69,31 @@ namespace City_Vibe.Controllers
                 return View("Error");
             }
 
-            if (editVM.Image != null) 
+            var requeest = await appUserService.EditProfilePost(editVM, user);
+
+            if (requeest.ErrorPhoto == true)
             {
-                var photoResult = await photoService.AddPhotoAsync(editVM.Image);
-
-                if (photoResult.Error != null)
-                {
-                    ModelState.AddModelError("Image", "Failed to upload image");
-                    return View("EditProfile", editVM);
-                }
-
-                if (!string.IsNullOrEmpty(user.ProfileImageUrl))
-                {
-                    _ = photoService.DeletePhotoAsync(user.ProfileImageUrl);
-                }
-
-                user.ProfileImageUrl = photoResult.Url.ToString();
-                await userManager.UpdateAsync(user);
+                ModelState.AddModelError("Image", "Failed to upload image");
+                return View("EditProfile", editVM);
             }
-
-            user.Address = editVM.Address;
-
-            await userManager.UpdateAsync(user);
 
             return RedirectToAction("Detail", "AppUser", new { user.Id });
         }
 
-
-
         [HttpGet]
-        public async Task<IActionResult> ManageClaims(string userId)
+        public async Task<IActionResult> ManageClaims()
         {
-            var user = await userManager.FindByIdAsync(userId);
+            var userId = await userManager.GetUserAsync(User);
+
+            var user = await userManager.FindByIdAsync(userId.Id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-
-
-            var existingUserClaims = await userManager.GetClaimsAsync(user);
-
-            var model = new AppUserClaimsViewModel()
-            {
-                UserId = userId
-            };
-            foreach (Claim claim in ClaimStore.claimsList)
-            {
-                UserClaim userClaim = new UserClaim
-                {
-                    ClaimType = claim.Type
-                };
-
-                if (existingUserClaims.Any(c => c.Type == claim.Type))
-                {
-                    userClaim.IsSelected = true;
-                }
-                model.Claims.Add(userClaim);
-            }
-
-            return View(model);
+            var request = await appUserService.ManageClaimsGet(user);
+            return View(request);
         }
 
         [HttpPost]
@@ -180,22 +107,12 @@ namespace City_Vibe.Controllers
                 return NotFound();
             }
 
-            var claims = await userManager.GetClaimsAsync(user);
-            var result = await userManager.RemoveClaimsAsync(user, claims);
+            var request = await appUserService.ManageClaimsPost(userClaimsViewModel, user);
 
-            if (!result.Succeeded)
+            if (!request.Succeeded)
             {
                 return View(userClaimsViewModel);
             }
-
-            result = await userManager.AddClaimsAsync(user,
-                userClaimsViewModel.Claims.Where(c => c.IsSelected).Select(c => new Claim(c.ClaimType, c.IsSelected.ToString())));
-
-            if (!result.Succeeded)
-            {
-                return View(userClaimsViewModel);
-            }
-
             return RedirectToAction(nameof(Index));
         }
     }

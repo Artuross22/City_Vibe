@@ -12,6 +12,7 @@ namespace City_Vibe.ViewModels.AppUserController
         public string? Region { get; set; }
         public string ProfileImageUrl { get; set; }
         public Address? Address { get; set; }
+        public bool? Succeeded { get; set; }
 
 
         public string Location => (City, Region) switch
