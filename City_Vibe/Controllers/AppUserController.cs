@@ -2,14 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using System.Data;
-
-using City_Vibe.Application.Interfaces;
 using City_Vibe.Domain.Models;
-using AutoMapper;
 using City_Vibe.Contracts;
-using City_Vibe.Infrastructure.ExtensionMethod;
 
 namespace City_Vibe.Controllers
 {
@@ -46,6 +40,7 @@ namespace City_Vibe.Controllers
         {
             var user = await userManager.GetUserAsync(User);
             var result = await appUserService.EditProfileGet(user);
+
 
             if (result.Succeeded == false) return View("Error");
             return View(result);

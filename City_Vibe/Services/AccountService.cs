@@ -79,7 +79,9 @@ namespace City_Vibe.Services
 
         public async Task<bool> RegisterPost(RegisterViewModel registerViewModel, string? returnUrl = null)
         {
-            var user = new AppUser { Email = registerViewModel.Email, UserName = registerViewModel.UserName, NickName = registerViewModel.UserName };
+            Address address = new Address();
+            var user = new AppUser { Email = registerViewModel.Email, UserName = registerViewModel.UserName, NickName = registerViewModel.UserName, Address = address};
+
             var result = await userManager.CreateAsync(user, registerViewModel.Password);
             if (result.Succeeded)
             {

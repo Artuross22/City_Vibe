@@ -70,10 +70,15 @@ namespace City_Vibe.Services
             return userDetailViewModel;
         }
 
-        public async Task<EditProfileViewModel> EditProfileGet(AppUser curUserId)
+        public async Task<EditProfileViewModel> EditProfileGet(AppUser curUser)
         {
             var editProfileViewModel = new EditProfileViewModel();  
-            var returnUser = await unitOfWorkRepository.AppUserRepository.GetUserByIdIncludeAdress(curUserId.Id);
+            var returnUser = await unitOfWorkRepository.AppUserRepository.GetUserByIdIncludeAdress(curUser.Id);
+
+            //if (curUser.Address?.Id == null)
+            //{
+            //    curUser.Address.Id = 0;
+            //}
 
             if (returnUser == null)
             {
@@ -121,7 +126,6 @@ namespace City_Vibe.Services
         {
 
             var existingUserClaims = await userManager.GetClaimsAsync(user);
-
             var model = new AppUserClaimsViewModel()
             {
                 UserId = user.Id
