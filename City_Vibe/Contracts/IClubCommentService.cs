@@ -1,5 +1,4 @@
-﻿using City_Vibe.Services.Base;
-using City_Vibe.ViewModels.ClubCommentController;
+﻿using City_Vibe.ViewModels.ClubCommentController;
 
 namespace City_Vibe.Contracts
 {

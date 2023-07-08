@@ -18,9 +18,9 @@ namespace City_Vibe.Services
             unitOfWorkRepository = unitOfWorkRepo;
         }
 
-        public Response<int> AddCategory(CategoryAddViewModel categoryAddVM)
+        public Response AddCategory(CategoryAddViewModel categoryAddVM)
         {
-            var response = new Response<int>();
+            var response = new Response();
             var category = mapper.Map<Category>(categoryAddVM);
             var save = unitOfWorkRepository.CategoryRepository.Add(category);
             if (save == true)

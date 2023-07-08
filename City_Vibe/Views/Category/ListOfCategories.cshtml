@@ -31,7 +31,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                    @Html.ActionLink("Edit", "EditCategory", new {  IdEdit=item.Id })
+                    @Html.ActionLink("EditGet", "EditCategory", new {  IdEdit=item.Id })
                     <form asp-controller="Category" asp-action="DeleteCategory" method="post" asp-route-id="@item.Id">
                         <input type="submit" value="Delete" />
                     </form>

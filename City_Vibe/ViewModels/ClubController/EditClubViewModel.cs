@@ -15,6 +15,12 @@ namespace City_Vibe.ViewModels.ClubController
         public Address Address { get; set; }
 
         public int CategoryId { get; set; }
+
         public Category? Category { get; set; }
+
+        public string? AppUserId { get; set; }
+
+
+        public bool? Succeeded { get; set; }
     }
 }

@@ -13,6 +13,10 @@ namespace City_Vibe.Automapper.Profiles.ClubProfiles
 
             CreateMap<PostInformationClubViewModel, PostInfoInClub>();
             CreateMap<PostInfoInClub, PostInformationDetailViewModel>();
+
+            CreateMap<Club, DeleteClubViewModel>();
+            CreateMap<DeleteClubViewModel, Club>();
+
         }
     }
 }

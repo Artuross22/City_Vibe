@@ -1,10 +1,14 @@
 ﻿namespace City_Vibe.Services.Base
 {
-    public class Response<T>
+    public class Response
     {
         public string Message { get; set; }
         public string ValidationErrors { get; set; }
         public bool Success { get; set; }
-        public T Data { get; set; }
+
+        public bool? CurrentUser { get; set; }
+
+        public bool? PhotoSucceeded { get; set; }
+        public bool? Succeeded { get; set; }
     }
 }

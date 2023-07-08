@@ -138,7 +138,7 @@ namespace City_Vibe.Tests.Repository
 
             //Act
             clubRepository.Add(club);
-         //   var result = clubRepository.Delete(club);
+         //   var result = clubRepository.DeleteGet(club);
             var count = await clubRepository.GetCountAsync();
 
             //Assert

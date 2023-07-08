@@ -65,8 +65,10 @@ namespace City_Vibe.ExtensionMethod
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IAppUserService, AppUserService>();
             services.AddScoped<IClubCommentService, ClubCommentService>();
-
-
+            services.AddScoped<IClubService, ClubService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IEventService, EventService>();
 
             return services;
 

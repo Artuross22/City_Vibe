@@ -22,6 +22,8 @@ namespace City_Vibe.ViewModels.EventController
 
         //public IEnumerable<SelectListItem> CategoryId { get; set; }
         public Category? Category { get; set; }
+
+        public bool? Succeeded { get; set; }
     }
 }
 

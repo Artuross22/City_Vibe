@@ -13,7 +13,7 @@ namespace City_Vibe.Contracts
 
         bool EditCategoryPost(CategoryEditViewModel category);
 
-        Response<int> AddCategory(CategoryAddViewModel categoryAddVM);
+        Response AddCategory(CategoryAddViewModel categoryAddVM);
 
         Task<bool> DeleteCategory(int? id);
 
