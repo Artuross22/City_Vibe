@@ -10,5 +10,6 @@
 
         public bool? PhotoSucceeded { get; set; }
         public bool? Succeeded { get; set; }
+        public bool? CurrentItem { get; set; }
     }
 }

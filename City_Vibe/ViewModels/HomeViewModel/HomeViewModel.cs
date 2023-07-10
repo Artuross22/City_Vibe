@@ -10,5 +10,9 @@ namespace City_Vibe.ViewModels.HomeViewModel
         public string? City { get; set; }
         public string? State { get; set; }
         public HomeUserCreateViewModel Register { get; set; } = new HomeUserCreateViewModel();
+
+
+        public bool? Succeeded { get; set; }
+        public bool? EmailSucceeded { get; set; }
     }
 }

@@ -1,89 +1,46 @@
 ﻿using City_Vibe.ViewModels.HomeViewModel;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Diagnostics;
-using System.Globalization;
-using System.Net;
-
-using City_Vibe.Application.Interfaces;
 using City_Vibe.Domain.Models;
-using City_Vibe.ExtensionMethod;
-using City_Vibe.Infrastructure.Data;
-using City_Vibe.Infrastructure.Helpers;
+using City_Vibe.Contracts;
 
 namespace City_Vibe.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IUnitOfWork unitOfWorkRepository;
-        private readonly UserManager<AppUser> userManager;
-        private readonly IHttpContextAccessor сontextAccsess;
+        private readonly IHomeService homeService;
 
-        public HomeController(
-            IUnitOfWork unitOfWorkRepo,
-            UserManager<AppUser> userManagerAccess,
-            ILogger<HomeController> _logger,
-            IHttpContextAccessor сontextAccs)
-        {
-            userManager = userManagerAccess;
-            сontextAccsess = сontextAccs;
-            unitOfWorkRepository = unitOfWorkRepo;
-        }
+        public HomeController(IHomeService _homeService) => homeService = _homeService;
 
         public async Task<IActionResult> Index()
         {
-            var ipInfo = new IPInfo();
-            var homeViewModel = new HomeViewModel();
-            try
-            {
-                string url = "https://ipinfo.io?token=7c545833f3a6f8";
-                var info = new WebClient().DownloadString(url);
-                ipInfo = JsonConvert.DeserializeObject<IPInfo>(info);
-                RegionInfo myRI1 = new RegionInfo(ipInfo.Country);
-                ipInfo.Country = myRI1.EnglishName;
-                homeViewModel.City = ipInfo.City;
-                homeViewModel.State = ipInfo.Region;
-                if (homeViewModel.City != null)
-                {
-                  homeViewModel.Clubs = await unitOfWorkRepository .ClubRepository.GetClubByCity(homeViewModel.City);
-                }
-                return View(homeViewModel);
-            }
-            catch (Exception)
-            {
-                homeViewModel.Clubs = null;
-            }
-
-            return View(homeViewModel);
+            var request = await homeService.IndexGet();
+            return View(request);
         }
 
         [HttpPost]
         public async Task<IActionResult> Index(HomeViewModel homeVM)
         {
-            var curUserId = сontextAccsess.HttpContext.User.GetUserId();
 
             if (!ModelState.IsValid) return View(homeVM);
 
-            var createVM = homeVM.Register;
-            var user = await userManager.FindByEmailAsync(createVM.Email);
-            if (user == null)
+            var request = await homeService.IndexPost(homeVM);
+
+            if (request.EmailSucceeded == false)
             {
                 ModelState.AddModelError("Register.Email", "This email is not registered");
                 return View(homeVM);
             }
 
-            if(user.Id == curUserId)
+            if (request.Succeeded == true)
             {
-                await userManager.AddToRoleAsync(user, UserRoles.ActiveUser);
                 return RedirectToAction("Index");
             }
             else
             {
                 ModelState.AddModelError("Register.Email", "Invalid email");
-              
+                return View(homeVM);
             }
-            return View(homeVM);
         }
 
    
