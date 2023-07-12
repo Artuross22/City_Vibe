@@ -140,10 +140,12 @@ namespace City_Vibe.Services
             return response;
         }
 
+
         public async Task<EditEventViewModel> EditGet(int id)
         {
 
             var eventVM = new EditEventViewModel();
+
 
             var editEvent = await unitOfWorkRepository.EventRepository.GetByIdIncludeCategoryAndAddressAsync(id);
             if (editEvent == null)
@@ -152,20 +154,8 @@ namespace City_Vibe.Services
                 return eventVM;
             }
 
-            eventVM = new EditEventViewModel
-            {
-                Name = editEvent.Name,
-                Description = editEvent.Desciption,
-                AddressId = editEvent.AddressId,
-                CreatedDate = editEvent.Data,
-                URL = editEvent.Image,
-                CategoryId = editEvent.CategoryId,
-                Category = editEvent.Category,
-                Address = editEvent.Address,
-                AppUserId = editEvent.AppUserId,
-            };
-
-            return eventVM;
+            var eventAdd = mapper.Map<EditEventViewModel>(editEvent);
+            return eventAdd;
         }
 
         public async Task<Response> EditPost(EditEventViewModel eventVM)
@@ -210,19 +200,9 @@ namespace City_Vibe.Services
                 }
 
 
-                var eventUpdate = new Event
-                {
-                    // Id = id,
-                    Id = eventVM.Id,
-                    Name = eventVM.Name,
-                    Desciption = eventVM.Description,
-                    Image = newImage ?? eventVM.URL.ToString(),
-                    AddressId = eventVM.AddressId,
-                    Data = eventVM.CreatedDate,
-                    CategoryId = eventVM.CategoryId,
-                    Address = eventVM.Address,
-                    AppUserId = eventVM.AppUserId,
-                };
+                var eventUpdate = mapper.Map<Event>(eventVM);
+
+                if (newImage != null) eventUpdate.Image = newImage;
 
                 var result = unitOfWorkRepository.EventRepository.Update(eventUpdate);
                 response.Succeeded = result;

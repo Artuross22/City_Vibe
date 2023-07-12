@@ -24,8 +24,8 @@ namespace City_Vibe.Controllers
             {
                 return NotFound();
             }
-            var request = await clubService.Index(category, page, pageSize);
-            return View(request);
+            var response = await clubService.Index(category, page, pageSize);
+            return View(response);
 
         }
 
@@ -34,8 +34,8 @@ namespace City_Vibe.Controllers
         {
             var CategoryList = unitOfWorkRepository.CategoryRepository.GetAll();
             ViewBag.Categories = new SelectList(CategoryList, "Id", "Name");
-            var request = clubService.CreateClubGet();
-            return View(request);
+            var response = clubService.CreateClubGet();
+            return View(response);
         }
 
         [HttpPost]
@@ -43,11 +43,12 @@ namespace City_Vibe.Controllers
         {
             if (ModelState.IsValid)
             {
-                var request = await clubService.CreateClubPost(clubVM);
+                var response = await clubService.CreateClubPost(clubVM);
 
-                if(request.PhotoSucceeded == false)
+                if(response.PhotoSucceeded == false)
                 {
                     ModelState.AddModelError("", "Photo upload failed");
+                    return View(clubVM);
                 }
                 return RedirectToAction("Index");
             }
@@ -58,21 +59,21 @@ namespace City_Vibe.Controllers
    
         public async Task<IActionResult> DetailClub(int id)
         {
-            var request = await clubService.DetailClub(id);
-            if(request.Succeeded == false) return NotFound();
-            return View(request);
+            var response = await clubService.DetailClub(id);
+            if(response.Succeeded == false) return NotFound();
+            return View(response);
         }
 
         [HttpGet]
         public  IActionResult EditClub(int id)
         {
-            var request =  clubService.EditClubGet(id);
-            if(request.Succeeded == false) return NotFound();
+            var response =  clubService.EditClubGet(id);
+            if(response.Succeeded == false) return NotFound();
 
             var CategoryList = unitOfWorkRepository.CategoryRepository.GetAll();
             ViewBag.Categories = new SelectList(CategoryList, "Id", "Name");
 
-            return View(request);
+            return View(response);
         }
 
 
@@ -81,18 +82,20 @@ namespace City_Vibe.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Failed to edit club");
+                var CategoryList = unitOfWorkRepository.CategoryRepository.GetAll();
+                ViewBag.Categories = new SelectList(CategoryList, "Id", "Name");
+
                 return View("EditClub", clubVM);
             }
 
-            var request = await clubService.EditClubPost(clubVM);
-            if(request.PhotoSucceeded == false)
+            var response = await clubService.EditClubPost(clubVM);
+            if(response.PhotoSucceeded == false)
             {
                 ModelState.AddModelError("", "Could not delete photo");
                 return View(clubVM);
             }
 
-            if (request.Succeeded == false) return View(clubVM);
+            if (response.Succeeded == false) return View(clubVM);
 
             return RedirectToAction("Index");
         }
@@ -100,8 +103,8 @@ namespace City_Vibe.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var request = await clubService.DeleteGet(id);
-            return View(request);
+            var response = await clubService.DeleteGet(id);
+            return View(response);
         }
 
 
@@ -109,9 +112,9 @@ namespace City_Vibe.Controllers
         [HttpPost, ActionName("DeleteGet")]
         public async Task<IActionResult> DeleteClub(int id)
         {
-            var request = await clubService.DeleteClubPost(id);
+            var response = await clubService.DeleteClubPost(id);
 
-            if(request.Success == false) return View(request);
+            if(response.Success == false) return View(response);
 
             return RedirectToAction("Index");
         }
@@ -120,9 +123,9 @@ namespace City_Vibe.Controllers
         public async Task<ActionResult> AddInInterested(int id)
         {
 
-            var request = await clubService.AddInInterested(id);
+            var response = await clubService.AddInInterested(id);
 
-            if(request.Success == false) return RedirectToAction(nameof(Index));
+            if(response.Success == false) return RedirectToAction(nameof(Index));
 
             return RedirectToAction("DetailClub", new { id = id });
         }
@@ -130,15 +133,15 @@ namespace City_Vibe.Controllers
 
         public ActionResult InterestingСlubsForTheUser()
         {
-            var request = clubService.InterestingСlubsForTheUser();
-            return View(request);
+            var response = clubService.InterestingСlubsForTheUser();
+            return View(response);
         }
 
         public async Task<ActionResult> AddLikeToTheClub(int clubId)
         {
-            var request = await clubService.AddLikeToTheClub(clubId);
+            var response = await clubService.AddLikeToTheClub(clubId);
 
-            if(request.Success == false) NotFound();
+            if(response.Success == false) NotFound();
 
             return RedirectToAction("DetailClub", new { id = clubId });
         }
@@ -146,8 +149,8 @@ namespace City_Vibe.Controllers
         [HttpGet]
         public  ActionResult AddInformationInClub(int clubId)
         {
-            var request =  clubService.AddInformationInClubGet(clubId);
-            return View(request);
+            var response =  clubService.AddInformationInClubGet(clubId);
+            return View(response);
         }
 
         [HttpPost]
@@ -158,9 +161,9 @@ namespace City_Vibe.Controllers
                 return View(postInfo);
             }
 
-            var request = await clubService.AddInformationInClubPost(postInfo);
+            var response = await clubService.AddInformationInClubPost(postInfo);
 
-            if(request.PhotoSucceeded == false)
+            if(response.PhotoSucceeded == false)
             {
                 ModelState.AddModelError("", "Photo upload failed");
                 return View(postInfo);
@@ -172,8 +175,8 @@ namespace City_Vibe.Controllers
 
         public async Task<ActionResult> PostInformationDetail(int postInfoId)
         {
-            var request = await clubService.PostInformationDetail(postInfoId);
-            return View(request);
+            var response = await clubService.PostInformationDetail(postInfoId);
+            return View(response);
         }
     }
 }

@@ -25,16 +25,16 @@ namespace City_Vibe.Controllers
 
         public async Task<IActionResult> Index(int? category, string? name)
         {
-            var request = await eventService.Index(category, name);
-            return View(request);
+            var response = await eventService.Index(category, name);
+            return View(response);
         }
 
      
         public async Task<IActionResult> DetailEvent(int currentEventId)
         {
 
-            var request = await eventService.DetailEvent(currentEventId);
-            return View(request);
+            var response = await eventService.DetailEvent(currentEventId);
+            return View(response);
         }
 
         [HttpGet]
@@ -43,8 +43,8 @@ namespace City_Vibe.Controllers
             var EventList = unitOfWorkRepository.CategoryRepository.GetAll();
             ViewBag.Categories = new SelectList(EventList, "Id", "Name");
 
-            var request =  eventService.CreateEventGet(clubId);
-            return View(request);
+            var response =  eventService.CreateEventGet(clubId);
+            return View(response);
         }
 
         [HttpPost]
@@ -52,9 +52,9 @@ namespace City_Vibe.Controllers
         {
             if (ModelState.IsValid)
             {
-                var request = await eventService.CreateEventPost(eventVM);
+                var response = await eventService.CreateEventPost(eventVM);
 
-                if(request.PhotoSucceeded == false)
+                if(response.PhotoSucceeded == false)
                 {
                     ModelState.AddModelError("", "Photo upload failed");
                     return View(eventVM);
@@ -69,16 +69,16 @@ namespace City_Vibe.Controllers
         public async Task<IActionResult> Edit(int id)
         {
 
-            var request = await eventService.EditGet(id);
+            var response = await eventService.EditGet(id);
 
-            if(request.Succeeded == false)
+            if(response.Succeeded == false)
             {
                 return View("Error");
             }
             var EventList = unitOfWorkRepository.CategoryRepository.GetAll();
             ViewBag.Categories = new SelectList(EventList, "Id", "Name");
 
-            return View(request);
+            return View(response);
         }
 
 
@@ -92,14 +92,14 @@ namespace City_Vibe.Controllers
                 return View("EditGet", eventVM);
             }
 
-            var request = await eventService.EditPost(eventVM);
+            var response = await eventService.EditPost(eventVM);
 
-            if(request.PhotoSucceeded == false)
+            if(response.PhotoSucceeded == false)
             {
-                ModelState.AddModelError("", $"Could not delete photo, {request.Message}");
+                ModelState.AddModelError("", $"Could not delete photo, {response.Message}");
                 return View(eventVM);
             }
-            if(request.Succeeded == false) return View(eventVM);   
+            if(response.Succeeded == false) return View(eventVM);   
             
             return RedirectToAction("Index");
 
@@ -139,8 +139,8 @@ namespace City_Vibe.Controllers
 
         public ActionResult EventsSelectByTheUser()
         {
-            var request = eventService.EventsSelectByTheUser();
-            return View(request);
+            var response = eventService.EventsSelectByTheUser();
+            return View(response);
         }
     }
 }

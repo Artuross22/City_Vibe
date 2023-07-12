@@ -7,6 +7,7 @@ using City_Vibe.Infrastructure.ExtensionMethod;
 using City_Vibe.Infrastructure.Services;
 using City_Vibe.Services.Base;
 using City_Vibe.ViewModels.ClubController;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -26,8 +27,7 @@ namespace City_Vibe.Services
             IPhotoService photoServ,
             IHttpContextAccessor сontextAccess,
             IUnitOfWork unitOfWorkRepo,
-            IMapper mapp
-            )
+            IMapper mapp)
         {
             photoService = photoServ;
             сontextAccessor = сontextAccess;
@@ -80,6 +80,7 @@ namespace City_Vibe.Services
         public async Task<Response> CreateClubPost(CreateClubViewModel clubVM)
         {
             Response response = new Response();
+
             var addImage = await photoService.AddPhotoAsync(clubVM.Image);
 
             if (addImage.Error != null)
@@ -138,18 +139,21 @@ namespace City_Vibe.Services
                 clubVM.Succeeded = false;
                 return clubVM;
             }
-         
-            clubVM = new EditClubViewModel
-            {                             
-                Title = club.Title,
-                Description = club.Description,
-                AddressId = club.AddressId,
-                Address = club.Address,
-                URL = club.Image,
-                Category = club.Category,
-                CategoryId = club.CategoryId,
-                AppUserId = club.AppUserId,
-            };
+
+
+             clubVM = mapper.Map<EditClubViewModel>(club);
+
+            //clubVM = new EditClubViewModel
+            //{
+            //    Title = club.Title,
+            //    Description = club.Description,
+            //    AddressId = club.AddressId,
+            //    Address = club.Address,
+            //    URL = club.Image,
+            //    Category = club.Category,
+            //    CategoryId = club.CategoryId,
+            //    AppUserId = club.AppUserId,
+            //};
 
             return clubVM;
         }
@@ -160,7 +164,10 @@ namespace City_Vibe.Services
             var userClub = await unitOfWorkRepository.ClubRepository.GetByIdAsyncNoTracking(clubVM.Id);
             if (userClub != null)
             {
+                ImageUploadResult addNewPhoto = new ImageUploadResult();
 
+                if (clubVM.Image != null && userClub.Image != null)
+                {
                     try
                     {
                         await photoService.DeletePhotoAsync(userClub.Image);
@@ -170,20 +177,30 @@ namespace City_Vibe.Services
                         response.PhotoSucceeded = false;
                         return response;
                     }
-                    var photoResult = await photoService.AddPhotoAsync(clubVM.Image);
 
-                    var club = new Club
-                    {
-                        Id = clubVM.Id,
-                        Title = clubVM.Title,
-                        Description = clubVM.Description,
-                        Image = photoResult.Url.ToString(),
-                        AddressId = clubVM.AddressId,
-                        Address = clubVM.Address,
-                        Category = clubVM.Category,
-                        CategoryId = clubVM.CategoryId,
-                        AppUserId = clubVM.AppUserId,
-                    };
+                }
+
+                var club = mapper.Map<Club>(clubVM);
+
+                if (clubVM.Image != null)
+                {
+                    addNewPhoto = await photoService.AddPhotoAsync(clubVM.Image);
+                    club.Image = addNewPhoto.Url.ToString();
+                }
+
+                    
+                    //var club = new Club
+                    //{
+                    //    Id = clubVM.Id,
+                    //    Title = clubVM.Title,
+                    //    Description = clubVM.Description,
+                    //    Image = photoResult.Url.ToString(),
+                    //    AddressId = clubVM.AddressId,
+                    //    Address = clubVM.Address,
+                    //    Category = clubVM.Category,
+                    //    CategoryId = clubVM.CategoryId,
+                    //    AppUserId = clubVM.AppUserId,
+                    //};
 
                     unitOfWorkRepository.ClubRepository.Update(club);
                     response.Succeeded = true;

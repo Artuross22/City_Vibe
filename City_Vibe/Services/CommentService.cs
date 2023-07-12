@@ -20,6 +20,8 @@ namespace City_Vibe.Services
 
         public Response PostComment(PostCommentViewModel comment)
         {
+
+
             Response response = new Response();
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
             var curUserName = сontextAccessor.HttpContext.User.Identity.Name;
