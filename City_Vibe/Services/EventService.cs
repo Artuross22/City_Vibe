@@ -239,7 +239,7 @@ namespace City_Vibe.Services
                 _ = photoService.DeletePhotoAsync(eventDelete.Image);
             }
             var result = unitOfWorkRepository.EventRepository.Delete(eventDelete);
-            response.Success = result;
+            response.Succeeded = result;
             return response;
         }
 

@@ -3,11 +3,11 @@ using City_Vibe.Application.Interfaces;
 using City_Vibe.Contracts;
 using City_Vibe.Domain.Models;
 using City_Vibe.Infrastructure.ExtensionMethod;
-using City_Vibe.Services.Base;
 using City_Vibe.ViewModels.ClubCommentController;
 
 namespace City_Vibe.Services
 {
+
     public class ClubCommentService : IClubCommentService
     {
 
@@ -18,8 +18,7 @@ namespace City_Vibe.Services
         public ClubCommentService(
             IHttpContextAccessor сontextAccess,
             IUnitOfWork unitOfWorkRepo,
-            IMapper mapp
-            )
+            IMapper mapp)
 
         {
             сontextAccessor = сontextAccess;
@@ -29,13 +28,8 @@ namespace City_Vibe.Services
 
         public bool PostComment(PostCommentClubViewModel comment)
         {
-            var curUserId = сontextAccessor.HttpContext.User.GetUserId();
-            var curUserName = сontextAccessor.HttpContext.User.Identity.Name;
-
-            if (curUserId == null)
-            {
-                return false;       
-            }
+            var curUserId = сontextAccessor?.HttpContext?.User.GetUserId();
+            var curUserName = сontextAccessor?.HttpContext?.User?.Identity?.Name;
 
             var commentClub = mapper.Map<CommentClub>(comment);
             commentClub.ForeignUserId = Guid.Parse(curUserId);
@@ -48,12 +42,9 @@ namespace City_Vibe.Services
 
         public bool PostReply(ReplyCommentClubViewModel commentreply)
         {
-            var curUserId = сontextAccessor.HttpContext.User.GetUserId();
-            var curUserName = сontextAccessor.HttpContext.User.Identity.Name;
-            if (curUserId == null)
-            {
-                return false;
-            }
+            var curUserId = сontextAccessor?.HttpContext?.User.GetUserId();
+            var curUserName = сontextAccessor?.HttpContext?.User?.Identity?.Name;
+
             var comment = mapper.Map<ReplyCommentClub>(commentreply);
             comment.InternalUserId = Guid.Parse(curUserId);
             comment.CreatedDate = DateTime.Now;

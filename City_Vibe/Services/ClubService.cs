@@ -1,17 +1,13 @@
 ﻿using AutoMapper;
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Contracts;
-using City_Vibe.Controllers;
 using City_Vibe.Domain.Models;
 using City_Vibe.Infrastructure.ExtensionMethod;
-using City_Vibe.Infrastructure.Services;
-using City_Vibe.Services.Base;
+using City_Vibe.Services.ResponseModels.ClubResponse;
 using City_Vibe.ViewModels.ClubController;
 using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace City_Vibe.Services
 {
@@ -77,9 +73,9 @@ namespace City_Vibe.Services
 
         }
 
-        public async Task<Response> CreateClubPost(CreateClubViewModel clubVM)
+        public async Task<ClubResponse> CreateClubPost(CreateClubViewModel clubVM)
         {
-            Response response = new Response();
+            ClubResponse response = new ClubResponse();
 
             var addImage = await photoService.AddPhotoAsync(clubVM.Image);
 
@@ -93,7 +89,7 @@ namespace City_Vibe.Services
 
             club.Image = addImage.Url.ToString();
             var result = unitOfWorkRepository.ClubRepository.Add(club);
-            response.Success = result;
+            response.Succeeded = result;
 
             return response;
         }
@@ -143,24 +139,12 @@ namespace City_Vibe.Services
 
              clubVM = mapper.Map<EditClubViewModel>(club);
 
-            //clubVM = new EditClubViewModel
-            //{
-            //    Title = club.Title,
-            //    Description = club.Description,
-            //    AddressId = club.AddressId,
-            //    Address = club.Address,
-            //    URL = club.Image,
-            //    Category = club.Category,
-            //    CategoryId = club.CategoryId,
-            //    AppUserId = club.AppUserId,
-            //};
-
             return clubVM;
         }
 
-        public async Task<Response> EditClubPost(EditClubViewModel clubVM)
+        public async Task<ClubResponse> EditClubPost(EditClubViewModel clubVM)
         {
-            Response response = new Response();
+            ClubResponse response = new ClubResponse();
             var userClub = await unitOfWorkRepository.ClubRepository.GetByIdAsyncNoTracking(clubVM.Id);
             if (userClub != null)
             {
@@ -188,20 +172,6 @@ namespace City_Vibe.Services
                     club.Image = addNewPhoto.Url.ToString();
                 }
 
-                    
-                    //var club = new Club
-                    //{
-                    //    Id = clubVM.Id,
-                    //    Title = clubVM.Title,
-                    //    Description = clubVM.Description,
-                    //    Image = photoResult.Url.ToString(),
-                    //    AddressId = clubVM.AddressId,
-                    //    Address = clubVM.Address,
-                    //    Category = clubVM.Category,
-                    //    CategoryId = clubVM.CategoryId,
-                    //    AppUserId = clubVM.AppUserId,
-                    //};
-
                     unitOfWorkRepository.ClubRepository.Update(club);
                     response.Succeeded = true;
                    return response;
@@ -223,15 +193,15 @@ namespace City_Vibe.Services
 
         }
 
-        public async Task<Response> DeleteClubPost(int id)
+        public async Task<ClubResponse> DeleteClubPost(int id)
         {
 
-            var response = new Response();
+            var response = new ClubResponse();
             var clubDetails = await unitOfWorkRepository.ClubRepository.Find(x => x.Id == id).Include(c => c.Category).Include(a => a.Address).FirstOrDefaultAsync();
 
             if (clubDetails == null)
             {
-                response.Success = false;
+                response.Succeeded = false;
                 return response;
             }
 
@@ -242,13 +212,13 @@ namespace City_Vibe.Services
 
             var result =  unitOfWorkRepository.ClubRepository.Delete(clubDetails);
 
-            response.Success = true;
+            response.Succeeded = true;
             return response;
         }
 
-        public async Task<Response> AddInInterested(int id)
+        public async Task<ClubResponse> AddInInterested(int id)
         {
-            var response = new Response();
+            var response = new ClubResponse();
 
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
@@ -278,7 +248,7 @@ namespace City_Vibe.Services
                 unitOfWorkRepository.SaveClubRepository.Add(saveClub);
             }
 
-            response.Success = true;
+            response.Succeeded = true;
             return response;
         }
 
@@ -291,10 +261,10 @@ namespace City_Vibe.Services
 
 
 
-        public async Task<Response> AddLikeToTheClub(int clubId)
+        public async Task<ClubResponse> AddLikeToTheClub(int clubId)
         {
 
-            Response response = new Response();
+            ClubResponse response = new ClubResponse();
 
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
@@ -313,7 +283,7 @@ namespace City_Vibe.Services
                 };
 
                 var result = unitOfWorkRepository.LikeClubRepository.Add(addLike);
-                response.Success = result;
+                response.Succeeded = result;
                 return response;
 
             }
@@ -324,12 +294,12 @@ namespace City_Vibe.Services
                 if (delete != null)
                 {
                     var result = unitOfWorkRepository.LikeClubRepository.Delete(delete);
-                    response.Success = result;
+                    response.Succeeded = result;
                     return response;
                 }
                 else
                 {
-                    response.Success = false;
+                    response.Succeeded = false;
                     return response;
                 }
             }
@@ -347,9 +317,9 @@ namespace City_Vibe.Services
             return postInfoVM;
         }
 
-        public async Task<Response> AddInformationInClubPost(PostInformationClubViewModel postInfo)
+        public async Task<ClubResponse> AddInformationInClubPost(PostInformationClubViewModel postInfo)
         {
-            Response response = new Response();
+            ClubResponse response = new ClubResponse();
 
             var curUserName = сontextAccessor.HttpContext.User.Identity.Name;
 
@@ -371,7 +341,7 @@ namespace City_Vibe.Services
             }
 
            var resultSave = unitOfWorkRepository.ClubRepository.AddPostInfoInClub(addPostInfo);
-           response.Success = resultSave;
+           response.Succeeded = resultSave;
            return response;
         }
 
@@ -381,6 +351,8 @@ namespace City_Vibe.Services
             var listofComment = unitOfWorkRepository.ClubCommentRepository.GetAllCommentsClubById(postInfoId);
 
             var viewClubInfo = mapper.Map<PostInformationDetailViewModel>(clubInfo);
+
+            if(listofComment != null)
             viewClubInfo.CommentClub = listofComment;
 
             return viewClubInfo;

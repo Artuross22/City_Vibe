@@ -25,7 +25,7 @@ namespace City_Vibe.Services
             var save = unitOfWorkRepository.CategoryRepository.Add(category);
             if (save == true)
             {
-                response.Success = true;
+                response.Succeeded = true;
             }
             return response;
         }

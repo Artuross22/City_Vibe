@@ -1,24 +1,20 @@
-﻿using City_Vibe.ExtensionMethod;
-using City_Vibe.ViewModels.EventController;
+﻿using City_Vibe.ViewModels.EventController;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Domain.Models;
-using AutoMapper;
 using City_Vibe.Contracts;
+using City_Vibe.ValidationAttribute.BaseFilters;
 
 namespace City_Vibe.Controllers
 {
     public class EventController : Controller
     {
-
         public readonly IUnitOfWork unitOfWorkRepository;
         public readonly IEventService eventService;
 
         public EventController(IUnitOfWork unitOfWorkRepo, IEventService _eventService)
-        {
+        { 
             unitOfWorkRepository = unitOfWorkRepo;
             eventService = _eventService;
         }
@@ -29,10 +25,9 @@ namespace City_Vibe.Controllers
             return View(response);
         }
 
-     
+
         public async Task<IActionResult> DetailEvent(int currentEventId)
         {
-
             var response = await eventService.DetailEvent(currentEventId);
             return View(response);
         }

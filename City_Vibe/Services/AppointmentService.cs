@@ -5,10 +5,7 @@ using City_Vibe.Domain.Models;
 using City_Vibe.Infrastructure.ExtensionMethod;
 using City_Vibe.ViewModels.AppointmentController;
 using City_Vibe.ViewModels.EventController;
-using CityVibe.Migrations;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 
 namespace City_Vibe.Services
@@ -49,7 +46,7 @@ namespace City_Vibe.Services
             if (matches.Count <= 0)
             {
                // addPhone = matches[0].Value;
-                appointmentModel.Success = false;
+                appointmentModel.PhotoSucceeded = false;
                 return appointmentModel;
             }
         
@@ -62,6 +59,7 @@ namespace City_Vibe.Services
             return appointmentModel;
 
         }
+
 
         public IEnumerable<ApplicationUserViewModel> AdmissionRequests(int eventId)
         {

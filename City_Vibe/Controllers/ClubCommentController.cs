@@ -1,20 +1,17 @@
-﻿using City_Vibe.ExtensionMethod;
-using City_Vibe.ViewModels.ClubCommentController;
+﻿using City_Vibe.ViewModels.ClubCommentController;
 using Microsoft.AspNetCore.Mvc;
-
-using City_Vibe.Application.Interfaces;
-using City_Vibe.Domain.Models;
-using AutoMapper;
 using City_Vibe.Contracts;
+using City_Vibe.ValidationAttribute.ClubCommentAttributes;
 
 namespace City_Vibe.Controllers
 {
+
+    [ClubCommentValidationAttribute]
     public class ClubCommentController : Controller
     {
 
         private readonly IClubCommentService clubCommentService;
         public ClubCommentController(IClubCommentService _clubCommentService) => clubCommentService = _clubCommentService;
-
 
         [HttpPost]
         public ActionResult PostComment(PostCommentClubViewModel comment)

@@ -71,11 +71,9 @@ namespace City_Vibe.Controllers
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-
                 var request = await accountService.RegisterPost(registerViewModel, returnUrl);
 
-                if (request)
-                    return LocalRedirect(returnUrl);
+                if (request) return LocalRedirect(returnUrl);
 
                 ModelState.AddModelError("Password", "User could not be created. Password not unique enough");
             }
@@ -189,8 +187,7 @@ namespace City_Vibe.Controllers
 
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
-        {
-          
+        {       
             LoginViewModel loginViewModel = new LoginViewModel();
             loginViewModel.ReturnUrl = returnUrl ?? Url.Content("~/");
             return View(loginViewModel);

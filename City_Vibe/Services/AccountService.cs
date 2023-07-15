@@ -1,10 +1,6 @@
-﻿using AutoMapper;
-using City_Vibe.Application.Interfaces;
-using City_Vibe.Contracts;
+﻿using City_Vibe.Contracts;
 using City_Vibe.Domain.Models;
 using City_Vibe.ViewModels.AccountController;
-using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 

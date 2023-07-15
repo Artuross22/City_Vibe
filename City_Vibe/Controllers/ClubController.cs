@@ -6,9 +6,9 @@ using City_Vibe.Contracts;
 
 namespace City_Vibe.Controllers
 {
+
     public class ClubController : Controller
     {
-
         private readonly IUnitOfWork unitOfWorkRepository;
         private readonly IClubService clubService;
 
@@ -114,7 +114,7 @@ namespace City_Vibe.Controllers
         {
             var response = await clubService.DeleteClubPost(id);
 
-            if(response.Success == false) return View(response);
+            if(response.Succeeded == false) return View(response);
 
             return RedirectToAction("Index");
         }
@@ -125,7 +125,7 @@ namespace City_Vibe.Controllers
 
             var response = await clubService.AddInInterested(id);
 
-            if(response.Success == false) return RedirectToAction(nameof(Index));
+            if(response.Succeeded == false) return RedirectToAction(nameof(Index));
 
             return RedirectToAction("DetailClub", new { id = id });
         }
@@ -141,7 +141,7 @@ namespace City_Vibe.Controllers
         {
             var response = await clubService.AddLikeToTheClub(clubId);
 
-            if(response.Success == false) NotFound();
+            if(response.Succeeded == false) NotFound();
 
             return RedirectToAction("DetailClub", new { id = clubId });
         }

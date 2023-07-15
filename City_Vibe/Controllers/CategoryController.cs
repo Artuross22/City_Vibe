@@ -64,7 +64,7 @@ namespace City_Vibe.Controllers
             if (ModelState.IsValid)
             {             
                 var response = categoryService.AddCategory(categoryAddVM);     
-                return RedirectToAction("ListOfCategories", response.Success);
+                return RedirectToAction("ListOfCategories", response.Succeeded);
             }
             return View(categoryAddVM);
         }

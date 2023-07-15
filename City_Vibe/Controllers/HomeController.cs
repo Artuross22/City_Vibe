@@ -12,6 +12,7 @@ namespace City_Vibe.Controllers
 
         public HomeController(IHomeService _homeService) => homeService = _homeService;
 
+
         public async Task<IActionResult> Index()
         {
             var request = await homeService.IndexGet();

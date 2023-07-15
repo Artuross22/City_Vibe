@@ -2,7 +2,6 @@
 using City_Vibe.Contracts;
 using City_Vibe.Domain.Models;
 using City_Vibe.Infrastructure.ExtensionMethod;
-using City_Vibe.Services.Base;
 using City_Vibe.ViewModels.CommentController;
 
 namespace City_Vibe.Services
@@ -18,19 +17,10 @@ namespace City_Vibe.Services
             unitOfWorkRepo = _unitOfWorkRepo;
         }
 
-        public Response PostComment(PostCommentViewModel comment)
+        public bool PostComment(PostCommentViewModel comment)
         {
-
-
-            Response response = new Response();
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
             var curUserName = сontextAccessor.HttpContext.User.Identity.Name;
-
-            if (curUserId == null)
-            {
-                response.CurrentUser = false;
-                return response;
-            }
 
             Comment c = new Comment();
             c.EventId = comment.EventId;
@@ -40,30 +30,22 @@ namespace City_Vibe.Services
             c.UserName = curUserName;
 
             var result = unitOfWorkRepo.CommentRepository.Add(c);
-            response.Success = result;
-            return response;
+
+            return result;
         }
 
-        public Response PostReply(ReplyViewModel commentreply)
+        public bool PostReply(ReplyViewModel commentreply)
         {
-            Response response = new Response();
-
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
 
-            if (curUserId == null)
-            {
-               response.CurrentUser = false;
-               return response;
-            }
             ReplyComment r = new ReplyComment();
             r.Text = commentreply.ReplyText;
             r.CommentId = commentreply.IDComment;
             r.InternalUserId = Guid.Parse(curUserId);
             r.CreatedDate = DateTime.Now;
-            unitOfWorkRepo.CommentRepository.AddReplyComment(r);
+            var result =  unitOfWorkRepo.CommentRepository.AddReplyComment(r);
 
-            response.Success = true;
-            return response;
+            return result;
         }
     }
 }
