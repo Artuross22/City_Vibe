@@ -15,7 +15,7 @@ namespace City_Vibe.Controllers
         public AppointmentController( IAppointmentService _appointmentService) => appointmentService = _appointmentService;
 
         [HttpGet]
-        [ValidateGetUserIdAttribute]
+        [ValidateGetUserByIdAttribute]
         public IActionResult AddUserAppointment(int eventId)
         {
             var response = appointmentService.AddUserAppointmentGet(eventId);
@@ -53,7 +53,7 @@ namespace City_Vibe.Controllers
             return RedirectToAction("", "Event", result);
         }
 
-        [ValidateGetUserIdAttribute]
+        [ValidateGetUserByIdAttribute]
         public IActionResult UserApplications()
         {
             var result = appointmentService.UserApplications();
@@ -69,7 +69,7 @@ namespace City_Vibe.Controllers
 
 
         [HttpPost]
-        [ValidateGetUserIdAttribute]
+        [ValidateGetUserByIdAttribute]
         [ValidateModelAttribute]
         public IActionResult ReplayStatement(ReplyAppointment replyApp)
         {

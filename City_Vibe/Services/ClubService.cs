@@ -135,11 +135,8 @@ namespace City_Vibe.Services
                 clubVM.Succeeded = false;
                 return clubVM;
             }
-
-
              clubVM = mapper.Map<EditClubViewModel>(club);
-
-            return clubVM;
+             return clubVM;
         }
 
         public async Task<ClubResponse> EditClubPost(EditClubViewModel clubVM)
@@ -221,8 +218,6 @@ namespace City_Vibe.Services
             var response = new ClubResponse();
 
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
-
-
 
             var deleteInterestingClub = unitOfWorkRepository.SaveClubRepository.FindSafeClubusingUserAndClub(id);
             if (deleteInterestingClub.Count != 0)

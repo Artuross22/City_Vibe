@@ -12,18 +12,15 @@ namespace City_Vibe.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ISendGridEmail _sendGridEmail;
         private readonly IAccountService accountService;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ISendGridEmail sendGridEmail,
-            RoleManager<IdentityRole> roleManager , IAccountService _accountService)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ISendGridEmail sendGridEmail, IAccountService _accountService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
              _sendGridEmail = sendGridEmail;
-            _roleManager = roleManager;
             accountService = _accountService;
         }
 

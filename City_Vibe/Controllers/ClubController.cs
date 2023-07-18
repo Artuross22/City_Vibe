@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Contracts;
+using City_Vibe.ValidationAttribute.BaseFilters;
 
 namespace City_Vibe.Controllers
 {
@@ -56,7 +57,7 @@ namespace City_Vibe.Controllers
         }
 
 
-   
+        [ValidateNotNullIdAttribute("id")]
         public async Task<IActionResult> DetailClub(int id)
         {
             var response = await clubService.DetailClub(id);
@@ -65,6 +66,7 @@ namespace City_Vibe.Controllers
         }
 
         [HttpGet]
+        [ValidateNotNullIdAttribute("id")]
         public  IActionResult EditClub(int id)
         {
             var response =  clubService.EditClubGet(id);
@@ -101,6 +103,7 @@ namespace City_Vibe.Controllers
         }
 
         [HttpGet]
+        [ValidateNotNullIdAttribute("id")]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await clubService.DeleteGet(id);
@@ -110,6 +113,7 @@ namespace City_Vibe.Controllers
 
 
         [HttpPost, ActionName("DeleteGet")]
+        [ValidateNotNullIdAttribute("id")]
         public async Task<IActionResult> DeleteClub(int id)
         {
             var response = await clubService.DeleteClubPost(id);
@@ -120,9 +124,9 @@ namespace City_Vibe.Controllers
         }
 
 
+        [ValidateNotNullIdAttribute("id")]
         public async Task<ActionResult> AddInInterested(int id)
         {
-
             var response = await clubService.AddInInterested(id);
 
             if(response.Succeeded == false) return RedirectToAction(nameof(Index));
@@ -147,6 +151,7 @@ namespace City_Vibe.Controllers
         }
 
         [HttpGet]
+        [ValidateNotNullIdAttribute("clubId")]
         public  ActionResult AddInformationInClub(int clubId)
         {
             var response =  clubService.AddInformationInClubGet(clubId);
@@ -156,11 +161,7 @@ namespace City_Vibe.Controllers
         [HttpPost]
         public async Task<ActionResult> AddInformationInClub(PostInformationClubViewModel postInfo)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(postInfo);
-            }
-
+            if (!ModelState.IsValid) return View(postInfo);
             var response = await clubService.AddInformationInClubPost(postInfo);
 
             if(response.PhotoSucceeded == false)
@@ -172,7 +173,7 @@ namespace City_Vibe.Controllers
             return RedirectToAction("DetailClub", new { id = postInfo.ClubId });
         }
 
-
+        [ValidateNotNullIdAttribute("postInfoId")]
         public async Task<ActionResult> PostInformationDetail(int postInfoId)
         {
             var response = await clubService.PostInformationDetail(postInfoId);

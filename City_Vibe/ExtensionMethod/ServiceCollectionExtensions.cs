@@ -9,6 +9,7 @@ using City_Vibe.Infrastructure.Repository;
 using City_Vibe.Infrastructure.Services;
 using City_Vibe.Services;
 using City_Vibe.ValidationAttribute.AppointmentAtributes;
+using City_Vibe.ValidationAttribute.AppUserAttributes;
 using City_Vibe.ValidationAttribute.BaseFilters;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +30,7 @@ namespace City_Vibe.ExtensionMethod
             services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
             return services;
-        }    
+        }
         public static IServiceCollection AddApplicationRepositories(this IServiceCollection services)
         {
             services.AddScoped<IEventRepository, EventRepository>();
@@ -61,11 +62,7 @@ namespace City_Vibe.ExtensionMethod
 
         public static IServiceCollection AddContractsServices(this IServiceCollection services)
         {
-
-            services.AddScoped<AdmissionRequestsFilterAttribute>();
-
-
-            services.AddScoped<ICategoryService,CategoryService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IAppUserService, AppUserService>();
@@ -79,6 +76,16 @@ namespace City_Vibe.ExtensionMethod
 
             return services;
 
+        }
+
+        public static IServiceCollection AddAttributeServices(this IServiceCollection services)
+        {
+            
+            services.AddScoped<UserManagerFilterAttribute>();
+            services.AddScoped<AdmissionRequestsFilterAttribute>();
+            services.AddScoped<ValidateGetUserByIdAsyncAttribute>();
+
+            return services;
         }
     }
 }

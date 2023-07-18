@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using City_Vibe.Domain.Models;
 using City_Vibe.Contracts;
+using City_Vibe.ValidationAttribute.BaseFilters;
 
 namespace City_Vibe.Controllers
 {
@@ -9,10 +10,8 @@ namespace City_Vibe.Controllers
     {
         private readonly ICategoryService  categoryService;
 
-        public CategoryController(ICategoryService categoryServ)
-        {
-            categoryService = categoryServ;
-        }
+        public CategoryController(ICategoryService categoryServ) => categoryService = categoryServ;
+
 
         public async Task<IActionResult> ListOfCategories()
         {
@@ -21,21 +20,12 @@ namespace City_Vibe.Controllers
         }
 
         [HttpGet]
+        [ValidateNotNullIdAttribute("IdEdit")]
         public async Task<ActionResult> EditCategory(int? IdEdit)
         {
-            if (IdEdit != null)
-            {
                 CategoryEditViewModel category = await categoryService.EditCategoryGet(IdEdit);
-
-                if(category == null || category.Id == 0)
-                {
-                    return NotFound();
-                }
-
+                if(category == null || category.Id == 0) return NotFound();
                 return View(category);
-
-            }
-            return NotFound();
         }
 
         [HttpPost]
@@ -70,22 +60,14 @@ namespace City_Vibe.Controllers
         }
 
 
-       [HttpPost]
-       [ValidateAntiForgeryToken]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateNotNullIdAttribute("id")]
         public async Task<IActionResult> DeleteCategory(int? id)
         {
-            if(id == null)
-            {
-                return NotFound();
-            }
-
             var categoryDelete = await categoryService.DeleteCategory(id);
-
             if(categoryDelete == false)  return NotFound();
-
-
-            return RedirectToAction(nameof(ListOfCategories));
-           
+            return RedirectToAction(nameof(ListOfCategories));      
         }
     }
 }

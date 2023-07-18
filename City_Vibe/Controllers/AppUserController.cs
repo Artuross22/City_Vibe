@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using City_Vibe.Domain.Models;
 using City_Vibe.Contracts;
+using City_Vibe.ValidationAttribute.AppUserAttributes;
+using City_Vibe.ValidationAttribute.BaseFilters;
 
 namespace City_Vibe.Controllers
 {
@@ -36,11 +38,11 @@ namespace City_Vibe.Controllers
 
         [HttpGet]
         [Authorize]
+        [ServiceFilter(typeof(UserManagerFilterAttribute))]
         public async Task<IActionResult> EditProfile()
         {
             var user = await userManager.GetUserAsync(User);
             var result = await appUserService.EditProfileGet(user);
-
 
             if (result.Succeeded == false) return View("Error");
             return View(result);
@@ -58,12 +60,7 @@ namespace City_Vibe.Controllers
             }
 
             var user = await userManager.GetUserAsync(User);
-
-            if (user == null)
-            {
-                return View("Error");
-            }
-
+          
             var requeest = await appUserService.EditProfilePost(editVM, user);
 
             if (requeest.ErrorPhoto == true)
@@ -76,38 +73,25 @@ namespace City_Vibe.Controllers
         }
 
         [HttpGet]
+        [ServiceFilter(typeof(UserManagerFilterAttribute))]
         public async Task<IActionResult> ManageClaims()
         {
-            var userId = await userManager.GetUserAsync(User);
-
-            var user = await userManager.FindByIdAsync(userId.Id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
+            var user = await userManager.GetUserAsync(User);
             var request = await appUserService.ManageClaimsGet(user);
             return View(request);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ServiceFilter(typeof(ValidateGetUserByIdAsyncAttribute))]     
         public async Task<IActionResult> ManageClaims(AppUserClaimsViewModel userClaimsViewModel)
         {
             var user = await userManager.FindByIdAsync(userClaimsViewModel.UserId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
             var request = await appUserService.ManageClaimsPost(userClaimsViewModel, user);
 
-            if (!request.Succeeded)
-            {
-                return View(userClaimsViewModel);
-            }
+            if (!request.Succeeded) return View(userClaimsViewModel);
+
             return RedirectToAction(nameof(Index));
         }
     }

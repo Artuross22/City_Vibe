@@ -2,18 +2,14 @@
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Contracts;
 using City_Vibe.Domain.Models;
-using City_Vibe.Infrastructure.ExtensionMethod;
 using City_Vibe.ViewModels.AppUserController;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace City_Vibe.Services
 {
     public class AppUserService : IAppUserService
     {
-
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWorkRepository;
         public readonly IHttpContextAccessor сontextAccessor;
@@ -74,11 +70,6 @@ namespace City_Vibe.Services
         {
             var editProfileViewModel = new EditProfileViewModel();  
             var returnUser = await unitOfWorkRepository.AppUserRepository.GetUserByIdIncludeAdress(curUser.Id);
-
-            //if (curUser.Address?.Id == null)
-            //{
-            //    curUser.Address.Id = 0;
-            //}
 
             if (returnUser == null)
             {

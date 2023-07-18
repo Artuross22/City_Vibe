@@ -25,7 +25,7 @@ namespace City_Vibe.Controllers
             return View(response);
         }
 
-
+        [ValidateNotNullIdAttribute("currentEventId")]
         public async Task<IActionResult> DetailEvent(int currentEventId)
         {
             var response = await eventService.DetailEvent(currentEventId);
@@ -61,6 +61,7 @@ namespace City_Vibe.Controllers
 
 
         [HttpGet]
+        [ValidateNotNullIdAttribute("id")]
         public async Task<IActionResult> Edit(int id)
         {
 
@@ -78,7 +79,7 @@ namespace City_Vibe.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, EditEventViewModel eventVM)
+        public async Task<IActionResult> Edit(EditEventViewModel eventVM)
         {
 
             if (!ModelState.IsValid)
@@ -101,6 +102,7 @@ namespace City_Vibe.Controllers
         }
 
         [HttpGet]
+        [ValidateNotNullIdAttribute("id")]
         public async Task<IActionResult> Delete(int id)
         {
             var eventDetails = await eventService.DeleteGet(id);
@@ -113,6 +115,7 @@ namespace City_Vibe.Controllers
         }
 
         [HttpPost, ActionName("DeleteGet")]
+        [ValidateNotNullIdAttribute("id")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
             var eventDetails = await eventService.DeleteEventPost(id);

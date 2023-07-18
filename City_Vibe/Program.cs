@@ -9,7 +9,8 @@ builder.Services
     .AddInfrastructureServices(builder.Configuration)
     .AddApplicationRepositories()
     .AddApplicationServices()
-    .AddContractsServices();
+    .AddContractsServices()
+    .AddAttributeServices();
 
 
 //builder pattern 

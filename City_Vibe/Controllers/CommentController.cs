@@ -6,7 +6,7 @@ using City_Vibe.ValidationAttribute.BaseFilters;
 namespace City_Vibe.Controllers
 {
     [ValidateModelAttribute]
-    [ValidateGetUserIdAttribute]
+    [ValidateGetUserByIdAttribute]
     public class CommentController : Controller
     {
         public readonly ICommentService commentService;
@@ -18,16 +18,15 @@ namespace City_Vibe.Controllers
         {
            var result =  commentService.PostComment(comment);
             if(result) return RedirectToAction("DetailEvent", "Event", new { currentEventId = comment.EventId });
-
             return View(comment);
         }
+
 
         [HttpPost]
         public ActionResult PostReply(ReplyViewModel commentreply)
         {
          var result = commentService.PostReply(commentreply); 
          if(result) return RedirectToAction("Index","Event");
-
          return View(commentreply);
         }
 
