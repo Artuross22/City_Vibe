@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using City_Vibe.Domain.Models;
 using City_Vibe.Contracts;
 using City_Vibe.ValidationAttribute.AppUserAttributes;
-using City_Vibe.ValidationAttribute.BaseFilters;
 
 namespace City_Vibe.Controllers
 {
@@ -68,10 +67,10 @@ namespace City_Vibe.Controllers
                 ModelState.AddModelError("Image", "Failed to upload image");
                 return View("EditProfile", editVM);
             }
-
             return RedirectToAction("Detail", "AppUser", new { user.Id });
         }
 
+        
         [HttpGet]
         [ServiceFilter(typeof(UserManagerFilterAttribute))]
         public async Task<IActionResult> ManageClaims()
@@ -82,11 +81,11 @@ namespace City_Vibe.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        [ServiceFilter(typeof(ValidateGetUserByIdAsyncAttribute))]     
+        [ValidateAntiForgeryToken]  
         public async Task<IActionResult> ManageClaims(AppUserClaimsViewModel userClaimsViewModel)
         {
             var user = await userManager.FindByIdAsync(userClaimsViewModel.UserId);
+            if (user == null) return new RedirectResult("/Account/Login");
 
             var request = await appUserService.ManageClaimsPost(userClaimsViewModel, user);
 

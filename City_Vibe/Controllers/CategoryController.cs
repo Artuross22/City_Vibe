@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using City_Vibe.Domain.Models;
 using City_Vibe.Contracts;
 using City_Vibe.ValidationAttribute.BaseFilters;
+using City_Vibe.RequestModel.NewFolder.Category;
 
 namespace City_Vibe.Controllers
 {
@@ -20,10 +21,10 @@ namespace City_Vibe.Controllers
         }
 
         [HttpGet]
-        [ValidateNotNullIdAttribute("IdEdit")]
-        public async Task<ActionResult> EditCategory(int? IdEdit)
+        [ValidateModelAttribute]
+        public async Task<ActionResult> EditCategory(BaseRequestCategoryModel requestCategoryBase)
         {
-                CategoryEditViewModel category = await categoryService.EditCategoryGet(IdEdit);
+                CategoryEditViewModel category = await categoryService.EditCategoryGet(requestCategoryBase.Id);
                 if(category == null || category.Id == 0) return NotFound();
                 return View(category);
         }
@@ -49,23 +50,20 @@ namespace City_Vibe.Controllers
         }
 
         [HttpPost]
+        [ValidateModelStateReturnViewAttribute]
         public IActionResult AddCategory(CategoryAddViewModel categoryAddVM)
-        {
-            if (ModelState.IsValid)
-            {             
+        {         
                 var response = categoryService.AddCategory(categoryAddVM);     
                 return RedirectToAction("ListOfCategories", response.Succeeded);
-            }
-            return View(categoryAddVM);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ValidateNotNullIdAttribute("id")]
-        public async Task<IActionResult> DeleteCategory(int? id)
+        [ValidateModelAttribute]
+        public async Task<IActionResult> DeleteCategory(BaseRequestCategoryModel requestCategoryBase)
         {
-            var categoryDelete = await categoryService.DeleteCategory(id);
+            var categoryDelete = await categoryService.DeleteCategory(requestCategoryBase.Id);
             if(categoryDelete == false)  return NotFound();
             return RedirectToAction(nameof(ListOfCategories));      
         }

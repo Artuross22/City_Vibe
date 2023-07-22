@@ -76,14 +76,14 @@
                             @if (User.Identity.IsAuthenticated)
                             {
 
-                                <a type="btn btn-success" asp-controller="Club" asp-action="DetailClub" asp-route-id="@club.Id"
+                                <a type="btn btn-success" asp-controller="Club" asp-action="DetailClub" asp-route-Id="@club.Id"
                            class="btn btn-sm btn-outline-secondary">Detail</a>
 
 
                                 @if (isAuthenticated && User.IsInRole("Admin"))
                                 {
-                                    <a type="button" class="btn btn-sm btn-outline-info" asp-controller="Club" asp-action="EditClub" asp-route-id="@club.Id ">Edit</a>
-                                    <a type="button" class="btn btn-sm btn-outline-danger" asp-controller="Club" asp-action="Delete" asp-route-id="@club.Id">Delete</a>
+                                    <a type="button" class="btn btn-sm btn-outline-info" asp-controller="Club" asp-action="EditClub" asp-route-Id="@club.Id ">Edit</a>
+                                    <a type="button" class="btn btn-sm btn-outline-danger" asp-controller="Club" asp-action="Delete" asp-route-Id="@club.Id">Delete</a>
                                 }
                             }
                            

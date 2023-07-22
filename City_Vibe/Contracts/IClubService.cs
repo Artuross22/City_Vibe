@@ -15,7 +15,7 @@ namespace City_Vibe.Contracts
 
         Task<ClubResponse> CreateClubPost(CreateClubViewModel clubVM);
 
-        Task<DetailClubViewModel> DetailClub(int id);
+        Task<DetailClubViewModel> DetailClub(int? id);
 
         EditClubViewModel EditClubGet(int id);
 

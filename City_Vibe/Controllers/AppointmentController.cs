@@ -1,6 +1,5 @@
 ﻿using City_Vibe.Contracts;
 using City_Vibe.Domain.Models;
-using City_Vibe.ValidationAttribute.AppointmentAtributes;
 using City_Vibe.ValidationAttribute.BaseFilters;
 using City_Vibe.ViewModels.AppointmentController;
 using Microsoft.AspNetCore.Mvc;
@@ -23,23 +22,19 @@ namespace City_Vibe.Controllers
         }
 
         [HttpPost]
+        [ValidateModelStateReturnViewAttribute]
         public IActionResult AddUserAppointment(AppointmentViewModel appointmentModel)
         {
-            if (ModelState.IsValid)
-            {
                 AppointmentViewModel request = appointmentService.AddUserAppointmentPost(appointmentModel);
-
                 if (request.PhotoSucceeded == false)
                 {
                     ModelState.AddModelError("Phone", "This is not a valid phone number");
                     return View(appointmentModel);
                 }
                 return RedirectToAction("", "Event", new { id = appointmentModel.EventId });
-            }
-            return View(appointmentModel);
         }
 
-        [ServiceFilter(typeof(AdmissionRequestsFilterAttribute))]
+
         public IActionResult AdmissionRequests(int eventId)
         {
             var result = appointmentService.AdmissionRequests(eventId);

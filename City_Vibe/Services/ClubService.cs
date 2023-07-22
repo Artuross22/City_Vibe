@@ -94,7 +94,7 @@ namespace City_Vibe.Services
             return response;
         }
 
-        public async Task<DetailClubViewModel> DetailClub(int id)
+        public async Task<DetailClubViewModel> DetailClub(int? id)
         {
             var detailClubViewModel = new DetailClubViewModel();
             var club = await unitOfWorkRepository.ClubRepository.Find(i => i.Id == id).Include(i => i.Address).FirstOrDefaultAsync();
@@ -105,10 +105,11 @@ namespace City_Vibe.Services
                 return detailClubViewModel;
             }
 
+
             var events = await unitOfWorkRepository.EventRepository.Find(c => c.ClubId == id).Include(x => x.Address).Include(x => x.Category).ToListAsync();
             var curSaveClub = unitOfWorkRepository.SaveClubRepository.Find(c => c.ClubId == id);
             var countlikes = unitOfWorkRepository.LikeClubRepository.Find(x => x.ClubId == id).ToList().Count();
-            var getClubInformation = await unitOfWorkRepository.ClubRepository.GetPostInfoInClubByClubId(id);
+            var getClubInformation = await unitOfWorkRepository.ClubRepository.GetPostInfoInClubByClubId(id.Value);
 
             detailClubViewModel = mapper.Map<DetailClubViewModel>(club);
             detailClubViewModel.CountLikes = countlikes;

@@ -21,13 +21,11 @@ namespace City_Vibe.ValidationAttribute.ClubCommentAttributes
             }
 
             
-
             var userId = filterContext.HttpContext.User.GetUserId();
             if (userId == null)
             {
                 filterContext.Result = new NotFoundResult();
             }
-
         }
     }    
 }

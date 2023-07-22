@@ -5,6 +5,8 @@ using City_Vibe.Domain.Models;
 using City_Vibe.Infrastructure.ExtensionMethod;
 using City_Vibe.ViewModels.AppointmentController;
 using City_Vibe.ViewModels.EventController;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 

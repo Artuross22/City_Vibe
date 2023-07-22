@@ -8,9 +8,7 @@ using City_Vibe.Infrastructure.Implement;
 using City_Vibe.Infrastructure.Repository;
 using City_Vibe.Infrastructure.Services;
 using City_Vibe.Services;
-using City_Vibe.ValidationAttribute.AppointmentAtributes;
 using City_Vibe.ValidationAttribute.AppUserAttributes;
-using City_Vibe.ValidationAttribute.BaseFilters;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -82,8 +80,6 @@ namespace City_Vibe.ExtensionMethod
         {
             
             services.AddScoped<UserManagerFilterAttribute>();
-            services.AddScoped<AdmissionRequestsFilterAttribute>();
-            services.AddScoped<ValidateGetUserByIdAsyncAttribute>();
 
             return services;
         }

@@ -43,6 +43,8 @@ namespace City_Vibe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
         {
+            if (String.IsNullOrEmpty(id)) return RedirectToAction(nameof(Index));
+
             var request = await roleService.Delete(id);
             if (request.CurrentItem == false) NotFound();
 
@@ -57,6 +59,8 @@ namespace City_Vibe.Controllers
 
         public async Task<IActionResult> EditUserRole(string userId)
         {
+            if (String.IsNullOrEmpty(userId)) return RedirectToAction("/Account/Login");
+
             var request = await roleService.EditUserRoleGet(userId);
             if (request == null) return NotFound();
             return View(request);
@@ -65,6 +69,8 @@ namespace City_Vibe.Controllers
         [HttpPost]
         public async Task<IActionResult> EditUserRole(string userId, List<string> roles)
         {
+            if (String.IsNullOrEmpty(userId)) return RedirectToAction("/Account/Login");
+
             var request = await roleService.EditUserRolePost(userId, roles);
             if(request.CurrentUser == false) return NotFound();
             return RedirectToAction("UserList");

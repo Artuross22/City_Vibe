@@ -31,11 +31,10 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                    @Html.ActionLink("EditGet", "EditCategory", new {  IdEdit=item.Id })
-                    <form asp-controller="Category" asp-action="DeleteCategory" method="post" asp-route-id="@item.Id">
+                    @Html.ActionLink("Edit", "EditCategory", new {  Id=item.Id })
+                    <form asp-controller="Category" asp-action="DeleteCategory" method="post" asp-route-Id="@item.Id">
                         <input type="submit" value="Delete" />
-                    </form>
-                   
+                    </form>                  
             </td>
         </tr>
 }

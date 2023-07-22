@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Diagnostics;
-using System.Security.Claims;
 
 namespace City_Vibe.ValidationAttribute.AppUserAttributes
 {

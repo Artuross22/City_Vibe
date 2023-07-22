@@ -9,13 +9,13 @@
 
 @if (@Model.SaveClubs.Count != 0)
 {  
-      <a type="btn btn-success" asp-controller="Club" asp-action="AddInInterested" asp-route-eventlist="@Model.SaveClubId" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">
+      <a type="btn btn-success" asp-controller="Club" asp-action="AddInInterested" asp-route-eventlist="@Model.SaveClubId" asp-route-Id="@Model.Id" class="btn btn-sm btn-outline-secondary">
         Remove from interesting
     </a>
 }
 else
 {
-    <a type="btn btn-success" asp-controller="Club" asp-action="AddInInterested" asp-route-eventlist="@Model.SaveClubId" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">
+    <a type="btn btn-success" asp-controller="Club" asp-action="AddInInterested" asp-route-eventlist="@Model.SaveClubId" asp-route-Id="@Model.Id" class="btn btn-sm btn-outline-secondary">
         Add to Interesting
     </a>
   
@@ -60,7 +60,7 @@ else
               <tr>
             <td>
                 @Html.DisplayFor(Modelitem => Model.CountLikes) likes </br>
-                <a type="btn btn-success" asp-controller="Club" asp-action="AddLikeToTheClub" asp-route-clubId="@Model.Id" class="btn btn-sm btn-outline-secondary text-danger">
+                <a type="btn btn-success" asp-controller="Club" asp-action="AddLikeToTheClub" asp-route-Id="@Model.Id" class="btn btn-sm btn-outline-secondary text-danger">
                     Reputation
                 </a>
             </td>

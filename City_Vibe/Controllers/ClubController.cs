@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Contracts;
 using City_Vibe.ValidationAttribute.BaseFilters;
+using System.ComponentModel.DataAnnotations;
+using City_Vibe.RequestModel.Club;
 
 namespace City_Vibe.Controllers
 {
@@ -42,6 +44,9 @@ namespace City_Vibe.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateClub(CreateClubViewModel clubVM)
         {
+            var CategoryList = unitOfWorkRepository.CategoryRepository.GetAll();
+            ViewBag.Categories = new SelectList(CategoryList, "Id", "Name");
+
             if (ModelState.IsValid)
             {
                 var response = await clubService.CreateClubPost(clubVM);
@@ -56,20 +61,19 @@ namespace City_Vibe.Controllers
             return View(clubVM);
         }
 
-
-        [ValidateNotNullIdAttribute("id")]
-        public async Task<IActionResult> DetailClub(int id)
-        {
-            var response = await clubService.DetailClub(id);
+        [ValidateModelAttribute]
+        public async Task<IActionResult> DetailClub(BaseRequestClubModel baseRequestClubModel)
+        {        
+            var response = await clubService.DetailClub(baseRequestClubModel.Id.Value);
             if(response.Succeeded == false) return NotFound();
             return View(response);
         }
 
         [HttpGet]
-        [ValidateNotNullIdAttribute("id")]
-        public  IActionResult EditClub(int id)
+        [ValidateModelAttribute]
+        public  IActionResult EditClub(BaseRequestClubModel baseRequestClubModel)
         {
-            var response =  clubService.EditClubGet(id);
+            var response =  clubService.EditClubGet(baseRequestClubModel.Id.Value);
             if(response.Succeeded == false) return NotFound();
 
             var CategoryList = unitOfWorkRepository.CategoryRepository.GetAll();
@@ -103,35 +107,34 @@ namespace City_Vibe.Controllers
         }
 
         [HttpGet]
-        [ValidateNotNullIdAttribute("id")]
-        public async Task<IActionResult> Delete(int id)
+        [ValidateModelAttribute]
+        public async Task<IActionResult> Delete(BaseRequestClubModel baseRequestClubModel)
         {
-            var response = await clubService.DeleteGet(id);
+            var response = await clubService.DeleteGet(baseRequestClubModel.Id.Value);
             return View(response);
         }
 
 
 
         [HttpPost, ActionName("DeleteGet")]
-        [ValidateNotNullIdAttribute("id")]
-        public async Task<IActionResult> DeleteClub(int id)
+        [ValidateModelAttribute]
+        public async Task<IActionResult> DeleteClub(BaseRequestClubModel baseRequestClubModel)
         {
-            var response = await clubService.DeleteClubPost(id);
+            var response = await clubService.DeleteClubPost(baseRequestClubModel.Id.Value);
 
             if(response.Succeeded == false) return View(response);
 
             return RedirectToAction("Index");
         }
 
-
-        [ValidateNotNullIdAttribute("id")]
-        public async Task<ActionResult> AddInInterested(int id)
+        [ValidateModelAttribute]
+        public async Task<ActionResult> AddInInterested(BaseRequestClubModel baseRequestClubModel)
         {
-            var response = await clubService.AddInInterested(id);
+            var response = await clubService.AddInInterested(baseRequestClubModel.Id.Value);
 
             if(response.Succeeded == false) return RedirectToAction(nameof(Index));
 
-            return RedirectToAction("DetailClub", new { id = id });
+            return RedirectToAction("DetailClub", new { Id = baseRequestClubModel.Id });
         }
 
 
@@ -141,42 +144,40 @@ namespace City_Vibe.Controllers
             return View(response);
         }
 
-        public async Task<ActionResult> AddLikeToTheClub(int clubId)
+        public async Task<ActionResult> AddLikeToTheClub(BaseRequestClubModel baseRequestClubModel)
         {
-            var response = await clubService.AddLikeToTheClub(clubId);
+            var response = await clubService.AddLikeToTheClub(baseRequestClubModel.Id.Value);
 
             if(response.Succeeded == false) NotFound();
 
-            return RedirectToAction("DetailClub", new { id = clubId });
+            return RedirectToAction("DetailClub", new { id = baseRequestClubModel.Id });
         }
 
         [HttpGet]
-        [ValidateNotNullIdAttribute("clubId")]
-        public  ActionResult AddInformationInClub(int clubId)
+        [ValidateModelAttribute]
+        public  ActionResult AddInformationInClub([Required] int? clubId)
         {
-            var response =  clubService.AddInformationInClubGet(clubId);
+            var response =  clubService.AddInformationInClubGet(clubId.Value);
             return View(response);
         }
 
         [HttpPost]
+        [ValidateModelStateReturnViewAttribute]
         public async Task<ActionResult> AddInformationInClub(PostInformationClubViewModel postInfo)
         {
-            if (!ModelState.IsValid) return View(postInfo);
             var response = await clubService.AddInformationInClubPost(postInfo);
-
             if(response.PhotoSucceeded == false)
             {
                 ModelState.AddModelError("", "Photo upload failed");
                 return View(postInfo);
             }
-
             return RedirectToAction("DetailClub", new { id = postInfo.ClubId });
         }
 
-        [ValidateNotNullIdAttribute("postInfoId")]
-        public async Task<ActionResult> PostInformationDetail(int postInfoId)
+        [ValidateModelAttribute]
+        public async Task<ActionResult> PostInformationDetail([Required] int? postInfoId)
         {
-            var response = await clubService.PostInformationDetail(postInfoId);
+            var response = await clubService.PostInformationDetail(postInfoId.Value);
             return View(response);
         }
     }
