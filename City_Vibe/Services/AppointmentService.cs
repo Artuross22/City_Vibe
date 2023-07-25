@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using Azure.Core;
 
 namespace City_Vibe.Services
 {
@@ -32,7 +33,6 @@ namespace City_Vibe.Services
 
         public AppointmentViewModel AddUserAppointmentGet(int eventId)
         {
-            
             var curUserId = сontextAccessor.HttpContext.User.GetUserId();
             var userappointment =  new AppointmentViewModel();
             userappointment.AppUserId = curUserId;

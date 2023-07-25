@@ -4,7 +4,6 @@ using City_Vibe.ValidationAttribute.BaseFilters;
 using City_Vibe.ViewModels.AppointmentController;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace City_Vibe.Controllers
 {
     public class AppointmentController : Controller

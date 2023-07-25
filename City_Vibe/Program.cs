@@ -1,4 +1,5 @@
 using City_Vibe.ExtensionMethod;
+using City_Vibe.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +19,6 @@ builder.Services.AddAuthentication()
 
 .AddFacebook(options =>
 {
-
     options.AppId = "1153555458865780";
     options.AppSecret = "780def90e529535402b302fdcf9aaa1d";
 })
@@ -47,6 +47,12 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+
+
+app.UseCustomMiddleware();
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
