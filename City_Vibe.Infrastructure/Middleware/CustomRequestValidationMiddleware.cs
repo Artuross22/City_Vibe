@@ -32,7 +32,7 @@ namespace City_Vibe.Infrastructure.Middleware
 
             var YandexBrowser = "YaBrowser";
 
-            if (userAgent.Contains(YandexBrowser)) return false;
+            if (userAgent.Contains(YandexBrowser, StringComparison.OrdinalIgnoreCase)) return false;
 
             if (Regex.IsMatch(userAgent, "MSIE|Trident"))
             {

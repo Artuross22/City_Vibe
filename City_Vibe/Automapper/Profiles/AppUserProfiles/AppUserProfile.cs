@@ -8,9 +8,13 @@ namespace City_Vibe.Automapper.Profiles.AppUserProfile
     {
         public AppUserProfile()
         {
-            CreateMap<AppUser, AppUserDetailViewModel>();
+            CreateMap<AppUser, AppUserDetailViewModel>()
+                .ForMember(x => x.Succeeded, opt => opt.Ignore());
 
-            CreateMap<AppUser, EditProfileViewModel>();
+            CreateMap<AppUser, EditProfileViewModel>()
+                .ForMember(x => x.Image, opt => opt.Ignore())
+                .ForMember(x => x.Succeeded, opt => opt.Ignore())
+                    .ForMember(x => x.ErrorPhoto, opt => opt.Ignore());
 
             CreateMap<AppUser, AppUserViewModel>();
         }

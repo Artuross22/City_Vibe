@@ -97,6 +97,7 @@ namespace City_Vibe.Services
             var result = unitOfWorkRepository.AppointmentRepository.Find(x => x.Id == appointmentVM.AppointmentId).AsNoTracking().FirstOrDefault();
 
             var updateAppointment = mapper.Map<Appointment>(result);
+
             updateAppointment.Statement = appointmentVM.Statement;
 
             if (result?.ReplyAppointments != null)

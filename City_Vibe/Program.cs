@@ -1,5 +1,4 @@
 using City_Vibe.ExtensionMethod;
-using City_Vibe.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);

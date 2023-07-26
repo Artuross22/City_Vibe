@@ -7,11 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "City_Vibe", "City_Vibe\City
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "City_Vibe.Tests", "City_Vibe.Tests\City_Vibe.Tests.csproj", "{96F19D8D-74EA-4417-821B-FF48A55F47BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "City_Vibe.Domain", "City_Vibe.Domain\City_Vibe.Domain.csproj", "{F4E9643D-FC9E-4B93-BCEC-4F4505AA0BF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "City_Vibe.Domain", "City_Vibe.Domain\City_Vibe.Domain.csproj", "{F4E9643D-FC9E-4B93-BCEC-4F4505AA0BF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "City_Vibe.Application", "City_Vibe.Application\City_Vibe.Application.csproj", "{293E52A4-1D24-4E62-BD63-5FA8BDBF7289}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "City_Vibe.Application", "City_Vibe.Application\City_Vibe.Application.csproj", "{293E52A4-1D24-4E62-BD63-5FA8BDBF7289}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "City_Vibe.Infrastructure", "City_Vibe.Infrastructure\City_Vibe.Infrastructure.csproj", "{462E2C2E-CA46-49AF-883B-3EDD2974C97D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "City_Vibe.Infrastructure", "City_Vibe.Infrastructure\City_Vibe.Infrastructure.csproj", "{462E2C2E-CA46-49AF-883B-3EDD2974C97D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnitTestService", "XUnitTestService\XUnitTestService.csproj", "{E82B3675-56BC-44BE-946A-80A4071D422D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{462E2C2E-CA46-49AF-883B-3EDD2974C97D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{462E2C2E-CA46-49AF-883B-3EDD2974C97D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{462E2C2E-CA46-49AF-883B-3EDD2974C97D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E82B3675-56BC-44BE-946A-80A4071D422D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E82B3675-56BC-44BE-946A-80A4071D422D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E82B3675-56BC-44BE-946A-80A4071D422D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E82B3675-56BC-44BE-946A-80A4071D422D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
