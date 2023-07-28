@@ -3,13 +3,6 @@ using City_Vibe.Infrastructure.Data;
 using City_Vibe.Infrastructure.Repository;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
 
 namespace City_Vibe.Tests.Repository
 {
@@ -75,10 +68,10 @@ namespace City_Vibe.Tests.Repository
             var clubRepository = new ClubRepository(dbContext);
 
             //Act
-            //var result = clubRepository.Add(club);
+            var result = clubRepository.Add(club);
 
             //Assert
-           // result.Should().BeTrue();
+             result.Should().BeTrue();
         }
 
 
@@ -138,11 +131,11 @@ namespace City_Vibe.Tests.Repository
 
             //Act
             clubRepository.Add(club);
-         //   var result = clubRepository.DeleteGet(club);
+            var result = clubRepository.Delete(club);
             var count = await clubRepository.GetCountAsync();
 
             //Assert
-          //  result.Should().BeTrue();
+            result.Should().BeTrue();
             count.Should().Be(0);
         }
 
@@ -176,21 +169,6 @@ namespace City_Vibe.Tests.Repository
             result.Should().Be(1);
         }
 
-        [Fact]
-        public async void ClubRepository_GetClubsByEventId_ReturnsList()
-        {
-            //Arrange
-            int id = 1;
-            var dbContext = await GetDbContext();
-            var clubRepository = new ClubRepository(dbContext);
-
-            //Act
-      //      var result = await clubRepository.GetClubsByEventId(id);
-
-            //Assert
-       //     result.Should().NotBeNull();
-       //     result.Should().BeOfType<List<Event>>();
-        }
 
         [Fact]
         public async void ClubRepository_GetClubsByСity_ReturnsList()

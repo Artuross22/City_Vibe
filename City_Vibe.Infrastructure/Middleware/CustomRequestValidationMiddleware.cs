@@ -18,9 +18,13 @@ namespace City_Vibe.Infrastructure.Middleware
 
             if (!IsValidRequest(context.Request))
             {
-                context.Response.StatusCode = 400; 
+                context.Response.StatusCode = 400;
                 await context.Response.WriteAsync("Invalid request");
-                return;
+
+               
+
+                context.Items["text"] = "Invalid request";
+                return; 
             }
 
             await _next(context);

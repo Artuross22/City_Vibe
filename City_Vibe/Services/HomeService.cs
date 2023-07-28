@@ -1,13 +1,11 @@
 ﻿using City_Vibe.Application.Interfaces;
 using City_Vibe.Contracts;
-using City_Vibe.Controllers;
 using City_Vibe.Domain.Models;
 using City_Vibe.Infrastructure.Data;
 using City_Vibe.Infrastructure.ExtensionMethod;
 using City_Vibe.Infrastructure.Helpers;
 using City_Vibe.ViewModels.HomeViewModel;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.Net;
@@ -24,7 +22,6 @@ namespace City_Vibe.Services
         public HomeService(
             IUnitOfWork unitOfWorkRepo,
             UserManager<AppUser> userManagerAccess,
-            ILogger<HomeController> _logger,
             IHttpContextAccessor сontextAccs)
         {
             userManager = userManagerAccess;

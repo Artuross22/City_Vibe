@@ -281,7 +281,6 @@ namespace City_Vibe.Services
                 var result = unitOfWorkRepository.LikeClubRepository.Add(addLike);
                 response.Succeeded = result;
                 return response;
-
             }
             else
             {

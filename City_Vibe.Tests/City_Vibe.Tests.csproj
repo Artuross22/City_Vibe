@@ -14,6 +14,7 @@
     <PackageReference Include="FluentAssertions" Version="6.10.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Include="Moq" Version="4.18.4" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -26,6 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\City_Vibe.Application\City_Vibe.Application.csproj" />
+    <ProjectReference Include="..\City_Vibe.Infrastructure\City_Vibe.Infrastructure.csproj" />
     <ProjectReference Include="..\City_Vibe\City_Vibe.csproj" />
   </ItemGroup>
 
