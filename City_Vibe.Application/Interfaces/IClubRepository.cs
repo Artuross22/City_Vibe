@@ -4,7 +4,6 @@ namespace City_Vibe.Application.Interfaces
 {
     public interface IClubRepository : IGenericRepository<Club>
     {
-
         Task<Club> GetByIdAsyncNoTracking(int id);
         Task<IEnumerable<Club>> GetClubByCity(string city);
 

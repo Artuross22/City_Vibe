@@ -2,6 +2,7 @@
 using City_Vibe.Contracts;
 using City_Vibe.Domain.Interfaces;
 using City_Vibe.Domain.Models;
+using City_Vibe.Infrastructure.CacheRepository;
 using City_Vibe.Infrastructure.Data;
 using City_Vibe.Infrastructure.Helpers;
 using City_Vibe.Infrastructure.Implement;
@@ -16,6 +17,8 @@ namespace City_Vibe.ExtensionMethod
 {
     public static class ServiceCollectionExtensions
     {
+
+       
         public static IServiceCollection AddInfrastructureServices(this
            IServiceCollection services, IConfiguration configuration)
         {
@@ -32,16 +35,26 @@ namespace City_Vibe.ExtensionMethod
         public static IServiceCollection AddApplicationRepositories(this IServiceCollection services)
         {
             services.AddScoped<IEventRepository, EventRepository>();
+
             services.AddScoped<IClubRepository, ClubRepository>();
+
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IAppUserRepository, AppUserRepository>();
+          
             services.AddScoped<IDashboardRepository, DashboardRepository>();
             services.AddScoped<ISaveClubRepository, SaveClubRepository>();
             services.AddScoped<ISaveEventRepository, SaveEventRepository>();
             services.AddScoped<IlikeClubRepository, likeClubRepository>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IClubCommentRepository, ClubCommentRepository>();
+            return services;
+        }
+
+        public static IServiceCollection AddDecoratorPattern(this IServiceCollection services)
+        {
+            //Scrutor 
+            services.Decorate<IAppUserRepository, CacheMemoryUserRepository>();
             return services;
         }
 
@@ -78,8 +91,8 @@ namespace City_Vibe.ExtensionMethod
 
         public static IServiceCollection AddAttributeServices(this IServiceCollection services)
         {
-            
-            services.AddScoped<UserManagerFilterAttribute>();
+
+           services.AddScoped<UserManagerFilterAttribute>();
 
             return services;
         }

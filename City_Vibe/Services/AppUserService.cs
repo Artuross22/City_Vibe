@@ -2,8 +2,11 @@
 using City_Vibe.Application.Interfaces;
 using City_Vibe.Contracts;
 using City_Vibe.Domain.Models;
+using City_Vibe.Infrastructure.Repository;
 using City_Vibe.ViewModels.AppUserController;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 
 namespace City_Vibe.Services
@@ -14,6 +17,7 @@ namespace City_Vibe.Services
         private readonly IUnitOfWork unitOfWorkRepository;
         public readonly IHttpContextAccessor сontextAccessor;
         private readonly IPhotoService photoService;
+        private readonly IAppUserRepository appUserRepository; 
         private readonly UserManager<AppUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
 
@@ -23,6 +27,7 @@ namespace City_Vibe.Services
         RoleManager<IdentityRole> _roleManager,
         IHttpContextAccessor _сontextAccessor,
         IUnitOfWork _unitOfWorkRepository,
+        IAppUserRepository _appUserRepository,
         IMapper _mapper
         )
         {
@@ -32,6 +37,7 @@ namespace City_Vibe.Services
             сontextAccessor = _сontextAccessor;
             unitOfWorkRepository = _unitOfWorkRepository;
             mapper = _mapper;
+            appUserRepository = _appUserRepository;
         }
 
         public async Task<IEnumerable<AppUserViewModel>> Index()
@@ -53,7 +59,7 @@ namespace City_Vibe.Services
         {
             var userDetailViewModel = new AppUserDetailViewModel();
 
-            var returnUser = await unitOfWorkRepository.AppUserRepository.GetUserByIdIncludeAdress(id);
+            var returnUser = await appUserRepository.GetUserByIdIncludeAdress(id);
             if (returnUser == null)
             {
                 userDetailViewModel.Succeeded = false;
@@ -65,6 +71,8 @@ namespace City_Vibe.Services
             userDetailViewModel.ProfileImageUrl = returnUser.ProfileImageUrl ?? "/img/avatar-male-4.jpg";
             return userDetailViewModel;
         }
+
+
 
         public async Task<EditProfileViewModel> EditProfileGet(AppUser curUser)
         {
@@ -141,7 +149,7 @@ namespace City_Vibe.Services
 
         public async Task<AppUserClaimsViewModel> ManageClaimsPost(AppUserClaimsViewModel userClaimsViewModel, AppUser user)
         {
-         
+            
             var claims = await userManager.GetClaimsAsync(user);
             var result = await userManager.RemoveClaimsAsync(user, claims);
 

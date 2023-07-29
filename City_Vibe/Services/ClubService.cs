@@ -8,6 +8,8 @@ using City_Vibe.ViewModels.ClubController;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+
 
 namespace City_Vibe.Services
 {
@@ -17,52 +19,73 @@ namespace City_Vibe.Services
         private readonly IPhotoService photoService;
         private readonly IHttpContextAccessor сontextAccessor;
         private readonly IUnitOfWork unitOfWorkRepository;
+        private readonly IMemoryCache memoryCash;
+      
 
 
         public ClubService(
             IPhotoService photoServ,
             IHttpContextAccessor сontextAccess,
             IUnitOfWork unitOfWorkRepo,
-            IMapper mapp)
+            IMapper mapp,
+            IMemoryCache _memoryCash)
         {
             photoService = photoServ;
             сontextAccessor = сontextAccess;
             unitOfWorkRepository = unitOfWorkRepo;
             mapper = mapp;
+            memoryCash = _memoryCash;
         }
 
         public async Task<IndexClubViewModel> Index(int category, int page, int pageSize)
         {
+            string cacheKey = "clubsCacheKey";
 
-            var byCategory = await unitOfWorkRepository.CategoryRepository.GetByIdAsync(category);
-
-
-            var clubs = category switch
+            if (memoryCash.TryGetValue(cacheKey, out IndexClubViewModel clubViewModel))
             {
-                -1 => await unitOfWorkRepository.ClubRepository.GetSliceAsync(page, pageSize, pageSize),
-                _ => await unitOfWorkRepository.ClubRepository.GetClubsByCategoryAndSliceAsync(byCategory, page, pageSize),
-            };
-
-            var count = category switch
+                if(clubViewModel != null)
+                return clubViewModel;
+            }
+            else
             {
-                -1 => await unitOfWorkRepository.ClubRepository.GetCountAsync(),
-                _ => await unitOfWorkRepository.ClubRepository.GetCountByCategoryAsync(byCategory),
-            };
+                var byCategory = await unitOfWorkRepository.CategoryRepository.GetByIdAsync(category);
 
-            List<Category> categories = await unitOfWorkRepository.CategoryRepository.GetAllAsync();
 
-            var clubViewModel = new IndexClubViewModel
-            {
-                Clubs = clubs,
-                Page = page,
-                PageSize = pageSize,
-                TotalClubs = count,
-                TotalPages = (int)Math.Ceiling(count / (double)pageSize),
-                Category = new SelectList(categories, "Id", "Name", category)
-            };
+                var clubs = category switch
+                {
+                    -1 => await unitOfWorkRepository.ClubRepository.GetSliceAsync(page, pageSize, pageSize),
+                    _ => await unitOfWorkRepository.ClubRepository.GetClubsByCategoryAndSliceAsync(byCategory, page, pageSize),
+                };
+
+                var count = category switch
+                {
+                    -1 => await unitOfWorkRepository.ClubRepository.GetCountAsync(),
+                    _ => await unitOfWorkRepository.ClubRepository.GetCountByCategoryAsync(byCategory),
+                };
+
+                List<Category> categories = await unitOfWorkRepository.CategoryRepository.GetAllAsync();
+
+                clubViewModel = new IndexClubViewModel
+                {
+                    Clubs = clubs,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalClubs = count,
+                    TotalPages = (int)Math.Ceiling(count / (double)pageSize),
+                    Category = new SelectList(categories, "Id", "Name", category)
+                };
+
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(45))
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                    .SetPriority(CacheItemPriority.Normal);
+                memoryCash.Set(cacheKey, clubViewModel, cacheEntryOptions);
+            }
 
             return clubViewModel;
         }
+
 
 
         public CreateClubViewModel CreateClubGet()

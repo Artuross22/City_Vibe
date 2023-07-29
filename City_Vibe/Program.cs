@@ -10,7 +10,10 @@ builder.Services
     .AddApplicationRepositories()
     .AddApplicationServices()
     .AddContractsServices()
-    .AddAttributeServices();
+    .AddAttributeServices()
+    .AddDecoratorPattern();
+
+
 
 
 //builder pattern 

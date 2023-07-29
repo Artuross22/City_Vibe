@@ -35,6 +35,8 @@ namespace City_Vibe.Controllers
             else return View(result);
         }
 
+        
+
         [HttpGet]
         [Authorize]
         [ServiceFilter(typeof(UserManagerFilterAttribute))]
