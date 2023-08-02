@@ -31,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\City_Vibe.Application\City_Vibe.Application.csproj" />
     <ProjectReference Include="..\City_Vibe.Infrastructure\City_Vibe.Infrastructure.csproj" />
+    <ProjectReference Include="..\WrapperAPI\RapidWrapperAPI.csproj" />
   </ItemGroup>
 
 </Project>

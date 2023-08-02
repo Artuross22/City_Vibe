@@ -11,7 +11,9 @@ builder.Services
     .AddApplicationServices()
     .AddContractsServices()
     .AddAttributeServices()
-    .AddDecoratorPattern();
+    .AddDecoratorPattern()
+    .AddAPIDependencies();
+
 
 
 

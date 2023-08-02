@@ -7,6 +7,9 @@ using City_Vibe.Services.Base;
 using City_Vibe.ViewModels.EventController;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using WrapperAPI.APIs.WeatherAPI.Realization;
+using WrapperAPI.BaseAPI;
+using WrapperAPI.BaseAPI.Interfaces;
 
 namespace City_Vibe.Services
 {
@@ -17,18 +20,21 @@ namespace City_Vibe.Services
         private readonly IPhotoService photoService;
         public readonly IHttpContextAccessor сontextAccessor;
         public readonly IUnitOfWork unitOfWorkRepository;
+        public readonly IUnitedAPIs unitedAPIs;
 
         public EventService(
             IPhotoService photoSe,
             IHttpContextAccessor сontextAccsess,
             IUnitOfWork unitOfWorkRepo,
-            IMapper mapp
+            IMapper mapp,
+            IUnitedAPIs unitedAPI //, WeatherApiAdapter weatherApiAdapter
             )
         {
             photoService = photoSe;
             сontextAccessor = сontextAccsess;
             unitOfWorkRepository = unitOfWorkRepo;
             mapper = mapp;
+            unitedAPIs = unitedAPI;
         }
 
         public async Task<EventFilterViewModel> Index(int? category, string? name)
@@ -63,6 +69,7 @@ namespace City_Vibe.Services
 
         public async Task<EventDetailViewModel> DetailEvent(int currentEventId)
         {
+            
             var eventDetail = await unitOfWorkRepository.EventRepository.GetByIdIncludeCategoryAndAddressAsync(currentEventId);
             var currentUserId = сontextAccessor.HttpContext.User.GetUserId();
             var curSaveEvent = unitOfWorkRepository.SaveEventRepository.Find(c => c.EventId == currentEventId);
@@ -82,6 +89,14 @@ namespace City_Vibe.Services
                 .ToList();
 
             viewModel.Comments = listofComment;
+
+            // API
+            var weather = await unitedAPIs.WeatherAPIImplementation.WeatherHandlerAPI(viewModel.Address.City);
+            var crypta = await unitedAPIs.CryptoAPIImplementation.CryptoHandlerAPIsd();
+
+
+
+
 
             var categoryEvent = unitOfWorkRepository.CategoryRepository.GetById(eventDetail.CategoryId);
             viewModel.Category = categoryEvent;

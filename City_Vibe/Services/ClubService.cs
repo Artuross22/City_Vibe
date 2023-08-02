@@ -39,13 +39,14 @@ namespace City_Vibe.Services
 
         public async Task<IndexClubViewModel> Index(int category, int page, int pageSize)
         {
-            string cacheKey = "clubsCacheKey";
+            string cacheKey = $"clubsCacheKey{category}";
 
             if (memoryCash.TryGetValue(cacheKey, out IndexClubViewModel clubViewModel))
             {
                 if(clubViewModel != null)
                 return clubViewModel;
             }
+
             else
             {
                 var byCategory = await unitOfWorkRepository.CategoryRepository.GetByIdAsync(category);

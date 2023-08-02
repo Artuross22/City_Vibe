@@ -12,6 +12,11 @@ using City_Vibe.Services;
 using City_Vibe.ValidationAttribute.AppUserAttributes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using WrapperAPI.APIs.CryptoAPI.Interfaces;
+using WrapperAPI.APIs.CryptoAPI.Realization;
+using WrapperAPI.APIs.WeatherAPI.Interfaces;
+using WrapperAPI.APIs.WeatherAPI.Realization;
+using WrapperAPI.BaseAPI.Interfaces;
 
 namespace City_Vibe.ExtensionMethod
 {
@@ -26,6 +31,9 @@ namespace City_Vibe.ExtensionMethod
                 b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)), ServiceLifetime.Transient);
 
             services.Configure<AuthMessageSenderOptions>(configuration.GetSection("SendGrid"));  // common pattern
+
+            services.Configure<SettingsKeyAPI>(configuration.GetSection("RapidAPI"));
+            
             services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
 
             services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
@@ -58,6 +66,14 @@ namespace City_Vibe.ExtensionMethod
             return services;
         }
 
+        public static IServiceCollection AddAPIDependencies(this IServiceCollection services)
+        {
+            services.AddScoped<IUnitedAPIs, UnitedAPIs>();
+            services.AddScoped<ICryptoApiAdapter, CryptoApiAdapter>();
+            services.AddScoped<IWeatherApiAdapter, WeatherApiAdapter>();
+            return services;
+        }
+
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<ICityVibeDbContext>(provider => provider.GetService<ApplicationDbContext>());
@@ -73,6 +89,7 @@ namespace City_Vibe.ExtensionMethod
 
         public static IServiceCollection AddContractsServices(this IServiceCollection services)
         {
+
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
