@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WrapperAPI", "WrapperAPI\Wr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiBulletinBoard", "..\ApiBulletinBoard\ApiBulletinBoard\ApiBulletinBoard.csproj", "{627E8735-42B9-4B1D-B156-2743BA697F14}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomAPI", "CustomAPI\CustomAPI.csproj", "{BDEFDA0D-11F5-4A15-87C4-5D8387D5160B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{627E8735-42B9-4B1D-B156-2743BA697F14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{627E8735-42B9-4B1D-B156-2743BA697F14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{627E8735-42B9-4B1D-B156-2743BA697F14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDEFDA0D-11F5-4A15-87C4-5D8387D5160B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDEFDA0D-11F5-4A15-87C4-5D8387D5160B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDEFDA0D-11F5-4A15-87C4-5D8387D5160B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDEFDA0D-11F5-4A15-87C4-5D8387D5160B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

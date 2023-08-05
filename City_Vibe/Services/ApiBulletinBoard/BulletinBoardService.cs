@@ -7,7 +7,7 @@ namespace City_Vibe.Services.ApiBulletinBoard
     public class BulletinBoardService
     {
         private readonly HttpClient httpClient;
-        Uri baseAddress = new Uri("https://localhost:7149/api");
+        Uri baseAddress = new Uri("https://localhost:7219/api");
 
         public BulletinBoardService()
         {
