@@ -23,15 +23,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.12" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.15" />
     <PackageReference Include="Scrutor.AspNetCore" Version="3.3.0" />
     <PackageReference Include="SendGrid" Version="9.28.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\City_Vibe.Application\City_Vibe.Application.csproj" />
     <ProjectReference Include="..\City_Vibe.Infrastructure\City_Vibe.Infrastructure.csproj" />
-    <ProjectReference Include="..\WrapperAPI\RapidWrapperAPI.csproj" />
+    <ProjectReference Include="..\WrapperAPI\WrapperAPI.csproj" />
   </ItemGroup>
 
 </Project>

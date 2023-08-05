@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "City_Vibe.Infrastructure", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XUnitTestService", "XUnitTestService\XUnitTestService.csproj", "{E82B3675-56BC-44BE-946A-80A4071D422D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidWrapperAPI", "WrapperAPI\RapidWrapperAPI.csproj", "{284A6CF5-3F5F-4708-A2FE-DACAF550D5E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WrapperAPI", "WrapperAPI\WrapperAPI.csproj", "{284A6CF5-3F5F-4708-A2FE-DACAF550D5E0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiBulletinBoard", "..\ApiBulletinBoard\ApiBulletinBoard\ApiBulletinBoard.csproj", "{627E8735-42B9-4B1D-B156-2743BA697F14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{284A6CF5-3F5F-4708-A2FE-DACAF550D5E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{284A6CF5-3F5F-4708-A2FE-DACAF550D5E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{284A6CF5-3F5F-4708-A2FE-DACAF550D5E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{627E8735-42B9-4B1D-B156-2743BA697F14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{627E8735-42B9-4B1D-B156-2743BA697F14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{627E8735-42B9-4B1D-B156-2743BA697F14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{627E8735-42B9-4B1D-B156-2743BA697F14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

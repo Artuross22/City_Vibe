@@ -9,6 +9,7 @@ using City_Vibe.Infrastructure.Implement;
 using City_Vibe.Infrastructure.Repository;
 using City_Vibe.Infrastructure.Services;
 using City_Vibe.Services;
+using City_Vibe.Services.ApiBulletinBoard;
 using City_Vibe.ValidationAttribute.AppUserAttributes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -63,6 +64,9 @@ namespace City_Vibe.ExtensionMethod
         {
             //Scrutor 
             services.Decorate<IAppUserRepository, CacheMemoryUserRepository>();
+
+            services.AddScoped<BulletinBoardService>();
+
             return services;
         }
 

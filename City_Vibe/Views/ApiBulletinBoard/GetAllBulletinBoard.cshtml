@@ -1,0 +1,52 @@
+﻿@*@model IEnumerable<City_Vibe.ViewModels.ApiBulletinBoard.MessageBoardDto>*@
+@model IEnumerable<City_Vibe.ViewModels.ApiBulletinBoard.BulletinBoard>
+
+
+@{
+    ViewData["Title"] = "GetAllBulletinBoard";
+}
+
+<h1>GetAllBulletinBoard</h1>
+
+<p>
+    <a asp-action="CreateBulletinBoard">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BulletinBoardId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BulletinBoardId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditBulletinBoard", new {  Id=item.BulletinBoardId })
+
+                    <form asp-controller="ApiBulletinBoard" asp-action="DeleteBulletinBoard" method="get" asp-route-Id="@item.BulletinBoardId">
+                        <input type="submit" value="Delete" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
